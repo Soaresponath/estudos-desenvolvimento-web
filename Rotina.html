@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Rotina Integrada</title>
+  <style>
+    :root {
+      --bg: #eef6ff;
+      --card: #ffffff;
+      --text: #24415a;
+      --muted: #6d8aa3;
+      --primary: #7eb6ff;
+      --primary-strong: #4f93f7;
+      --secondary: #dff1ff;
+      --accent: #ffe3ef;
+      --green: #dff7ea;
+      --yellow: #fff4d9;
+      --shadow: 0 8px 25px rgba(80, 126, 180, 0.15);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, #f4f9ff 0%, #edf5ff 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    h1, h2, h3 {
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #dceeff, #ffffff, #e9f4ff);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero p {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .date-box {
+      background: rgba(255,255,255,0.8);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #e3eefb;
+    }
+
+    .date-box .day {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--primary-strong);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 20px;
+    }
+
+    .left, .right {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      border: 1px solid #e7f0fb;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .role-card {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid #e6eef8;
+      background: #fbfdff;
+    }
+
+    .role-card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: var(--secondary);
+      color: var(--primary-strong);
+      margin-bottom: 8px;
+    }
+
+    .task-inputs {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    input, select, textarea, button {
+      border: 1px solid #d9e6f5;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(126, 182, 255, 0.18);
+    }
+
+    button {
+      background: var(--primary-strong);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .secondary-btn {
+      background: #eff6ff;
+      color: var(--primary-strong);
+    }
+
+    .task-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      border-radius: 14px;
+      background: #fbfdff;
+      border: 1px solid #e8f0fb;
+    }
+
+    .task-item.done {
+      opacity: 0.7;
+    }
+
+    .task-item.done .task-title {
+      text-decoration: line-through;
+    }
+
+    .task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .prio-alta { background: #ffe1e1; color: #b74d4d; }
+    .prio-media { background: #fff1d8; color: #a76c10; }
+    .prio-baixa { background: #e3f4e7; color: #34845a; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stat-box {
+      background: #fbfdff;
+      border: 1px solid #e6effb;
+      padding: 16px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.6rem;
+      color: var(--primary-strong);
+      margin-bottom: 6px;
+    }
+
+    .section-columns {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .routine-area {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid #e7eef8;
+      background: #fbfdff;
+    }
+
+    .routine-area h3 {
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .routine-area ul {
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .study-blocks {
+      display: grid;
+      gap: 12px;
+    }
+
+    .study-block {
+      border: 1px solid #e7eef8;
+      border-radius: 16px;
+      padding: 14px;
+      background: #fcfeff;
+    }
+
+    .study-block p {
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .small {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 18px;
+      border: 1px dashed #d7e4f5;
+      border-radius: 14px;
+      background: #fcfeff;
+    }
+
+    @media (max-width: 1024px) {
+      .hero, .grid, .section-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 14px;
+      }
+
+      .task-inputs {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .section-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .task-item {
+        grid-template-columns: auto 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div>
+        <h1>Painel de Rotina Integrada</h1>
+        <p>
+          Um espaço para organizar sua vida como estudante de Ciência da Computação,
+          leitora, aprendiz de inglês, secretária e diretora jovem da IASD,
+          professora do Pré 2, professora do 4º ano e dona de casa.
+        </p>
+      </div>
+      <div class="date-box">
+        <div class="small">Hoje é</div>
+        <div class="day" id="currentDay">14</div>
+        <div id="currentDateText">Carregando data...</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2>Suas áreas de rotina</h2>
+          <p>Visualize tudo em um só painel.</p>
+        </div>
+      </div>
+      <div class="mini-grid">
+        <div class="role-card"><span class="pill">Estudo</span><h3>Ciência da Computação</h3><p class="small">Disciplinas, revisão, trabalhos e prática.</p></div>
+        <div class="role-card"><span class="pill">Leitura</span><h3>Livros</h3><p class="small">Registrar metas, capítulos e observações.</p></div>
+        <div class="role-card"><span class="pill">Idiomas</span><h3>Inglês</h3><p class="small">Vocabulário, leitura, escuta e prática diária.</p></div>
+        <div class="role-card"><span class="pill">Igreja</span><h3>Secretaria IASD</h3><p class="small">Atas, agendas, relatórios e comissões.</p></div>
+        <div class="role-card"><span class="pill">Ministério</span><h3>Ministério Jovem</h3><p class="small">Programações, ideias, escalas e temas.</p></div>
+        <div class="role-card"><span class="pill">Escola</span><h3>Pré 2</h3><p class="small">Rotina, planejamentos, bilhetes e registros.</p></div>
+        <div class="role-card"><span class="pill">Escola</span><h3>4º Ano</h3><p class="small">Conteúdos, avaliações, pareceres e atividades.</p></div>
+        <div class="role-card"><span class="pill">Casa</span><h3>Dona de casa</h3><p class="small">Limpeza, compras, refeições e organização.</p></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <div class="left">
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Planejamento do dia</h2>
+              <p>Adicione tarefas e acompanhe suas prioridades.</p>
+            </div>
+          </div>
+
+          <div class="task-inputs">
+            <input type="text" id="taskTitle" placeholder="Ex.: Planejar aula do Pré 2" />
+            <select id="taskCategory">
+              <option value="Ciência da Computação">Ciência da Computação</option>
+              <option value="Leitura de Livros">Leitura de Livros</option>
+              <option value="Estudo de Inglês">Estudo de Inglês</option>
+              <option value="Secretaria IASD">Secretaria IASD</option>
+              <option value="Ministério Jovem IASD">Ministério Jovem IASD</option>
+              <option value="Professora Pré 2">Professora Pré 2</option>
+              <option value="Professora 4º Ano">Professora 4º Ano</option>
+              <option value="Casa">Casa</option>
+            </select>
+            <select id="taskPriority">
+              <option value="Alta">Prioridade Alta</option>
+              <option value="Média">Prioridade Média</option>
+              <option value="Baixa">Prioridade Baixa</option>
+            </select>
+            <button onclick="addTask()">Adicionar</button>
+          </div>
+
+          <div class="task-inputs" style="grid-template-columns: 1fr 1fr auto;">
+            <select id="filterCategory" onchange="renderTasks()">
+              <option value="Todos">Filtrar: Todas as áreas</option>
+              <option value="Ciência da Computação">Ciência da Computação</option>
+              <option value="Leitura de Livros">Leitura de Livros</option>
+              <option value="Estudo de Inglês">Estudo de Inglês</option>
+              <option value="Secretaria IASD">Secretaria IASD</option>
+              <option value="Ministério Jovem IASD">Ministério Jovem IASD</option>
+              <option value="Professora Pré 2">Professora Pré 2</option>
+              <option value="Professora 4º Ano">Professora 4º Ano</option>
+              <option value="Casa">Casa</option>
+            </select>
+            <select id="filterStatus" onchange="renderTasks()">
+              <option value="Todos">Status: Todos</option>
+              <option value="Pendentes">Pendentes</option>
+              <option value="Concluídas">Concluídas</option>
+            </select>
+            <button class="secondary-btn" onclick="clearCompleted()">Limpar concluídas</button>
+          </div>
+
+          <div class="task-list" id="taskList"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Blocos da semana</h2>
+              <p>Uma sugestão de organização equilibrada.</p>
+            </div>
+          </div>
+          <div class="section-columns">
+            <div class="routine-area">
+              <h3>Segunda a quinta</h3>
+              <ul>
+                <li>Manhã: escola / aulas / registros.</li>
+                <li>Tarde: igreja, planejamentos ou tarefas de casa.</li>
+                <li>Noite: Ciência da Computação, inglês ou leitura.</li>
+              </ul>
+            </div>
+            <div class="routine-area">
+              <h3>Sexta</h3>
+              <ul>
+                <li>Fechamento da semana escolar.</li>
+                <li>Organização da igreja e demandas pendentes.</li>
+                <li>Revisão leve dos estudos.</li>
+              </ul>
+            </div>
+            <div class="routine-area">
+              <h3>Sábado</h3>
+              <ul>
+                <li>Atividades da IASD.</li>
+                <li>Ministério Jovem.</li>
+                <li>Observações e anotações para a próxima semana.</li>
+              </ul>
+            </div>
+            <div class="routine-area">
+              <h3>Domingo</h3>
+              <ul>
+                <li>Casa, refeições e organização pessoal.</li>
+                <li>Planejamento semanal.</li>
+                <li>Leitura, inglês e revisão acadêmica.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="right">
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Resumo do dia</h2>
+              <p>Acompanhe seu progresso.</p>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat-box">
+              <strong id="totalTasks">0</strong>
+              <span>Total</span>
+            </div>
+            <div class="stat-box">
+              <strong id="pendingTasks">0</strong>
+              <span>Pendentes</span>
+            </div>
+            <div class="stat-box">
+              <strong id="doneTasks">0</strong>
+              <span>Concluídas</span>
+            </div>
+            <div class="stat-box">
+              <strong id="highPriorityTasks">0</strong>
+              <span>Alta prioridade</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Metas de foco</h2>
+              <p>Campos para registrar seu avanço.</p>
+            </div>
+          </div>
+          <div class="study-blocks">
+            <div class="study-block">
+              <h3>Ciência da Computação</h3>
+              <p>Meta: estudar conteúdos da semana, praticar lógica, banco de dados, Python ou web.</p>
+            </div>
+            <div class="study-block">
+              <h3>Leitura de livros</h3>
+              <p>Meta: registrar livro atual, páginas lidas e reflexão principal.</p>
+            </div>
+            <div class="study-block">
+              <h3>Inglês</h3>
+              <p>Meta: 15 a 30 minutos por dia com leitura, escuta ou vocabulário.</p>
+            </div>
+            <div class="study-block">
+              <h3>Escola e igreja</h3>
+              <p>Meta: manter planejamentos, atas, bilhetes, agenda e organização ministerial em dia.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Anotações rápidas</h2>
+              <p>Use para ideias, lembretes e observações.</p>
+            </div>
+          </div>
+          <textarea id="notes" placeholder="Ex.: preparar agenda da comissão, imprimir atividades, separar leitura em inglês..."></textarea>
+          <div class="footer-actions">
+            <button onclick="saveNotes()">Salvar anotações</button>
+            <button class="secondary-btn" onclick="window.print()">Imprimir painel</button>
+          </div>
+          <p class="small" style="margin-top: 10px;">As anotações ficam salvas no navegador.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const taskTitle = document.getElementById('taskTitle');
+    const taskCategory = document.getElementById('taskCategory');
+    const taskPriority = document.getElementById('taskPriority');
+    const taskList = document.getElementById('taskList');
+    const filterCategory = document.getElementById('filterCategory');
+    const filterStatus = document.getElementById('filterStatus');
+    const notes = document.getElementById('notes');
+
+    let tasks = JSON.parse(localStorage.getItem('painelRotinaTasks')) || [
+      {
+        id: Date.now() + 1,
+        title: 'Revisar conteúdo da faculdade',
+        category: 'Ciência da Computação',
+        priority: 'Alta',
+        done: false,
+        createdAt: new Date().toLocaleString('pt-BR')
+      },
+      {
+        id: Date.now() + 2,
+        title: 'Ler 10 páginas do livro atual',
+        category: 'Leitura de Livros',
+        priority: 'Média',
+        done: false,
+        createdAt: new Date().toLocaleString('pt-BR')
+      },
+      {
+        id: Date.now() + 3,
+        title: 'Organizar pauta da comissão da igreja',
+        category: 'Secretaria IASD',
+        priority: 'Alta',
+        done: false,
+        createdAt: new Date().toLocaleString('pt-BR')
+      }
+    ];
+
+    function updateDate() {
+      const now = new Date();
+      const dateText = now.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+      document.getElementById('currentDay').textContent = now.getDate();
+      document.getElementById('currentDateText').textContent = dateText;
+    }
+
+    function saveTasks() {
+      localStorage.setItem('painelRotinaTasks', JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const title = taskTitle.value.trim();
+      if (!title) {
+        alert('Digite uma tarefa antes de adicionar.');
+        return;
+      }
+
+      const newTask = {
+        id: Date.now(),
+        title,
+        category: taskCategory.value,
+        priority: taskPriority.value,
+        done: false,
+        createdAt: new Date().toLocaleString('pt-BR')
+      };
+
+      tasks.unshift(newTask);
+      saveTasks();
+      renderTasks();
+      taskTitle.value = '';
+      taskTitle.focus();
+    }
+
+    function toggleTask(id) {
+      tasks = tasks.map(task => task.id === id ? { ...task, done: !task.done } : task);
+      saveTasks();
+      renderTasks();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(task => task.id !== id);
+      saveTasks();
+      renderTasks();
+    }
+
+    function editTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      const newTitle = prompt('Editar tarefa:', task.title);
+      if (newTitle === null) return;
+
+      const cleanTitle = newTitle.trim();
+      if (!cleanTitle) {
+        alert('A tarefa não pode ficar vazia.');
+        return;
+      }
+
+      task.title = cleanTitle;
+      saveTasks();
+      renderTasks();
+    }
+
+    function clearCompleted() {
+      tasks = tasks.filter(task => !task.done);
+      saveTasks();
+      renderTasks();
+    }
+
+    function getPriorityClass(priority) {
+      if (priority === 'Alta') return 'prio-alta';
+      if (priority === 'Média') return 'prio-media';
+      return 'prio-baixa';
+    }
+
+    function renderTasks() {
+      const categoryValue = filterCategory.value;
+      const statusValue = filterStatus.value;
+
+      let filtered = [...tasks];
+
+      if (categoryValue !== 'Todos') {
+        filtered = filtered.filter(task => task.category === categoryValue);
+      }
+
+      if (statusValue === 'Pendentes') {
+        filtered = filtered.filter(task => !task.done);
+      } else if (statusValue === 'Concluídas') {
+        filtered = filtered.filter(task => task.done);
+      }
+
+      if (filtered.length === 0) {
+        taskList.innerHTML = '<div class="empty">Nenhuma tarefa encontrada nesse filtro.</div>';
+      } else {
+        taskList.innerHTML = filtered.map(task => `
+          <div class="task-item ${task.done ? 'done' : ''}">
+            <input type="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${task.id})" />
+            <div>
+              <div class="task-title"><strong>${task.title}</strong></div>
+              <div class="task-meta">
+                <span>${task.category}</span>
+                <span class="badge ${getPriorityClass(task.priority)}">${task.priority}</span>
+                <span>Criada em: ${task.createdAt}</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+              <button class="secondary-btn" onclick="editTask(${task.id})">Editar</button>
+              <button onclick="deleteTask(${task.id})">Excluir</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      updateStats();
+    }
+
+    function updateStats() {
+      const total = tasks.length;
+      const done = tasks.filter(task => task.done).length;
+      const pending = total - done;
+      const high = tasks.filter(task => task.priority === 'Alta' && !task.done).length;
+
+      document.getElementById('totalTasks').textContent = total;
+      document.getElementById('pendingTasks').textContent = pending;
+      document.getElementById('doneTasks').textContent = done;
+      document.getElementById('highPriorityTasks').textContent = high;
+    }
+
+    function saveNotes() {
+      localStorage.setItem('painelRotinaNotes', notes.value);
+      alert('Anotações salvas com sucesso.');
+    }
+
+    function loadNotes() {
+      notes.value = localStorage.getItem('painelRotinaNotes') || '';
+    }
+
+    updateDate();
+    loadNotes();
+    renderTasks();
+  </script>
+</body>
+</html>

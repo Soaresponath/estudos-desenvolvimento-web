@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle Mensal Financeiro</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      color: #1e293b;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .topo {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      margin-bottom: 20px;
+    }
+    .topo h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+    .topo p {
+      margin: 0;
+      color: #475569;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+    .resumo {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .box {
+      border-radius: 18px;
+      padding: 16px;
+      color: #fff;
+      min-height: 96px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .box small { opacity: 0.9; margin-bottom: 8px; }
+    .box strong { font-size: 22px; }
+    .entradas { background: #16a34a; }
+    .saidas { background: #dc2626; }
+    .saldo { background: #2563eb; }
+    .registros { background: #7c3aed; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group.full { grid-column: 1 / -1; }
+    label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    input, select, button, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      font-size: 15px;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .btn-primary { background: #4f46e5; color: #fff; }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-secondary { background: #e2e8f0; color: #0f172a; }
+    .btn-secondary:hover { background: #cbd5e1; }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+
+    .filtros {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .tabela-wrapper {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #f8fafc;
+    }
+    .tipo-entrada {
+      color: #15803d;
+      font-weight: bold;
+    }
+    .tipo-saida {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .vazio {
+      text-align: center;
+      color: #64748b;
+      padding: 24px;
+    }
+    .rodape {
+      margin-top: 18px;
+      color: #64748b;
+      font-size: 13px;
+    }
+    @media (max-width: 900px) {
+      .grid, .resumo, .form-grid, .filtros {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topo">
+      <h1>Controle Mensal Financeiro</h1>
+      <p>Organize entradas e saídas por mês com salvamento automático no navegador.</p>
+    </div>
+
+    <div class="resumo">
+      <div class="box entradas">
+        <small>Total de Entradas</small>
+        <strong id="totalEntradas">R$ 0,00</strong>
+      </div>
+      <div class="box saidas">
+        <small>Total de Saídas</small>
+        <strong id="totalSaidas">R$ 0,00</strong>
+      </div>
+      <div class="box saldo">
+        <small>Saldo do Mês</small>
+        <strong id="saldoMes">R$ 0,00</strong>
+      </div>
+      <div class="box registros">
+        <small>Quantidade de Registros</small>
+        <strong id="qtdRegistros">0</strong>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Lançar movimentação</h2>
+        <form id="formLancamento">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="mes">Mês</label>
+              <input type="month" id="mes" required>
+            </div>
+            <div class="form-group">
+              <label for="data">Data</label>
+              <input type="date" id="data" required>
+            </div>
+            <div class="form-group">
+              <label for="tipo">Tipo</label>
+              <select id="tipo" required>
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="categoria">Categoria</label>
+              <select id="categoria" required>
+                <option>Salário</option>
+                <option>Extra</option>
+                <option>Alimentação</option>
+                <option>Mercado</option>
+                <option>Transporte</option>
+                <option>Cartão</option>
+                <option>Financiamento</option>
+                <option>Saúde</option>
+                <option>Educação</option>
+                <option>Casa</option>
+                <option>Lazer</option>
+                <option>Outros</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="descricao">Descrição</label>
+              <input type="text" id="descricao" placeholder="Ex.: Mercado do mês, conta de energia, salário..." required>
+            </div>
+            <div class="form-group">
+              <label for="valor">Valor (R$)</label>
+              <input type="number" id="valor" min="0" step="0.01" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label for="formaPagamento">Forma de pagamento</label>
+              <select id="formaPagamento">
+                <option>Pix</option>
+                <option>Débito</option>
+                <option>Crédito</option>
+                <option>Dinheiro</option>
+                <option>Transferência</option>
+                <option>Outro</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="observacao">Observação</label>
+              <textarea id="observacao" rows="3" placeholder="Observações opcionais"></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn-primary">Adicionar lançamento</button>
+            <button type="button" class="btn-secondary" id="btnLimparForm">Limpar campos</button>
+            <button type="button" class="btn-danger" id="btnApagarTudo">Apagar tudo</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Filtros do mês</h2>
+        <div class="filtros">
+          <div class="form-group">
+            <label for="filtroMes">Selecionar mês</label>
+            <input type="month" id="filtroMes">
+          </div>
+          <div class="form-group">
+            <label for="filtroTipo">Tipo</label>
+            <select id="filtroTipo">
+              <option value="todos">Todos</option>
+              <option value="entrada">Entradas</option>
+              <option value="saida">Saídas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filtroCategoria">Categoria</label>
+            <select id="filtroCategoria">
+              <option value="todas">Todas</option>
+              <option>Salário</option>
+              <option>Extra</option>
+              <option>Alimentação</option>
+              <option>Mercado</option>
+              <option>Transporte</option>
+              <option>Cartão</option>
+              <option>Financiamento</option>
+              <option>Saúde</option>
+              <option>Educação</option>
+              <option>Casa</option>
+              <option>Lazer</option>
+              <option>Outros</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-secondary" id="btnExportar">Exportar JSON</button>
+          <button type="button" class="btn-secondary" id="btnExemplo">Carregar exemplo</button>
+        </div>
+
+        <p class="rodape">Os dados ficam salvos automaticamente no navegador deste aparelho.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>Movimentações</h2>
+      <div class="tabela-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Mês</th>
+              <th>Tipo</th>
+              <th>Categoria</th>
+              <th>Descrição</th>
+              <th>Pagamento</th>
+              <th>Valor</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaLancamentos"></tbody>
+        </table>
+      </div>
+      <div id="mensagemVazia" class="vazio">Nenhum lançamento cadastrado neste filtro.</div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'controle_financeiro_mensal';
+    let lancamentos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    const form = document.getElementById('formLancamento');
+    const mesInput = document.getElementById('mes');
+    const dataInput = document.getElementById('data');
+    const tipoInput = document.getElementById('tipo');
+    const categoriaInput = document.getElementById('categoria');
+    const descricaoInput = document.getElementById('descricao');
+    const valorInput = document.getElementById('valor');
+    const formaPagamentoInput = document.getElementById('formaPagamento');
+    const observacaoInput = document.getElementById('observacao');
+
+    const filtroMes = document.getElementById('filtroMes');
+    const filtroTipo = document.getElementById('filtroTipo');
+    const filtroCategoria = document.getElementById('filtroCategoria');
+
+    const tabelaLancamentos = document.getElementById('tabelaLancamentos');
+    const mensagemVazia = document.getElementById('mensagemVazia');
+
+    const totalEntradas = document.getElementById('totalEntradas');
+    const totalSaidas = document.getElementById('totalSaidas');
+    const saldoMes = document.getElementById('saldoMes');
+    const qtdRegistros = document.getElementById('qtdRegistros');
+
+    function definirMesAtual() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      const valorMes = `${ano}-${mes}`;
+      const valorData = `${ano}-${mes}-${dia}`;
+      mesInput.value = valorMes;
+      filtroMes.value = valorMes;
+      dataInput.value = valorData;
+    }
+
+    function salvarDados() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(lancamentos));
+    }
+
+    function formatarMoeda(valor) {
+      return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function formatarData(data) {
+      const [ano, mes, dia] = data.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    function obterFiltrados() {
+      return lancamentos.filter(item => {
+        const okMes = !filtroMes.value || item.mes === filtroMes.value;
+        const okTipo = filtroTipo.value === 'todos' || item.tipo === filtroTipo.value;
+        const okCategoria = filtroCategoria.value === 'todas' || item.categoria === filtroCategoria.value;
+        return okMes && okTipo && okCategoria;
+      }).sort((a, b) => new Date(b.data) - new Date(a.data));
+    }
+
+    function atualizarResumo() {
+      const filtrados = obterFiltrados();
+      const entradas = filtrados.filter(i => i.tipo === 'entrada').reduce((soma, i) => soma + Number(i.valor), 0);
+      const saidas = filtrados.filter(i => i.tipo === 'saida').reduce((soma, i) => soma + Number(i.valor), 0);
+      totalEntradas.textContent = formatarMoeda(entradas);
+      totalSaidas.textContent = formatarMoeda(saidas);
+      saldoMes.textContent = formatarMoeda(entradas - saidas);
+      qtdRegistros.textContent = filtrados.length;
+    }
+
+    function renderizarTabela() {
+      const filtrados = obterFiltrados();
+      tabelaLancamentos.innerHTML = '';
+
+      if (!filtrados.length) {
+        mensagemVazia.style.display = 'block';
+      } else {
+        mensagemVazia.style.display = 'none';
+      }
+
+      filtrados.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${formatarData(item.data)}</td>
+          <td>${item.mes}</td>
+          <td><span class="${item.tipo === 'entrada' ? 'tipo-entrada' : 'tipo-saida'}">${item.tipo === 'entrada' ? 'Entrada' : 'Saída'}</span></td>
+          <td><span class="tag">${item.categoria}</span></td>
+          <td title="${item.observacao || ''}">${item.descricao}</td>
+          <td>${item.formaPagamento}</td>
+          <td>${formatarMoeda(item.valor)}</td>
+          <td><button class="btn-danger" onclick="removerLancamento('${item.id}')">Excluir</button></td>
+        `;
+        tabelaLancamentos.appendChild(tr);
+      });
+
+      atualizarResumo();
+    }
+
+    function limparFormulario() {
+      descricaoInput.value = '';
+      valorInput.value = '';
+      observacaoInput.value = '';
+      tipoInput.value = 'entrada';
+      categoriaInput.selectedIndex = 0;
+      formaPagamentoInput.selectedIndex = 0;
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const novo = {
+        id: crypto.randomUUID(),
+        mes: mesInput.value,
+        data: dataInput.value,
+        tipo: tipoInput.value,
+        categoria: categoriaInput.value,
+        descricao: descricaoInput.value.trim(),
+        valor: Number(valorInput.value),
+        formaPagamento: formaPagamentoInput.value,
+        observacao: observacaoInput.value.trim()
+      };
+
+      if (!novo.mes || !novo.data || !novo.descricao || !novo.valor) {
+        alert('Preencha os campos obrigatórios.');
+        return;
+      }
+
+      lancamentos.push(novo);
+      salvarDados();
+      renderizarTabela();
+      limparFormulario();
+    });
+
+    document.getElementById('btnLimparForm').addEventListener('click', limparFormulario);
+
+    document.getElementById('btnApagarTudo').addEventListener('click', function() {
+      const confirmar = confirm('Tem certeza que deseja apagar todos os lançamentos?');
+      if (!confirmar) return;
+      lancamentos = [];
+      salvarDados();
+      renderizarTabela();
+    });
+
+    document.getElementById('btnExportar').addEventListener('click', function() {
+      const blob = new Blob([JSON.stringify(lancamentos, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'controle-financeiro.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('btnExemplo').addEventListener('click', function() {
+      const mesAtual = filtroMes.value || mesInput.value;
+      const base = mesAtual + '-05';
+      const exemplo = [
+        { id: crypto.randomUUID(), mes: mesAtual, data: base, tipo: 'entrada', categoria: 'Salário', descricao: 'Salário do mês', valor: 3500, formaPagamento: 'Pix', observacao: '' },
+        { id: crypto.randomUUID(), mes: mesAtual, data: mesAtual + '-06', tipo: 'saida', categoria: 'Mercado', descricao: 'Compras do mercado', valor: 650.90, formaPagamento: 'Débito', observacao: '' },
+        { id: crypto.randomUUID(), mes: mesAtual, data: mesAtual + '-08', tipo: 'saida', categoria: 'Cartão', descricao: 'Fatura do cartão', valor: 980.40, formaPagamento: 'Crédito', observacao: '' },
+        { id: crypto.randomUUID(), mes: mesAtual, data: mesAtual + '-10', tipo: 'saida', categoria: 'Casa', descricao: 'Conta de energia', valor: 180.35, formaPagamento: 'Pix', observacao: '' },
+        { id: crypto.randomUUID(), mes: mesAtual, data: mesAtual + '-15', tipo: 'entrada', categoria: 'Extra', descricao: 'Renda extra', valor: 400, formaPagamento: 'Transferência', observacao: '' }
+      ];
+      lancamentos = [...lancamentos, ...exemplo];
+      salvarDados();
+      renderizarTabela();
+    });
+
+    [filtroMes, filtroTipo, filtroCategoria].forEach(filtro => {
+      filtro.addEventListener('input', renderizarTabela);
+      filtro.addEventListener('change', renderizarTabela);
+    });
+
+    function removerLancamento(id) {
+      lancamentos = lancamentos.filter(item => item.id !== id);
+      salvarDados();
+      renderizarTabela();
+    }
+
+    window.removerLancamento = removerLancamento;
+
+    definirMesAtual();
+    renderizarTabela();
+  </script>
+  <script>
+    // BLOQUEIOS DE SEGURANÇA
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === "F12") e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && e.key === "I") e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && e.key === "J") e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && e.key === "C") e.preventDefault();
+      if (e.ctrlKey && e.key === "u") e.preventDefault();
+    });
+  </script>
+</body>
+</html>

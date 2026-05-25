@@ -1,0 +1,45 @@
+Levantamento de requisitos
+
+
+Ao longo da etapa de levantamento de requisitos, o profissional de dados entrevista usuários para entender sobre o funcionamento do negócio e documentar os requisitos de dados de maneira completa e detalhada.
+
+ 
+
+Imagine que você foi convidado a participar de um projeto que objetiva construir um banco de dados para controlar inscrições de alunos em uma escola de treinamentos na área de Tecnologia de Informação.
+
+ 
+
+Após realizar entrevistas junto aos colaboradores, você identifica os seguintes requisitos de dados da escola:
+
+ 
+
+A escola planeja diversos cursos. Cada um deles possui nome, descrição, carga horária e é identificado por um código único.
+ 
+A escola armazena o nome, a data de nascimento, o CPF, o e-mail e um telefone de cada cliente, que é identificado por um código único.
+ 
+Quando um cliente faz inscrição em determinado curso, é necessário armazenar a data. Caso seja cancelada a inscrição, é preciso saber quando ocorreu esse evento. Um cliente pode fazer diversos cursos.
+
+Projeto conceitual
+
+Com os requisitos de dados em mãos, usaremos um modelo de dados gráfico para formalizar entendimento mais preciso a respeito dos requisitos de dados. Essa atividade ocorrerá na próxima fase do projeto de banco de dados: projeto conceitual.
+
+ 
+
+O projeto ou esquema conceitual envolve construir um modelo de dados de alto nível a partir dos requisitos de dados que contêm os principais objetos e seus relacionamentos, mapeados na etapa de levantamento de requisitos. Nesta etapa, não há preocupação em saber detalhes sobre como os dados devem ser armazenados.
+
+ 
+
+O projeto conceitual usa um diagrama gráfico, conhecido por Diagrama de Entidade e Relacionamento (DER), que possui três elementos essenciais:
+
+
+Entidades
+
+É representada por um retângulo com o seu nome.
+
+Relacionamentos
+
+É representada por um losango ligado por linhas aos retângulos das entidades participantes do relacionamento.
+
+Atributos
+
+São expressos graficamente ligados à entidade ou ao relacionamento ao qual fazem parte.

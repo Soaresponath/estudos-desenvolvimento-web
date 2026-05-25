@@ -1,0 +1,19 @@
+Preparação
+
+
+Este módulo terá caráter prático. Logo, todos os conceitos vistos nos módulos anteriores serão utilizados na confecção de um Formulário HTML, que enviará dados para um script PHP que os inserirá em um SGBD, nesse caso, no PostgreSQL, e de uma página para listagem desses mesmos dados. Cada etapa desse processo será apresentada em detalhes, desde a criação das tabelas no SGBD, passando pela criação do formulário HTML e chegando nos scripts PHP que farão a conexão e inserção dos dados através das classes PDO e PDOStatement.
+
+
+Motivação
+
+
+Deverá ser criado um formulário para armazenar os dados de clientes, contendo o seu nome completo (obrigatório), o seu CPF (obrigatório; apenas os números), um endereço de e-mail válido (obrigatório) e sua data de nascimento (obrigatório; dia, mês e ano). Além disso, deverá ser criada uma listagem para exibição dos clientes cadastrados.
+
+
+Esquematizando o banco de dados
+
+
+Os dados dos clientes deverão ser armazenados em uma tabela. Tal tabela deverá possuir um campo identificador, autoincremental e único. O formulário HTML deverá ser escrito utilizando a HTML5. Além disso, os campos deverão ser validados de acordo com seu tipo (quando possível), tamanho e obrigatoriedade de preenchimento. Poderá ser utilizado um framework CSS, como o Bootstrap, para uma melhor apresentação do cadastro.
+
+
+O código do formulário poderá ser visto ao final deste módulo, junto aos demais exemplos de código. Tal código poderá ser usado como template para desenvolvimentos similares.

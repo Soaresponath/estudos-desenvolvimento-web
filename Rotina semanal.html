@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minha Rotina Semanal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f6f8ff, #eefaf5);
+      color: #24323d;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .topo {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .topo h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      color: #184f63;
+    }
+
+    .topo p {
+      color: #5c6b75;
+      margin-bottom: 18px;
+    }
+
+    .painel-acoes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .card-acao {
+      background: #f8fbff;
+      border: 1px solid #dde9f2;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .card-acao label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #31566a;
+    }
+
+    .card-acao input,
+    .card-acao select,
+    .card-acao textarea,
+    .formulario input,
+    .formulario select,
+    .formulario textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cdd9e1;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .card-acao textarea,
+    .formulario textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .botoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .btn-principal {
+      background: #1d7b72;
+      color: white;
+    }
+
+    .btn-secundario {
+      background: #2d5f88;
+      color: white;
+    }
+
+    .btn-alerta {
+      background: #d95d5d;
+      color: white;
+    }
+
+    .resumo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+
+    .resumo-card {
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+
+    .resumo-card h3 {
+      color: #537180;
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .resumo-card p {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #184f63;
+    }
+
+    .formulario {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .formulario h2 {
+      margin-bottom: 16px;
+      color: #184f63;
+    }
+
+    .grid-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .quadro {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(230px, 1fr));
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .dia {
+      background: white;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      min-height: 420px;
+    }
+
+    .dia h3 {
+      font-size: 1.1rem;
+      color: #184f63;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .lista {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tarefa {
+      background: #f9fcff;
+      border: 1px solid #dde8ee;
+      border-left: 6px solid #2d5f88;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .tarefa.concluida {
+      opacity: 0.7;
+      border-left-color: #1d7b72;
+      background: #f1fbf5;
+    }
+
+    .tarefa.alta { border-left-color: #d95d5d; }
+    .tarefa.media { border-left-color: #e6a23c; }
+    .tarefa.baixa { border-left-color: #4c9aff; }
+
+    .tarefa-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .tarefa-titulo {
+      font-weight: bold;
+      color: #24323d;
+      font-size: 1rem;
+    }
+
+    .tarefa.concluida .tarefa-titulo {
+      text-decoration: line-through;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      background: #e8f2f8;
+      color: #31566a;
+      padding: 4px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .meta {
+      font-size: 0.86rem;
+      color: #596870;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .descricao {
+      font-size: 0.92rem;
+      color: #42515a;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+    }
+
+    .acoes-tarefa {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .acoes-tarefa button {
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      border-radius: 10px;
+    }
+
+    .vazio {
+      text-align: center;
+      color: #7a8992;
+      font-size: 0.92rem;
+      margin-top: 20px;
+    }
+
+    .rodape {
+      text-align: center;
+      margin-top: 22px;
+      color: #61707a;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 900px) {
+      .quadro {
+        grid-template-columns: 1fr;
+      }
+      .dia {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topo">
+      <h1>Minha Rotina Semanal</h1>
+      <p>Organize sua semana, acompanhe tarefas e salve tudo automaticamente no navegador.</p>
+
+      <div class="painel-acoes">
+        <div class="card-acao">
+          <label for="tituloSemana">Título da semana</label>
+          <input type="text" id="tituloSemana" placeholder="Ex: Rotina da Semana" />
+        </div>
+
+        <div class="card-acao">
+          <label for="dataInicio">Data de início</label>
+          <input type="date" id="dataInicio" />
+        </div>
+
+        <div class="card-acao">
+          <label for="observacoesGerais">Observações gerais</label>
+          <textarea id="observacoesGerais" placeholder="Anote metas, compromissos importantes e lembretes."></textarea>
+        </div>
+      </div>
+
+      <div class="botoes">
+        <button class="btn-principal" onclick="salvarCabecalho()">Salvar informações da semana</button>
+        <button class="btn-secundario" onclick="exportarRotina()">Exportar backup</button>
+        <button class="btn-secundario" onclick="document.getElementById('importarArquivo').click()">Importar backup</button>
+        <button class="btn-alerta" onclick="limparTudo()">Apagar tudo</button>
+        <input type="file" id="importarArquivo" accept="application/json" style="display:none" />
+      </div>
+    </div>
+
+    <div class="resumo">
+      <div class="resumo-card">
+        <h3>Total de tarefas</h3>
+        <p id="totalTarefas">0</p>
+      </div>
+      <div class="resumo-card">
+        <h3>Concluídas</h3>
+        <p id="tarefasConcluidas">0</p>
+      </div>
+      <div class="resumo-card">
+        <h3>Pendentes</h3>
+        <p id="tarefasPendentes">0</p>
+      </div>
+      <div class="resumo-card">
+        <h3>Progresso</h3>
+        <p id="progresso">0%</p>
+      </div>
+    </div>
+
+    <div class="formulario">
+      <h2>Adicionar tarefa à rotina</h2>
+      <div class="grid-form">
+        <div>
+          <label>Título da tarefa</label>
+          <input type="text" id="titulo" placeholder="Ex: Planejar aula, mercado, reunião..." />
+        </div>
+        <div>
+          <label>Dia da semana</label>
+          <select id="dia">
+            <option value="Segunda-feira">Segunda-feira</option>
+            <option value="Terça-feira">Terça-feira</option>
+            <option value="Quarta-feira">Quarta-feira</option>
+            <option value="Quinta-feira">Quinta-feira</option>
+            <option value="Sexta-feira">Sexta-feira</option>
+            <option value="Sábado">Sábado</option>
+            <option value="Domingo">Domingo</option>
+          </select>
+        </div>
+        <div>
+          <label>Horário</label>
+          <input type="time" id="horario" />
+        </div>
+        <div>
+          <label>Categoria</label>
+          <select id="categoria">
+            <option value="Trabalho">Trabalho</option>
+            <option value="Estudo">Estudo</option>
+            <option value="Casa">Casa</option>
+            <option value="Família">Família</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Igreja">Igreja</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+        <div>
+          <label>Prioridade</label>
+          <select id="prioridade">
+            <option value="alta">Alta</option>
+            <option value="media">Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <label>Descrição / observações</label>
+        <textarea id="descricao" placeholder="Descreva detalhes da tarefa, local, materiais, metas..." ></textarea>
+      </div>
+
+      <div class="botoes">
+        <button class="btn-principal" onclick="adicionarTarefa()">Adicionar tarefa</button>
+      </div>
+    </div>
+
+    <div class="quadro" id="quadroSemanal"></div>
+
+    <div class="rodape">
+      Seus dados ficam salvos automaticamente neste navegador.
+    </div>
+  </div>
+
+  <script>
+    const diasSemana = [
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
+      'Sábado',
+      'Domingo'
+    ];
+
+    let tarefas = JSON.parse(localStorage.getItem('rotinaSemanalTarefas')) || [];
+    let cabecalho = JSON.parse(localStorage.getItem('rotinaSemanalCabecalho')) || {
+      tituloSemana: '',
+      dataInicio: '',
+      observacoesGerais: ''
+    };
+
+    function carregarCabecalho() {
+      document.getElementById('tituloSemana').value = cabecalho.tituloSemana || '';
+      document.getElementById('dataInicio').value = cabecalho.dataInicio || '';
+      document.getElementById('observacoesGerais').value = cabecalho.observacoesGerais || '';
+    }
+
+    function salvarCabecalho() {
+      cabecalho = {
+        tituloSemana: document.getElementById('tituloSemana').value,
+        dataInicio: document.getElementById('dataInicio').value,
+        observacoesGerais: document.getElementById('observacoesGerais').value
+      };
+      localStorage.setItem('rotinaSemanalCabecalho', JSON.stringify(cabecalho));
+      alert('Informações da semana salvas com sucesso.');
+    }
+
+    function adicionarTarefa() {
+      const titulo = document.getElementById('titulo').value.trim();
+      const dia = document.getElementById('dia').value;
+      const horario = document.getElementById('horario').value;
+      const categoria = document.getElementById('categoria').value;
+      const prioridade = document.getElementById('prioridade').value;
+      const descricao = document.getElementById('descricao').value.trim();
+
+      if (!titulo) {
+        alert('Digite o título da tarefa.');
+        return;
+      }
+
+      const novaTarefa = {
+        id: Date.now(),
+        titulo,
+        dia,
+        horario,
+        categoria,
+        prioridade,
+        descricao,
+        concluida: false
+      };
+
+      tarefas.push(novaTarefa);
+      salvarTarefas();
+      limparFormulario();
+      renderizar();
+    }
+
+    function limparFormulario() {
+      document.getElementById('titulo').value = '';
+      document.getElementById('horario').value = '';
+      document.getElementById('descricao').value = '';
+      document.getElementById('categoria').value = 'Trabalho';
+      document.getElementById('prioridade').value = 'alta';
+      document.getElementById('dia').value = 'Segunda-feira';
+    }
+
+    function salvarTarefas() {
+      localStorage.setItem('rotinaSemanalTarefas', JSON.stringify(tarefas));
+    }
+
+    function alternarConclusao(id) {
+      tarefas = tarefas.map(tarefa => {
+        if (tarefa.id === id) {
+          return { ...tarefa, concluida: !tarefa.concluida };
+        }
+        return tarefa;
+      });
+      salvarTarefas();
+      renderizar();
+    }
+
+    function excluirTarefa(id) {
+      if (!confirm('Deseja excluir esta tarefa?')) return;
+      tarefas = tarefas.filter(tarefa => tarefa.id !== id);
+      salvarTarefas();
+      renderizar();
+    }
+
+    function editarTarefa(id) {
+      const tarefa = tarefas.find(t => t.id === id);
+      if (!tarefa) return;
+
+      const novoTitulo = prompt('Editar título da tarefa:', tarefa.titulo);
+      if (novoTitulo === null) return;
+
+      const novaDescricao = prompt('Editar descrição da tarefa:', tarefa.descricao);
+      if (novaDescricao === null) return;
+
+      tarefas = tarefas.map(t => {
+        if (t.id === id) {
+          return {
+            ...t,
+            titulo: novoTitulo.trim() || t.titulo,
+            descricao: novaDescricao.trim()
+          };
+        }
+        return t;
+      });
+
+      salvarTarefas();
+      renderizar();
+    }
+
+    function atualizarResumo() {
+      const total = tarefas.length;
+      const concluidas = tarefas.filter(t => t.concluida).length;
+      const pendentes = total - concluidas;
+      const progresso = total === 0 ? 0 : Math.round((concluidas / total) * 100);
+
+      document.getElementById('totalTarefas').textContent = total;
+      document.getElementById('tarefasConcluidas').textContent = concluidas;
+      document.getElementById('tarefasPendentes').textContent = pendentes;
+      document.getElementById('progresso').textContent = progresso + '%';
+    }
+
+    function renderizar() {
+      const quadro = document.getElementById('quadroSemanal');
+      quadro.innerHTML = '';
+
+      diasSemana.forEach(dia => {
+        const coluna = document.createElement('div');
+        coluna.className = 'dia';
+
+        const titulo = document.createElement('h3');
+        titulo.textContent = dia;
+        coluna.appendChild(titulo);
+
+        const lista = document.createElement('div');
+        lista.className = 'lista';
+
+        const tarefasDoDia = tarefas
+          .filter(t => t.dia === dia)
+          .sort((a, b) => (a.horario || '').localeCompare(b.horario || ''));
+
+        if (tarefasDoDia.length === 0) {
+          const vazio = document.createElement('p');
+          vazio.className = 'vazio';
+          vazio.textContent = 'Nenhuma tarefa cadastrada.';
+          lista.appendChild(vazio);
+        } else {
+          tarefasDoDia.forEach(tarefa => {
+            const card = document.createElement('div');
+            card.className = `tarefa ${tarefa.prioridade} ${tarefa.concluida ? 'concluida' : ''}`;
+
+            card.innerHTML = `
+              <div class="tarefa-topo">
+                <div class="tarefa-titulo">${tarefa.titulo}</div>
+                <span class="tag">${tarefa.categoria}</span>
+              </div>
+              <div class="meta">⏰ ${tarefa.horario || 'Sem horário'} | Prioridade: ${tarefa.prioridade}</div>
+              <div class="descricao">${tarefa.descricao || 'Sem descrição.'}</div>
+              <div class="acoes-tarefa">
+                <button class="btn-principal" onclick="alternarConclusao(${tarefa.id})">${tarefa.concluida ? 'Desmarcar' : 'Concluir'}</button>
+                <button class="btn-secundario" onclick="editarTarefa(${tarefa.id})">Editar</button>
+                <button class="btn-alerta" onclick="excluirTarefa(${tarefa.id})">Excluir</button>
+              </div>
+            `;
+
+            lista.appendChild(card);
+          });
+        }
+
+        coluna.appendChild(lista);
+        quadro.appendChild(coluna);
+      });
+
+      atualizarResumo();
+    }
+
+    function exportarRotina() {
+      const dados = {
+        cabecalho,
+        tarefas
+      };
+
+      const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'minha-rotina-semanal.json';
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('importarArquivo').addEventListener('change', function(event) {
+      const arquivo = event.target.files[0];
+      if (!arquivo) return;
+
+      const leitor = new FileReader();
+      leitor.onload = function(e) {
+        try {
+          const dados = JSON.parse(e.target.result);
+          cabecalho = dados.cabecalho || { tituloSemana: '', dataInicio: '', observacoesGerais: '' };
+          tarefas = dados.tarefas || [];
+          localStorage.setItem('rotinaSemanalCabecalho', JSON.stringify(cabecalho));
+          localStorage.setItem('rotinaSemanalTarefas', JSON.stringify(tarefas));
+          carregarCabecalho();
+          renderizar();
+          alert('Backup importado com sucesso.');
+        } catch {
+          alert('Arquivo inválido.');
+        }
+      };
+      leitor.readAsText(arquivo);
+    });
+
+    function limparTudo() {
+      if (!confirm('Tem certeza que deseja apagar todas as tarefas e informações da semana?')) return;
+      tarefas = [];
+      cabecalho = { tituloSemana: '', dataInicio: '', observacoesGerais: '' };
+      localStorage.removeItem('rotinaSemanalTarefas');
+      localStorage.removeItem('rotinaSemanalCabecalho');
+      carregarCabecalho();
+      renderizar();
+    }
+
+    document.getElementById('tituloSemana').addEventListener('input', salvarCabecalho);
+    document.getElementById('dataInicio').addEventListener('input', salvarCabecalho);
+    document.getElementById('observacoesGerais').addEventListener('input', salvarCabecalho);
+
+    carregarCabecalho();
+    renderizar();
+  </script>
+</body>
+</html>

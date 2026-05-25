@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Organizador Estilo Trello</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #cfe8ff, #eaf4ff);
+      color: #1f2d3d;
+      min-height: 100vh;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 18px 22px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      color: #516173;
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: #2f80ed;
+      color: white;
+    }
+
+    .btn-primary:hover { background: #1f6fd6; }
+
+    .btn-light {
+      background: white;
+      color: #2c3e50;
+      border: 1px solid #d9e4f2;
+    }
+
+    .btn-light:hover { background: #f5f9ff; }
+
+    .board-wrapper {
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    .board {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      min-height: calc(100vh - 150px);
+    }
+
+    .column {
+      width: 320px;
+      min-width: 320px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 190px);
+    }
+
+    .column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .column-title {
+      font-size: 18px;
+      font-weight: bold;
+      outline: none;
+      border-radius: 8px;
+      padding: 4px 6px;
+      flex: 1;
+    }
+
+    .column-title:focus {
+      background: #eef6ff;
+    }
+
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      padding-right: 4px;
+      min-height: 60px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      border-left: 5px solid #2f80ed;
+      cursor: grab;
+    }
+
+    .card.dragging {
+      opacity: 0.5;
+      transform: rotate(1deg);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 14px;
+      color: #516173;
+      white-space: pre-wrap;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mini-btn {
+      background: #eef4fb;
+      border: none;
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .mini-btn:hover { background: #ddeafb; }
+
+    .add-card-area {
+      margin-top: 12px;
+    }
+
+    .add-card-area textarea,
+    .add-card-area input,
+    .modal textarea,
+    .modal input {
+      width: 100%;
+      border: 1px solid #d7e3f2;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+      resize: vertical;
+      background: #fbfdff;
+    }
+
+    .add-card-area textarea,
+    .modal textarea {
+      min-height: 80px;
+    }
+
+    .column-footer {
+      margin-top: 10px;
+    }
+
+    .add-column {
+      min-width: 280px;
+      background: rgba(255,255,255,0.6);
+      border: 2px dashed #a9c8ea;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .drop-hover {
+      outline: 2px dashed #2f80ed;
+      outline-offset: 4px;
+      border-radius: 12px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 520px;
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .empty-tip {
+      font-size: 13px;
+      color: #6d7a88;
+      padding: 8px;
+      text-align: center;
+      border: 1px dashed #d9e4f2;
+      border-radius: 12px;
+      background: #f8fbff;
+    }
+
+    @media (max-width: 700px) {
+      header h1 { font-size: 22px; }
+      .column, .add-column { min-width: 88vw; width: 88vw; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Meu Organizador Estilo Trello</h1>
+    <p>Quadro simples para organizar tarefas, projetos, estudos e rotina.</p>
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="addColumn()">+ Nova coluna</button>
+      <button class="btn btn-light" onclick="resetBoard()">Restaurar modelo</button>
+    </div>
+  </header>
+
+  <main class="board-wrapper">
+    <section class="board" id="board"></section>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h2>Editar cartão</h2>
+      <input type="text" id="editTitle" placeholder="Título do cartão" />
+      <textarea id="editDescription" placeholder="Descrição"></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-light" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveEdit()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const defaultBoard = [
+      {
+        id: crypto.randomUUID(),
+        title: 'A Fazer',
+        cards: [
+          { id: crypto.randomUUID(), title: 'Planejar semana', description: 'Organizar atividades e compromissos da semana.' },
+          { id: crypto.randomUUID(), title: 'Separar materiais', description: 'Livros, caderno, documentos e lembretes.' }
+        ]
+      },
+      {
+        id: crypto.randomUUID(),
+        title: 'Em Andamento',
+        cards: [
+          { id: crypto.randomUUID(), title: 'Estudo de inglês', description: 'Revisar vocabulário e praticar leitura.' }
+        ]
+      },
+      {
+        id: crypto.randomUUID(),
+        title: 'Concluído',
+        cards: [
+          { id: crypto.randomUUID(), title: 'Organizar metas', description: 'Quadro inicial criado com sucesso.' }
+        ]
+      }
+    ];
+
+    let boardData = JSON.parse(localStorage.getItem('trelloCloneRose')) || defaultBoard;
+    let currentEdit = { columnId: null, cardId: null };
+
+    function saveBoard() {
+      localStorage.setItem('trelloCloneRose', JSON.stringify(boardData));
+    }
+
+    function renderBoard() {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+
+      boardData.forEach(column => {
+        const columnEl = document.createElement('div');
+        columnEl.className = 'column';
+        columnEl.dataset.columnId = column.id;
+
+        const header = document.createElement('div');
+        header.className = 'column-header';
+
+        const title = document.createElement('div');
+        title.className = 'column-title';
+        title.contentEditable = 'true';
+        title.textContent = column.title;
+        title.addEventListener('blur', () => {
+          column.title = title.textContent.trim() || 'Sem título';
+          saveBoard();
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'mini-btn';
+        deleteBtn.textContent = 'Excluir';
+        deleteBtn.onclick = () => removeColumn(column.id);
+
+        header.appendChild(title);
+        header.appendChild(deleteBtn);
+
+        const cardList = document.createElement('div');
+        cardList.className = 'card-list';
+        cardList.dataset.columnId = column.id;
+        setupDropZone(cardList);
+
+        if (!column.cards.length) {
+          const empty = document.createElement('div');
+          empty.className = 'empty-tip';
+          empty.textContent = 'Arraste cartões para cá';
+          cardList.appendChild(empty);
+        }
+
+        column.cards.forEach(card => {
+          const cardEl = document.createElement('div');
+          cardEl.className = 'card';
+          cardEl.draggable = true;
+          cardEl.dataset.cardId = card.id;
+          cardEl.dataset.columnId = column.id;
+
+          cardEl.addEventListener('dragstart', onDragStart);
+          cardEl.addEventListener('dragend', onDragEnd);
+
+          cardEl.innerHTML = `
+            <h3>${escapeHtml(card.title)}</h3>
+            <p>${escapeHtml(card.description || '')}</p>
+            <div class="card-actions">
+              <button class="mini-btn" onclick="openEdit('${column.id}', '${card.id}')">Editar</button>
+              <button class="mini-btn" onclick="removeCard('${column.id}', '${card.id}')">Excluir</button>
+            </div>
+          `;
+
+          cardList.appendChild(cardEl);
+        });
+
+        const addCardArea = document.createElement('div');
+        addCardArea.className = 'add-card-area';
+        addCardArea.innerHTML = `
+          <input type="text" placeholder="Título do cartão" id="title-${column.id}">
+          <textarea placeholder="Descrição do cartão" id="desc-${column.id}"></textarea>
+          <div class="column-footer">
+            <button class="btn btn-primary" onclick="addCard('${column.id}')">+ Adicionar cartão</button>
+          </div>
+        `;
+
+        columnEl.appendChild(header);
+        columnEl.appendChild(cardList);
+        columnEl.appendChild(addCardArea);
+        board.appendChild(columnEl);
+      });
+
+      const addColumnBox = document.createElement('div');
+      addColumnBox.className = 'add-column';
+      addColumnBox.innerHTML = `
+        <h3>Nova coluna</h3>
+        <input type="text" id="newColumnTitle" placeholder="Ex: Ideias, Urgente, Leituras">
+        <button class="btn btn-primary" onclick="addColumnFromInput()">Criar coluna</button>
+      `;
+      board.appendChild(addColumnBox);
+    }
+
+    function addColumn() {
+      boardData.push({
+        id: crypto.randomUUID(),
+        title: 'Nova coluna',
+        cards: []
+      });
+      saveBoard();
+      renderBoard();
+    }
+
+    function addColumnFromInput() {
+      const input = document.getElementById('newColumnTitle');
+      const value = input.value.trim();
+      if (!value) return alert('Digite o nome da coluna.');
+      boardData.push({ id: crypto.randomUUID(), title: value, cards: [] });
+      input.value = '';
+      saveBoard();
+      renderBoard();
+    }
+
+    function removeColumn(columnId) {
+      if (!confirm('Deseja excluir esta coluna e todos os cartões?')) return;
+      boardData = boardData.filter(col => col.id !== columnId);
+      saveBoard();
+      renderBoard();
+    }
+
+    function addCard(columnId) {
+      const titleInput = document.getElementById(`title-${columnId}`);
+      const descInput = document.getElementById(`desc-${columnId}`);
+      const title = titleInput.value.trim();
+      const description = descInput.value.trim();
+
+      if (!title) return alert('Digite o título do cartão.');
+
+      const column = boardData.find(col => col.id === columnId);
+      column.cards.push({
+        id: crypto.randomUUID(),
+        title,
+        description
+      });
+
+      titleInput.value = '';
+      descInput.value = '';
+      saveBoard();
+      renderBoard();
+    }
+
+    function removeCard(columnId, cardId) {
+      const column = boardData.find(col => col.id === columnId);
+      column.cards = column.cards.filter(card => card.id !== cardId);
+      saveBoard();
+      renderBoard();
+    }
+
+    function openEdit(columnId, cardId) {
+      currentEdit = { columnId, cardId };
+      const column = boardData.find(col => col.id === columnId);
+      const card = column.cards.find(c => c.id === cardId);
+      document.getElementById('editTitle').value = card.title;
+      document.getElementById('editDescription').value = card.description || '';
+      document.getElementById('modalBackdrop').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('show');
+    }
+
+    function saveEdit() {
+      const { columnId, cardId } = currentEdit;
+      const column = boardData.find(col => col.id === columnId);
+      const card = column.cards.find(c => c.id === cardId);
+      card.title = document.getElementById('editTitle').value.trim() || 'Sem título';
+      card.description = document.getElementById('editDescription').value.trim();
+      saveBoard();
+      renderBoard();
+      closeModal();
+    }
+
+    function resetBoard() {
+      if (!confirm('Deseja restaurar o quadro inicial?')) return;
+      boardData = JSON.parse(JSON.stringify(defaultBoard));
+      saveBoard();
+      renderBoard();
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;')
+        .replaceAll('\n', '<br>');
+    }
+
+    let draggedCard = null;
+
+    function onDragStart(e) {
+      draggedCard = {
+        cardId: e.currentTarget.dataset.cardId,
+        fromColumnId: e.currentTarget.dataset.columnId
+      };
+      e.currentTarget.classList.add('dragging');
+    }
+
+    function onDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      document.querySelectorAll('.drop-hover').forEach(el => el.classList.remove('drop-hover'));
+    }
+
+    function setupDropZone(zone) {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('drop-hover');
+      });
+
+      zone.addEventListener('dragleave', () => {
+        zone.classList.remove('drop-hover');
+      });
+
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('drop-hover');
+
+        if (!draggedCard) return;
+
+        const targetColumnId = zone.dataset.columnId;
+        if (!targetColumnId) return;
+
+        const fromColumn = boardData.find(col => col.id === draggedCard.fromColumnId);
+        const targetColumn = boardData.find(col => col.id === targetColumnId);
+        const cardIndex = fromColumn.cards.findIndex(card => card.id === draggedCard.cardId);
+        if (cardIndex === -1) return;
+
+        const [card] = fromColumn.cards.splice(cardIndex, 1);
+        targetColumn.cards.push(card);
+
+        saveBoard();
+        renderBoard();
+      });
+    }
+
+    document.getElementById('modalBackdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'modalBackdrop') closeModal();
+    });
+
+    renderBoard();
+  </script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['tasks'])) {
+    $_SESSION['tasks'] = [];
+}
+
+function sanitize_text(string $value): string {
+    return trim(filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+
+    if ($action === 'add') {
+        $title = sanitize_text($_POST['title'] ?? '');
+        $time = sanitize_text($_POST['time'] ?? '');
+        $day = sanitize_text($_POST['day'] ?? '');
+        $priority = sanitize_text($_POST['priority'] ?? 'Média');
+        $category = sanitize_text($_POST['category'] ?? 'Geral');
+
+        if ($title !== '') {
+            $_SESSION['tasks'][] = [
+                'id' => uniqid('task_', true),
+                'title' => $title,
+                'time' => $time,
+                'day' => $day,
+                'priority' => $priority,
+                'category' => $category,
+                'done' => false,
+            ];
+        }
+    }
+
+    if ($action === 'toggle') {
+        $id = $_POST['id'] ?? '';
+        foreach ($_SESSION['tasks'] as &$task) {
+            if ($task['id'] === $id) {
+                $task['done'] = !$task['done'];
+                break;
+            }
+        }
+        unset($task);
+    }
+
+    if ($action === 'delete') {
+        $id = $_POST['id'] ?? '';
+        $_SESSION['tasks'] = array_values(array_filter($_SESSION['tasks'], function ($task) use ($id) {
+            return $task['id'] !== $id;
+        }));
+    }
+
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+$tasks = $_SESSION['tasks'];
+$total = count($tasks);
+$done = count(array_filter($tasks, fn($task) => $task['done']));
+$pending = $total - $done;
+$progress = $total > 0 ? round(($done / $total) * 100) : 0;
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizador de Rotina</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            color: #475569;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .card strong {
+            font-size: 1.8rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 24px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .panel h2 {
+            margin-bottom: 18px;
+            font-size: 1.3rem;
+        }
+
+        form {
+            display: grid;
+            gap: 14px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .task-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .task-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: center;
+            background: #fcfcff;
+        }
+
+        .task-left h3 {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .task-left p {
+            color: #475569;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .done h3,
+        .done p {
+            text-decoration: line-through;
+            opacity: 0.65;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .priority-alta { background: #fee2e2; color: #991b1b; }
+        .priority-média { background: #fef3c7; color: #92400e; }
+        .priority-baixa { background: #dcfce7; color: #166534; }
+
+        .task-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 130px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 32px 12px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 18px;
+        }
+
+        .progress-wrap {
+            margin-top: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4f46e5;
+            width: <?php echo $progress; ?>%;
+            transition: width 0.3s ease;
+        }
+
+        .search-box {
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .task-actions {
+                width: 100%;
+                flex-direction: row;
+            }
+
+            .task-actions form {
+                width: 100%;
+            }
+
+            .task-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <h1>Organizador de Rotina</h1>
+            <p>Organize seu dia, acompanhe tarefas e mantenha sua rotina mais leve e produtiva.</p>
+
+            <div class="stats">
+                <div class="card">
+                    <h3>Total de tarefas</h3>
+                    <strong><?php echo $total; ?></strong>
+                </div>
+                <div class="card">
+                    <h3>Concluídas</h3>
+                    <strong><?php echo $done; ?></strong>
+                </div>
+                <div class="card">
+                    <h3>Pendentes</h3>
+                    <strong><?php echo $pending; ?></strong>
+                </div>
+                <div class="card">
+                    <h3>Progresso</h3>
+                    <strong><?php echo $progress; ?>%</strong>
+                    <div class="progress-wrap">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="panel">
+                <h2>Nova tarefa</h2>
+                <form method="POST">
+                    <input type="hidden" name="action" value="add">
+
+                    <div>
+                        <label for="title">Título da tarefa</label>
+                        <input type="text" id="title" name="title" placeholder="Ex.: Planejar aula de matemática" required>
+                    </div>
+
+                    <div>
+                        <label for="time">Horário</label>
+                        <input type="time" id="time" name="time">
+                    </div>
+
+                    <div>
+                        <label for="day">Dia da semana</label>
+                        <select id="day" name="day">
+                            <option>Segunda-feira</option>
+                            <option>Terça-feira</option>
+                            <option>Quarta-feira</option>
+                            <option>Quinta-feira</option>
+                            <option>Sexta-feira</option>
+                            <option>Sábado</option>
+                            <option>Domingo</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="category">Categoria</label>
+                        <select id="category" name="category">
+                            <option>Trabalho</option>
+                            <option>Estudos</option>
+                            <option>Casa</option>
+                            <option>Família</option>
+                            <option>Saúde</option>
+                            <option>Geral</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="priority">Prioridade</label>
+                        <select id="priority" name="priority">
+                            <option>Alta</option>
+                            <option selected>Média</option>
+                            <option>Baixa</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Adicionar tarefa</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>Minha rotina</h2>
+
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Pesquisar tarefa por nome, dia ou categoria...">
+                </div>
+
+                <div class="task-list" id="taskList">
+                    <?php if (empty($tasks)): ?>
+                        <div class="empty">
+                            Nenhuma tarefa cadastrada ainda. Adicione sua primeira atividade para organizar sua rotina.
+                        </div>
+                    <?php else: ?>
+                        <?php foreach ($tasks as $task): ?>
+                            <?php
+                                $priorityClass = 'priority-' . mb_strtolower($task['priority']);
+                            ?>
+                            <div class="task-item searchable <?php echo $task['done'] ? 'done' : ''; ?>"
+                                 data-search="<?php echo strtolower($task['title'] . ' ' . $task['day'] . ' ' . $task['category'] . ' ' . $task['priority']); ?>">
+                                <div class="task-left">
+                                    <h3><?php echo htmlspecialchars($task['title']); ?></h3>
+                                    <p>
+                                        <strong>Horário:</strong> <?php echo $task['time'] !== '' ? htmlspecialchars($task['time']) : 'Não definido'; ?>
+                                        <br>
+                                        <strong>Dia:</strong> <?php echo htmlspecialchars($task['day']); ?>
+                                    </p>
+                                    <div class="badges">
+                                        <span class="badge"><?php echo htmlspecialchars($task['category']); ?></span>
+                                        <span class="badge <?php echo $priorityClass; ?>"><?php echo htmlspecialchars($task['priority']); ?></span>
+                                        <span class="badge"><?php echo $task['done'] ? 'Concluída' : 'Pendente'; ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="task-actions">
+                                    <form method="POST">
+                                        <input type="hidden" name="action" value="toggle">
+                                        <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id']); ?>">
+                                        <button type="submit" class="btn btn-secondary">
+                                            <?php echo $task['done'] ? 'Reabrir' : 'Concluir'; ?>
+                                        </button>
+                                    </form>
+
+                                    <form method="POST" onsubmit="return confirm('Deseja realmente excluir esta tarefa?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id']); ?>">
+                                        <button type="submit" class="btn btn-danger">Excluir</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchableItems = document.querySelectorAll('.searchable');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const term = this.value.toLowerCase().trim();
+
+                searchableItems.forEach(item => {
+                    const content = item.dataset.search || '';
+                    item.style.display = content.includes(term) ? 'flex' : 'none';
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Profissional de Rotina Semanal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #eef6ff, #f7fbf8);
+      color: #24323d;
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    .container {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1c5971, #2d7a72);
+      color: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      opacity: 0.95;
+      line-height: 1.5;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .card h2 {
+      color: #184f63;
+      margin-bottom: 14px;
+      font-size: 1.2rem;
+    }
+
+    .grid-3, .grid-4, .grid-2 {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #31566a;
+      margin-bottom: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid #cfdce5;
+      font-size: 0.95rem;
+      outline: none;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: .96;
+    }
+
+    .btn-primary { background: #1d7b72; color: white; }
+    .btn-secondary { background: #2d5f88; color: white; }
+    .btn-danger { background: #d65d5d; color: white; }
+    .btn-light { background: #edf4f8; color: #244150; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      background: linear-gradient(180deg, #ffffff, #f7fbfd);
+      border: 1px solid #e1ebf1;
+      border-radius: 18px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat h3 {
+      color: #5b7280;
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .stat p {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #184f63;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .tab-btn {
+      background: white;
+      border: 1px solid #dbe7ee;
+      color: #31566a;
+    }
+
+    .tab-btn.active {
+      background: #184f63;
+      color: white;
+      border-color: #184f63;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      color: #184f63;
+      margin-bottom: 12px;
+    }
+
+    .weekly-board {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(220px, 1fr));
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .day-column {
+      background: white;
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.07);
+      min-height: 380px;
+    }
+
+    .day-column h3 {
+      text-align: center;
+      color: #184f63;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item-card {
+      background: #f9fcff;
+      border: 1px solid #dde8ee;
+      border-left: 6px solid #2d5f88;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .item-card.done {
+      background: #f1fbf5;
+      opacity: 0.75;
+      border-left-color: #1d7b72;
+    }
+
+    .alta { border-left-color: #d95d5d; }
+    .media { border-left-color: #e6a23c; }
+    .baixa { border-left-color: #4c9aff; }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .item-title {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .done .item-title {
+      text-decoration: line-through;
+    }
+
+    .tag {
+      background: #e9f3f9;
+      color: #31566a;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .meta, .desc {
+      color: #54636d;
+      line-height: 1.45;
+      margin-bottom: 7px;
+      white-space: pre-wrap;
+      font-size: 0.92rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .actions button {
+      padding: 8px 10px;
+      font-size: 0.82rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #e6eef3;
+      text-align: left;
+      font-size: 0.93rem;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef6fb;
+      color: #2d5268;
+    }
+
+    .empty {
+      text-align: center;
+      color: #7b8a93;
+      padding: 18px;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #62717b;
+      margin-top: 16px;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 960px) {
+      .top-grid { grid-template-columns: 1fr; }
+      .weekly-board { grid-template-columns: 1fr; }
+      .day-column { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Painel Profissional da Rotina Semanal</h1>
+      <p>Organize sua semana com abas de rotina, reuniões, diário, planejamento, atendimentos e relatórios por turma. Tudo fica salvo automaticamente neste navegador.</p>
+    </div>
+
+    <div class="top-grid">
+      <div class="card">
+        <h2>Informações da semana</h2>
+        <div class="grid-3">
+          <div>
+            <label for="tituloSemana">Título da semana</label>
+            <input type="text" id="tituloSemana" placeholder="Ex: Organização Pedagógica da Semana" />
+          </div>
+          <div>
+            <label for="dataInicio">Data de início</label>
+            <input type="date" id="dataInicio" />
+          </div>
+          <div>
+            <label for="responsavel">Responsável</label>
+            <input type="text" id="responsavel" placeholder="Seu nome" />
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <label for="observacoesGerais">Observações gerais</label>
+          <textarea id="observacoesGerais" placeholder="Metas, lembretes, compromissos importantes..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="salvarCabecalho()">Salvar informações</button>
+          <button class="btn-secondary" onclick="exportarDados()">Exportar backup</button>
+          <button class="btn-secondary" onclick="document.getElementById('importarArquivo').click()">Importar backup</button>
+          <button class="btn-danger" onclick="limparTudo()">Apagar tudo</button>
+          <input type="file" id="importarArquivo" accept="application/json" style="display:none" />
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Resumo geral</h2>
+        <div class="stats">
+          <div class="stat"><h3>Tarefas</h3><p id="statTarefas">0</p></div>
+          <div class="stat"><h3>Reuniões</h3><p id="statReunioes">0</p></div>
+          <div class="stat"><h3>Atendimentos</h3><p id="statAtendimentos">0</p></div>
+          <div class="stat"><h3>Relatórios</h3><p id="statRelatorios">0</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="abrirAba('rotina', this)">Rotina semanal</button>
+      <button class="tab-btn" onclick="abrirAba('reunioes', this)">Reuniões</button>
+      <button class="tab-btn" onclick="abrirAba('diario', this)">Diário</button>
+      <button class="tab-btn" onclick="abrirAba('planejamento', this)">Planejamento</button>
+      <button class="tab-btn" onclick="abrirAba('atendimentos', this)">Atendimentos</button>
+      <button class="tab-btn" onclick="abrirAba('relatorios', this)">Relatórios por turma</button>
+    </div>
+
+    <div id="rotina" class="tab-content active">
+      <div class="card" style="margin-bottom:16px;">
+        <h2>Nova tarefa da rotina</h2>
+        <div class="grid-4">
+          <div>
+            <label>Título</label>
+            <input type="text" id="rotinaTitulo" placeholder="Ex: Planejar reunião" />
+          </div>
+          <div>
+            <label>Dia da semana</label>
+            <select id="rotinaDia">
+              <option>Segunda-feira</option><option>Terça-feira</option><option>Quarta-feira</option><option>Quinta-feira</option><option>Sexta-feira</option><option>Sábado</option><option>Domingo</option>
+            </select>
+          </div>
+          <div>
+            <label>Horário</label>
+            <input type="time" id="rotinaHorario" />
+          </div>
+          <div>
+            <label>Categoria</label>
+            <select id="rotinaCategoria">
+              <option>Pedagógico</option><option>Administrativo</option><option>Estudo</option><option>Pessoal</option><option>Igreja</option><option>Família</option>
+            </select>
+          </div>
+          <div>
+            <label>Prioridade</label>
+            <select id="rotinaPrioridade">
+              <option value="alta">Alta</option>
+              <option value="media">Média</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <label>Descrição</label>
+          <textarea id="rotinaDescricao" placeholder="Detalhes da tarefa..."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="adicionarRotina()">Adicionar tarefa</button>
+        </div>
+      </div>
+
+      <div class="weekly-board" id="quadroSemanal"></div>
+    </div>
+
+    <div id="reunioes" class="tab-content">
+      <div class="card" style="margin-bottom:16px;">
+        <h2>Nova reunião</h2>
+        <div class="grid-3">
+          <div><label>Título</label><input type="text" id="reuniaoTitulo" placeholder="Ex: Reunião com professores" /></div>
+          <div><label>Data</label><input type="date" id="reuniaoData" /></div>
+          <div><label>Horário</label><input type="time" id="reuniaoHorario" /></div>
+          <div><label>Local</label><input type="text" id="reuniaoLocal" placeholder="Sala, escola, online..." /></div>
+          <div><label>Participantes</label><input type="text" id="reuniaoParticipantes" placeholder="Professores, pais, equipe..." /></div>
+          <div><label>Status</label><select id="reuniaoStatus"><option>Agendada</option><option>Concluída</option><option>Remarcada</option></select></div>
+        </div>
+        <div style="margin-top:12px;">
+          <label>Pauta / observações</label>
+          <textarea id="reuniaoDescricao" placeholder="Itens da pauta, encaminhamentos, decisões..."></textarea>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="adicionarReuniao()">Salvar reunião</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Data</th><th>Horário</th><th>Título</th><th>Local</th><th>Participantes</th><th>Status</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="tabelaReunioes"></tbody></table></div>
+    </div>
+
+    <div id="diario" class="tab-content">
+      <div class="card" style="margin-bottom:16px;">
+        <h2>Novo registro no diário</h2>
+        <div class="grid-3">
+          <div><label>Data</label><input type="date" id="diarioData" /></div>
+          <div><label>Turma</label><input type="text" id="diarioTurma" placeholder="Ex: Pré 2, 4º ano..." /></div>
+          <div><label>Turno</label><select id="diarioTurno"><option>Matutino</option><option>Vespertino</option><option>Integral</option></select></div>
+        </div>
+        <div style="margin-top:12px;">
+          <label>Registro</label>
+          <textarea id="diarioTexto" placeholder="Descreva a rotina, conteúdos, observações, participação da turma..."></textarea>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="adicionarDiario()">Salvar registro</button></div>
+      </div>
+      <div id="listaDiario" class="list"></div>
+    </div>
+
+    <div id="planejamento" class="tab-content">
+      <div class="card" style="margin-bottom:16px;">
+        <h2>Novo planejamento</h2>
+        <div class="grid-3">
+          <div><label>Data</label><input type="date" id="planData" /></div>
+          <div><label>Turma</label><input type="text" id="planTurma" placeholder="Ex: 1º ano, 5º ano..." /></div>
+          <div><label>Componente</label><input type="text" id="planComponente" placeholder="Ex: Língua Portuguesa" /></div>
+          <div><label>Habilidade / objetivo</label><input type="text" id="planObjetivo" placeholder="Ex: Identificar letras do nome" /></div>
+          <div><label>Recursos</label><input type="text" id="planRecursos" placeholder="Ex: cartaz, livro, fichas" /></div>
+          <div><label>Avaliação</label><input type="text" id="planAvaliacao" placeholder="Ex: observação e atividade" /></div>
+        </div>
+        <div style="margin-top:12px;">
+          <label>Descrição do planejamento</label>
+          <textarea id="planDescricao" placeholder="Desenvolvimento da aula, etapas, metodologias..."></textarea>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="adicionarPlanejamento()">Salvar planejamento</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Data</th><th>Turma</th><th>Componente</th><th>Objetivo</th><th>Recursos</th><th>Avaliação</th><th>Descrição</th><th>Ações</th></tr></thead><tbody id="tabelaPlanejamentos"></tbody></table></div>
+    </div>
+
+    <div id="atendimentos" class="tab-content">
+      <div class="card" style="margin-bottom:16px;">
+        <h2>Novo atendimento</h2>
+        <div class="grid-3">
+          <div><label>Data</label><input type="date" id="atData" /></div>
+          <div><label>Nome da pessoa</label><input type="text" id="atNome" placeholder="Aluno, pai, mãe, professor..." /></div>
+          <div><label>Tipo</label><select id="atTipo"><option>Aluno</option><option>Família</option><option>Professor</option><option>Equipe</option></select></div>
+          <div><label>Turma</label><input type="text" id="atTurma" placeholder="Ex: 3º ano" /></div>
+          <div><label>Assunto</label><input type="text" id="atAssunto" placeholder="Motivo do atendimento" /></div>
+          <div><label>Encaminhamento</label><input type="text" id="atEncaminhamento" placeholder="Próximos passos" /></div>
+        </div>
+        <div style="margin-top:12px;">
+          <label>Registro do atendimento</label>
+          <textarea id="atRegistro" placeholder="Descreva o que foi conversado e orientações dadas..."></textarea>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="adicionarAtendimento()">Salvar atendimento</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Data</th><th>Nome</th><th>Tipo</th><th>Turma</th><th>Assunto</th><th>Registro</th><th>Encaminhamento</th><th>Ações</th></tr></thead><tbody id="tabelaAtendimentos"></tbody></table></div>
+    </div>
+
+    <div id="relatorios" class="tab-content">
+      <div class="card" style="margin-bottom:16px;">
+        <h2>Novo relatório por turma</h2>
+        <div class="grid-3">
+          <div><label>Data</label><input type="date" id="relData" /></div>
+          <div><label>Turma</label><input type="text" id="relTurma" placeholder="Ex: 2º ano" /></div>
+          <div><label>Período</label><input type="text" id="relPeriodo" placeholder="Ex: 1º trimestre" /></div>
+        </div>
+        <div style="margin-top:12px;">
+          <label>Descrição do relatório</label>
+          <textarea id="relTexto" placeholder="Descreva avanços, dificuldades, observações e encaminhamentos da turma..."></textarea>
+        </div>
+        <div class="btn-row"><button class="btn-primary" onclick="adicionarRelatorio()">Salvar relatório</button></div>
+      </div>
+      <div id="listaRelatorios" class="list"></div>
+    </div>
+
+    <div class="footer-note">Todos os dados ficam salvos automaticamente no navegador do aparelho.</div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'painelPedagogicoProfissional';
+    const diasSemana = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo'];
+
+    let dados = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+      cabecalho: { tituloSemana:'', dataInicio:'', responsavel:'', observacoesGerais:'' },
+      rotina: [],
+      reunioes: [],
+      diario: [],
+      planejamento: [],
+      atendimentos: [],
+      relatorios: []
+    };
+
+    function salvarDados() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+      atualizarResumo();
+    }
+
+    function carregarCabecalho() {
+      document.getElementById('tituloSemana').value = dados.cabecalho.tituloSemana || '';
+      document.getElementById('dataInicio').value = dados.cabecalho.dataInicio || '';
+      document.getElementById('responsavel').value = dados.cabecalho.responsavel || '';
+      document.getElementById('observacoesGerais').value = dados.cabecalho.observacoesGerais || '';
+    }
+
+    function salvarCabecalho() {
+      dados.cabecalho = {
+        tituloSemana: document.getElementById('tituloSemana').value,
+        dataInicio: document.getElementById('dataInicio').value,
+        responsavel: document.getElementById('responsavel').value,
+        observacoesGerais: document.getElementById('observacoesGerais').value
+      };
+      salvarDados();
+      alert('Informações salvas com sucesso.');
+    }
+
+    function abrirAba(id, botao) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      botao.classList.add('active');
+    }
+
+    function uid() {
+      return Date.now() + Math.floor(Math.random() * 1000);
+    }
+
+    function atualizarResumo() {
+      document.getElementById('statTarefas').textContent = dados.rotina.length;
+      document.getElementById('statReunioes').textContent = dados.reunioes.length;
+      document.getElementById('statAtendimentos').textContent = dados.atendimentos.length;
+      document.getElementById('statRelatorios').textContent = dados.relatorios.length;
+    }
+
+    function adicionarRotina() {
+      const titulo = document.getElementById('rotinaTitulo').value.trim();
+      if (!titulo) return alert('Digite o título da tarefa.');
+      dados.rotina.push({
+        id: uid(),
+        titulo,
+        dia: document.getElementById('rotinaDia').value,
+        horario: document.getElementById('rotinaHorario').value,
+        categoria: document.getElementById('rotinaCategoria').value,
+        prioridade: document.getElementById('rotinaPrioridade').value,
+        descricao: document.getElementById('rotinaDescricao').value.trim(),
+        concluida: false
+      });
+      salvarDados();
+      document.getElementById('rotinaTitulo').value = '';
+      document.getElementById('rotinaHorario').value = '';
+      document.getElementById('rotinaDescricao').value = '';
+      renderizarRotina();
+    }
+
+    function alternarRotina(id) {
+      dados.rotina = dados.rotina.map(item => item.id === id ? { ...item, concluida: !item.concluida } : item);
+      salvarDados();
+      renderizarRotina();
+    }
+
+    function excluirItem(secao, id) {
+      if (!confirm('Deseja excluir este registro?')) return;
+      dados[secao] = dados[secao].filter(item => item.id !== id);
+      salvarDados();
+      renderizarTudo();
+    }
+
+    function editarTexto(secao, id, campo, rotulo) {
+      const item = dados[secao].find(x => x.id === id);
+      if (!item) return;
+      const novoValor = prompt('Editar ' + rotulo + ':', item[campo] || '');
+      if (novoValor === null) return;
+      item[campo] = novoValor;
+      salvarDados();
+      renderizarTudo();
+    }
+
+    function renderizarRotina() {
+      const quadro = document.getElementById('quadroSemanal');
+      quadro.innerHTML = '';
+      diasSemana.forEach(dia => {
+        const coluna = document.createElement('div');
+        coluna.className = 'day-column';
+        coluna.innerHTML = `<h3>${dia}</h3>`;
+        const lista = document.createElement('div');
+        lista.className = 'list';
+        const itens = dados.rotina.filter(t => t.dia === dia).sort((a,b) => (a.horario||'').localeCompare(b.horario||''));
+        if (!itens.length) {
+          lista.innerHTML = '<div class="empty">Nenhuma tarefa cadastrada.</div>';
+        } else {
+          itens.forEach(item => {
+            const div = document.createElement('div');
+            div.className = `item-card ${item.prioridade} ${item.concluida ? 'done' : ''}`;
+            div.innerHTML = `
+              <div class="item-top">
+                <div class="item-title">${item.titulo}</div>
+                <span class="tag">${item.categoria}</span>
+              </div>
+              <div class="meta">Horário: ${item.horario || 'Sem horário'} | Prioridade: ${item.prioridade}</div>
+              <div class="desc">${item.descricao || 'Sem descrição.'}</div>
+              <div class="actions">
+                <button class="btn-primary" onclick="alternarRotina(${item.id})">${item.concluida ? 'Desmarcar' : 'Concluir'}</button>
+                <button class="btn-secondary" onclick="editarTexto('rotina', ${item.id}, 'titulo', 'título')">Editar título</button>
+                <button class="btn-danger" onclick="excluirItem('rotina', ${item.id})">Excluir</button>
+              </div>
+            `;
+            lista.appendChild(div);
+          });
+        }
+        coluna.appendChild(lista);
+        quadro.appendChild(coluna);
+      });
+    }
+
+    function adicionarReuniao() {
+      const titulo = document.getElementById('reuniaoTitulo').value.trim();
+      if (!titulo) return alert('Digite o título da reunião.');
+      dados.reunioes.push({
+        id: uid(),
+        titulo,
+        data: document.getElementById('reuniaoData').value,
+        horario: document.getElementById('reuniaoHorario').value,
+        local: document.getElementById('reuniaoLocal').value,
+        participantes: document.getElementById('reuniaoParticipantes').value,
+        status: document.getElementById('reuniaoStatus').value,
+        descricao: document.getElementById('reuniaoDescricao').value
+      });
+      salvarDados();
+      ['reuniaoTitulo','reuniaoData','reuniaoHorario','reuniaoLocal','reuniaoParticipantes','reuniaoDescricao'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('reuniaoStatus').value='Agendada';
+      renderizarReunioes();
+    }
+
+    function renderizarReunioes() {
+      const tbody = document.getElementById('tabelaReunioes');
+      tbody.innerHTML = '';
+      if (!dados.reunioes.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty">Nenhuma reunião cadastrada.</td></tr>';
+        return;
+      }
+      dados.reunioes.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.data || ''}</td>
+          <td>${item.horario || ''}</td>
+          <td>${item.titulo || ''}</td>
+          <td>${item.local || ''}</td>
+          <td>${item.participantes || ''}</td>
+          <td>${item.status || ''}</td>
+          <td>${item.descricao || ''}</td>
+          <td>
+            <button class="btn-light" onclick="editarTexto('reunioes', ${item.id}, 'descricao', 'descrição')">Editar</button>
+            <button class="btn-danger" onclick="excluirItem('reunioes', ${item.id})">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function adicionarDiario() {
+      const texto = document.getElementById('diarioTexto').value.trim();
+      if (!texto) return alert('Escreva o registro do diário.');
+      dados.diario.unshift({
+        id: uid(),
+        data: document.getElementById('diarioData').value,
+        turma: document.getElementById('diarioTurma').value,
+        turno: document.getElementById('diarioTurno').value,
+        texto
+      });
+      salvarDados();
+      ['diarioData','diarioTurma','diarioTexto'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('diarioTurno').value='Matutino';
+      renderizarDiario();
+    }
+
+    function renderizarDiario() {
+      const lista = document.getElementById('listaDiario');
+      lista.innerHTML = '';
+      if (!dados.diario.length) {
+        lista.innerHTML = '<div class="card empty">Nenhum registro no diário.</div>';
+        return;
+      }
+      dados.diario.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        div.innerHTML = `
+          <div class="item-top">
+            <div class="item-title">${item.turma || 'Sem turma'} - ${item.data || ''}</div>
+            <span class="tag">${item.turno || ''}</span>
+          </div>
+          <div class="desc">${item.texto}</div>
+          <div class="actions">
+            <button class="btn-secondary" onclick="editarTexto('diario', ${item.id}, 'texto', 'registro')">Editar</button>
+            <button class="btn-danger" onclick="excluirItem('diario', ${item.id})">Excluir</button>
+          </div>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    function adicionarPlanejamento() {
+      const descricao = document.getElementById('planDescricao').value.trim();
+      if (!descricao) return alert('Escreva a descrição do planejamento.');
+      dados.planejamento.push({
+        id: uid(),
+        data: document.getElementById('planData').value,
+        turma: document.getElementById('planTurma').value,
+        componente: document.getElementById('planComponente').value,
+        objetivo: document.getElementById('planObjetivo').value,
+        recursos: document.getElementById('planRecursos').value,
+        avaliacao: document.getElementById('planAvaliacao').value,
+        descricao
+      });
+      salvarDados();
+      ['planData','planTurma','planComponente','planObjetivo','planRecursos','planAvaliacao','planDescricao'].forEach(id => document.getElementById(id).value='');
+      renderizarPlanejamento();
+    }
+
+    function renderizarPlanejamento() {
+      const tbody = document.getElementById('tabelaPlanejamentos');
+      tbody.innerHTML = '';
+      if (!dados.planejamento.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty">Nenhum planejamento cadastrado.</td></tr>';
+        return;
+      }
+      dados.planejamento.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.data || ''}</td>
+          <td>${item.turma || ''}</td>
+          <td>${item.componente || ''}</td>
+          <td>${item.objetivo || ''}</td>
+          <td>${item.recursos || ''}</td>
+          <td>${item.avaliacao || ''}</td>
+          <td>${item.descricao || ''}</td>
+          <td><button class="btn-light" onclick="editarTexto('planejamento', ${item.id}, 'descricao', 'descrição')">Editar</button> <button class="btn-danger" onclick="excluirItem('planejamento', ${item.id})">Excluir</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function adicionarAtendimento() {
+      const nome = document.getElementById('atNome').value.trim();
+      if (!nome) return alert('Digite o nome da pessoa atendida.');
+      dados.atendimentos.push({
+        id: uid(),
+        data: document.getElementById('atData').value,
+        nome,
+        tipo: document.getElementById('atTipo').value,
+        turma: document.getElementById('atTurma').value,
+        assunto: document.getElementById('atAssunto').value,
+        registro: document.getElementById('atRegistro').value,
+        encaminhamento: document.getElementById('atEncaminhamento').value
+      });
+      salvarDados();
+      ['atData','atNome','atTurma','atAssunto','atRegistro','atEncaminhamento'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('atTipo').value='Aluno';
+      renderizarAtendimentos();
+    }
+
+    function renderizarAtendimentos() {
+      const tbody = document.getElementById('tabelaAtendimentos');
+      tbody.innerHTML = '';
+      if (!dados.atendimentos.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty">Nenhum atendimento cadastrado.</td></tr>';
+        return;
+      }
+      dados.atendimentos.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.data || ''}</td>
+          <td>${item.nome || ''}</td>
+          <td>${item.tipo || ''}</td>
+          <td>${item.turma || ''}</td>
+          <td>${item.assunto || ''}</td>
+          <td>${item.registro || ''}</td>
+          <td>${item.encaminhamento || ''}</td>
+          <td><button class="btn-light" onclick="editarTexto('atendimentos', ${item.id}, 'registro', 'registro')">Editar</button> <button class="btn-danger" onclick="excluirItem('atendimentos', ${item.id})">Excluir</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function adicionarRelatorio() {
+      const texto = document.getElementById('relTexto').value.trim();
+      if (!texto) return alert('Escreva o relatório.');
+      dados.relatorios.unshift({
+        id: uid(),
+        data: document.getElementById('relData').value,
+        turma: document.getElementById('relTurma').value,
+        periodo: document.getElementById('relPeriodo').value,
+        texto
+      });
+      salvarDados();
+      ['relData','relTurma','relPeriodo','relTexto'].forEach(id => document.getElementById(id).value='');
+      renderizarRelatorios();
+    }
+
+    function renderizarRelatorios() {
+      const lista = document.getElementById('listaRelatorios');
+      lista.innerHTML = '';
+      if (!dados.relatorios.length) {
+        lista.innerHTML = '<div class="card empty">Nenhum relatório cadastrado.</div>';
+        return;
+      }
+      dados.relatorios.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        div.innerHTML = `
+          <div class="item-top">
+            <div class="item-title">${item.turma || 'Sem turma'} - ${item.periodo || ''}</div>
+            <span class="tag">${item.data || ''}</span>
+          </div>
+          <div class="desc">${item.texto}</div>
+          <div class="actions">
+            <button class="btn-secondary" onclick="editarTexto('relatorios', ${item.id}, 'texto', 'relatório')">Editar</button>
+            <button class="btn-danger" onclick="excluirItem('relatorios', ${item.id})">Excluir</button>
+          </div>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    function exportarDados() {
+      const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'painel-pedagogico-profissional.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('importarArquivo').addEventListener('change', function(e) {
+      const arq = e.target.files[0];
+      if (!arq) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          dados = JSON.parse(ev.target.result);
+          salvarDados();
+          carregarCabecalho();
+          renderizarTudo();
+          alert('Backup importado com sucesso.');
+        } catch {
+          alert('Arquivo inválido.');
+        }
+      };
+      reader.readAsText(arq);
+    });
+
+    function limparTudo() {
+      if (!confirm('Tem certeza que deseja apagar todos os dados do painel?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      dados = {
+        cabecalho: { tituloSemana:'', dataInicio:'', responsavel:'', observacoesGerais:'' },
+        rotina: [], reunioes: [], diario: [], planejamento: [], atendimentos: [], relatorios: []
+      };
+      carregarCabecalho();
+      renderizarTudo();
+    }
+
+    function renderizarTudo() {
+      renderizarRotina();
+      renderizarReunioes();
+      renderizarDiario();
+      renderizarPlanejamento();
+      renderizarAtendimentos();
+      renderizarRelatorios();
+      atualizarResumo();
+    }
+
+    ['tituloSemana','dataInicio','responsavel','observacoesGerais'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        dados.cabecalho = {
+          tituloSemana: document.getElementById('tituloSemana').value,
+          dataInicio: document.getElementById('dataInicio').value,
+          responsavel: document.getElementById('responsavel').value,
+          observacoesGerais: document.getElementById('observacoesGerais').value
+        };
+        salvarDados();
+      });
+    });
+
+    carregarCabecalho();
+    renderizarTudo();
+  </script>
+</body>
+</html>

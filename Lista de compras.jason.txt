@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Compras e Cardápio Semanal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f7f4ef;
+      color: #333;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: #8fb996;
+      color: white;
+      padding: 24px;
+      border-radius: 18px;
+      text-align: center;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    header p {
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 18px 0 26px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: #5b8e7d;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #4a7667;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .section-title {
+      margin-bottom: 16px;
+      color: #406354;
+      font-size: 1.3rem;
+    }
+
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .day-box {
+      border: 1px solid #e8e1d8;
+      border-radius: 14px;
+      padding: 16px;
+      background: #fffdf9;
+    }
+
+    .day-box h3 {
+      margin-bottom: 12px;
+      color: #5b8e7d;
+      font-size: 1.05rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+    }
+
+    .field-group {
+      margin-bottom: 10px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    .field-group input,
+    .field-group textarea,
+    .shopping-inputs input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d9d1c7;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .shopping-inputs {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .shopping-list {
+      list-style: none;
+      margin-top: 12px;
+    }
+
+    .shopping-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #faf7f2;
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      border: 1px solid #eee2d4;
+    }
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .item-left span.checked {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .item-category {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #dcefe2;
+      color: #406354;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .delete-btn {
+      background: #d36b6b;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+    }
+
+    .delete-btn:hover {
+      background: #bb5959;
+    }
+
+    .obs-box {
+      margin-top: 22px;
+    }
+
+    .summary {
+      margin-top: 14px;
+      background: #f3f8f4;
+      padding: 12px;
+      border-radius: 12px;
+      color: #406354;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 26px;
+      text-align: center;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .top-actions,
+      .shopping-inputs,
+      .delete-btn {
+        display: none !important;
+      }
+
+      .card, header {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Lista de Compras e Cardápio Semanal</h1>
+      <p>Organize suas refeições da semana e acompanhe tudo o que precisa comprar.</p>
+    </header>
+
+    <div class="top-actions">
+      <button onclick="salvarDados()">Salvar no navegador</button>
+      <button onclick="carregarExemplo()">Preencher exemplo</button>
+      <button onclick="window.print()">Imprimir / Salvar em PDF</button>
+      <button onclick="limparTudo()">Limpar tudo</button>
+    </div>
+
+    <div class="layout">
+      <section class="card">
+        <h2 class="section-title">Cardápio da Semana</h2>
+        <div class="days-grid" id="menuContainer"></div>
+
+        <div class="obs-box">
+          <h2 class="section-title">Observações</h2>
+          <textarea id="observacoes" placeholder="Ex.: preparar marmitas, comprar frutas na sexta, almoço especial no domingo..."></textarea>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2 class="section-title">Lista de Compras</h2>
+        <div class="shopping-inputs">
+          <input type="text" id="itemName" placeholder="Nome do item" />
+          <select id="itemCategory">
+            <option value="Hortifruti">Hortifruti</option>
+            <option value="Carnes">Carnes</option>
+            <option value="Padaria">Padaria</option>
+            <option value="Laticínios">Laticínios</option>
+            <option value="Mercearia">Mercearia</option>
+            <option value="Limpeza">Limpeza</option>
+            <option value="Higiene">Higiene</option>
+            <option value="Outros">Outros</option>
+          </select>
+          <button onclick="addShoppingItem()">Adicionar item</button>
+        </div>
+
+        <ul class="shopping-list" id="shoppingList"></ul>
+
+        <div class="summary" id="summaryBox">Total de itens: 0</div>
+      </aside>
+    </div>
+
+    <footer>
+      Página simples em HTML, CSS e JavaScript para uso semanal.
+    </footer>
+  </div>
+
+  <script>
+    const diasSemana = [
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
+      'Sábado',
+      'Domingo'
+    ];
+
+    let shoppingItems = [];
+
+    function criarCamposCardapio() {
+      const container = document.getElementById('menuContainer');
+      container.innerHTML = '';
+
+      diasSemana.forEach((dia, index) => {
+        const box = document.createElement('div');
+        box.className = 'day-box';
+        box.innerHTML = `
+          <h3>${dia}</h3>
+          <div class="field-group">
+            <label for="cafe-${index}">Café da manhã</label>
+            <input id="cafe-${index}" type="text" placeholder="Ex.: pão, café, frutas" />
+          </div>
+          <div class="field-group">
+            <label for="almoco-${index}">Almoço</label>
+            <input id="almoco-${index}" type="text" placeholder="Ex.: arroz, feijão, frango" />
+          </div>
+          <div class="field-group">
+            <label for="lanche-${index}">Lanche</label>
+            <input id="lanche-${index}" type="text" placeholder="Ex.: bolo, suco, fruta" />
+          </div>
+          <div class="field-group">
+            <label for="jantar-${index}">Jantar</label>
+            <input id="jantar-${index}" type="text" placeholder="Ex.: sopa, sanduíche, macarrão" />
+          </div>
+        `;
+        container.appendChild(box);
+      });
+    }
+
+    function addShoppingItem() {
+      const itemInput = document.getElementById('itemName');
+      const categoryInput = document.getElementById('itemCategory');
+      const nome = itemInput.value.trim();
+      const categoria = categoryInput.value;
+
+      if (!nome) {
+        alert('Digite o nome do item.');
+        return;
+      }
+
+      shoppingItems.push({
+        id: Date.now(),
+        nome,
+        categoria,
+        comprado: false
+      });
+
+      itemInput.value = '';
+      renderShoppingList();
+    }
+
+    function renderShoppingList() {
+      const list = document.getElementById('shoppingList');
+      const summary = document.getElementById('summaryBox');
+      list.innerHTML = '';
+
+      shoppingItems.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="item-left">
+            <input type="checkbox" ${item.comprado ? 'checked' : ''} onchange="toggleItem(${item.id})" />
+            <span class="${item.comprado ? 'checked' : ''}">${item.nome}</span>
+            <span class="item-category">${item.categoria}</span>
+          </div>
+          <button class="delete-btn" onclick="deleteItem(${item.id})">Excluir</button>
+        `;
+        list.appendChild(li);
+      });
+
+      const comprados = shoppingItems.filter(i => i.comprado).length;
+      summary.textContent = `Total de itens: ${shoppingItems.length} | Comprados: ${comprados}`;
+    }
+
+    function toggleItem(id) {
+      shoppingItems = shoppingItems.map(item =>
+        item.id === id ? { ...item, comprado: !item.comprado } : item
+      );
+      renderShoppingList();
+    }
+
+    function deleteItem(id) {
+      shoppingItems = shoppingItems.filter(item => item.id !== id);
+      renderShoppingList();
+    }
+
+    function salvarDados() {
+      const menuData = diasSemana.map((_, index) => ({
+        cafe: document.getElementById(`cafe-${index}`).value,
+        almoco: document.getElementById(`almoco-${index}`).value,
+        lanche: document.getElementById(`lanche-${index}`).value,
+        jantar: document.getElementById(`jantar-${index}`).value
+      }));
+
+      const dados = {
+        menuData,
+        shoppingItems,
+        observacoes: document.getElementById('observacoes').value
+      };
+
+      localStorage.setItem('cardapioSemanalRose', JSON.stringify(dados));
+      alert('Dados salvos no navegador com sucesso!');
+    }
+
+    function carregarDados() {
+      const dadosSalvos = localStorage.getItem('cardapioSemanalRose');
+      if (!dadosSalvos) return;
+
+      const dados = JSON.parse(dadosSalvos);
+
+      if (dados.menuData) {
+        dados.menuData.forEach((dia, index) => {
+          const cafe = document.getElementById(`cafe-${index}`);
+          const almoco = document.getElementById(`almoco-${index}`);
+          const lanche = document.getElementById(`lanche-${index}`);
+          const jantar = document.getElementById(`jantar-${index}`);
+
+          if (cafe) cafe.value = dia.cafe || '';
+          if (almoco) almoco.value = dia.almoco || '';
+          if (lanche) lanche.value = dia.lanche || '';
+          if (jantar) jantar.value = dia.jantar || '';
+        });
+      }
+
+      shoppingItems = dados.shoppingItems || [];
+      document.getElementById('observacoes').value = dados.observacoes || '';
+      renderShoppingList();
+    }
+
+    function limparTudo() {
+      if (!confirm('Deseja realmente apagar todo o conteúdo da página?')) return;
+
+      diasSemana.forEach((_, index) => {
+        document.getElementById(`cafe-${index}`).value = '';
+        document.getElementById(`almoco-${index}`).value = '';
+        document.getElementById(`lanche-${index}`).value = '';
+        document.getElementById(`jantar-${index}`).value = '';
+      });
+
+      document.getElementById('observacoes').value = '';
+      shoppingItems = [];
+      renderShoppingList();
+      localStorage.removeItem('cardapioSemanalRose');
+    }
+
+    function carregarExemplo() {
+      const exemplo = [
+        ['Pão e café', 'Arroz, feijão e frango', 'Banana', 'Sopa de legumes'],
+        ['Cuscuz e leite', 'Macarrão com carne moída', 'Iogurte', 'Omelete'],
+        ['Pão de queijo', 'Arroz, feijão e peixe', 'Maçã', 'Sanduíche natural'],
+        ['Vitamina de banana', 'Frango grelhado e salada', 'Biscoito e suco', 'Sopa'],
+        ['Pão com queijo', 'Feijão tropeiro', 'Mamão', 'Tapioca'],
+        ['Bolo e café', 'Lasanha', 'Fruta', 'Caldo'],
+        ['Pão e leite', 'Almoço especial em família', 'Suco', 'Lanche leve']
+      ];
+
+      exemplo.forEach((dia, index) => {
+        document.getElementById(`cafe-${index}`).value = dia[0];
+        document.getElementById(`almoco-${index}`).value = dia[1];
+        document.getElementById(`lanche-${index}`).value = dia[2];
+        document.getElementById(`jantar-${index}`).value = dia[3];
+      });
+
+      document.getElementById('observacoes').value = 'Comprar frutas frescas, verificar itens da geladeira e planejar marmitas da semana.';
+
+      shoppingItems = [
+        { id: 1, nome: 'Tomate', categoria: 'Hortifruti', comprado: false },
+        { id: 2, nome: 'Banana', categoria: 'Hortifruti', comprado: false },
+        { id: 3, nome: 'Frango', categoria: 'Carnes', comprado: false },
+        { id: 4, nome: 'Arroz', categoria: 'Mercearia', comprado: true },
+        { id: 5, nome: 'Leite', categoria: 'Laticínios', comprado: false }
+      ];
+
+      renderShoppingList();
+    }
+
+    criarCamposCardapio();
+    carregarDados();
+  </script>
+</body>
+</html>

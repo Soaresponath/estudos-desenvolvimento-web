@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Notas - 4º Ano</title>
+  <style>
+    :root {
+      --azul: #1f4e79;
+      --azul-claro: #eaf3fb;
+      --verde: #1f7a3d;
+      --vermelho: #c62828;
+      --laranja: #ef6c00;
+      --cinza: #f4f6f8;
+      --borda: #d6dde5;
+      --texto: #22303c;
+      --sombra: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      background: var(--cinza);
+      color: var(--texto);
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topo {
+      background: white;
+      border-radius: 18px;
+      box-shadow: var(--sombra);
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .topo h1 {
+      margin: 0 0 6px;
+      color: var(--azul);
+      font-size: 30px;
+    }
+
+    .topo p {
+      margin: 0;
+      color: #54606b;
+    }
+
+    .painel {
+      background: white;
+      border-radius: 18px;
+      box-shadow: var(--sombra);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .linha-controles {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr auto auto auto auto auto auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--borda);
+      border-radius: 10px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .btn {
+      padding: 11px 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primario { background: var(--azul); color: white; }
+    .btn-verde { background: var(--verde); color: white; }
+    .btn-laranja { background: var(--laranja); color: white; }
+    .btn-cinza { background: #5f6b76; color: white; }
+    .btn-vermelho { background: var(--vermelho); color: white; }
+
+    .resumo {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .card {
+      background: var(--azul-claro);
+      border-radius: 14px;
+      padding: 12px 16px;
+      min-width: 180px;
+      flex: 1;
+    }
+
+    .card strong {
+      display: block;
+      color: var(--azul);
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .tabela-wrap {
+      overflow-x: auto;
+      background: white;
+      border-radius: 18px;
+      box-shadow: var(--sombra);
+      padding: 14px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 1800px;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid var(--borda);
+      padding: 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: var(--azul);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td.nome-coluna {
+      text-align: left;
+      min-width: 200px;
+      font-weight: bold;
+      background: #fafbfd;
+    }
+
+    td input.nota {
+      min-width: 70px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .nota-baixa {
+      color: var(--vermelho);
+      border: 2px solid #ef9a9a !important;
+      background: #fff5f5;
+      font-weight: bold;
+    }
+
+    .total-disciplina {
+      font-weight: bold;
+      color: var(--verde);
+      background: #f3fff5;
+      min-width: 80px;
+    }
+
+    .media-final {
+      font-weight: bold;
+      color: var(--azul);
+      background: #f3f8ff;
+      min-width: 85px;
+    }
+
+    .status-nao-realizou {
+      color: var(--laranja);
+      font-weight: bold;
+      text-align: left;
+      min-width: 210px;
+      font-size: 13px;
+      background: #fff8f1;
+    }
+
+    .parecer {
+      min-width: 320px;
+      text-align: left;
+      font-size: 13px;
+      line-height: 1.4;
+      background: #fcfcff;
+    }
+
+    .acoes-linha {
+      min-width: 90px;
+    }
+
+    .acoes-linha button {
+      width: 100%;
+      margin-bottom: 6px;
+      padding: 7px 8px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    .rodape-info {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #55616d;
+    }
+
+    .print-only {
+      display: none;
+    }
+
+    @media (max-width: 1200px) {
+      .linha-controles {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .no-print,
+      .painel,
+      .acoes-linha,
+      .rodape-info {
+        display: none !important;
+      }
+
+      .print-only {
+        display: block;
+        margin-bottom: 20px;
+      }
+
+      .tabela-wrap {
+        box-shadow: none;
+        padding: 0;
+        overflow: visible;
+      }
+
+      table {
+        min-width: auto;
+        font-size: 11px;
+      }
+
+      th, td {
+        padding: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="topo">
+      <h1>Sistema de Notas - 4º Ano</h1>
+      <p>EMPEIEF Janetta Klemz Jacob • Disciplinas: Português, Matemática, Ciências, Geografia e História</p>
+    </section>
+
+    <section class="painel no-print">
+      <div class="linha-controles">
+        <div>
+          <label for="nomeAluno">Nome do aluno</label>
+          <input type="text" id="nomeAluno" placeholder="Digite o nome do aluno" />
+        </div>
+        <div>
+          <label for="nomeTurma">Turma</label>
+          <input type="text" id="nomeTurma" placeholder="Ex.: 4º ano" value="4º ano" />
+        </div>
+        <div>
+          <label for="anoLetivo">Ano letivo</label>
+          <input type="text" id="anoLetivo" placeholder="Ex.: 2026" value="2026" />
+        </div>
+        <button class="btn btn-primario" onclick="adicionarAluno()">Adicionar aluno</button>
+        <button class="btn btn-verde" onclick="salvarDados()">Salvar dados</button>
+        <button class="btn btn-laranja" onclick="exportarCSV()">Exportar Excel</button>
+        <button class="btn btn-cinza" onclick="imprimirBoletim()">Imprimir</button>
+        <button class="btn btn-cinza" onclick="carregarDados()">Recarregar</button>
+        <button class="btn btn-vermelho" onclick="limparTudo()">Limpar tudo</button>
+      </div>
+
+      <div class="resumo">
+        <div class="card">
+          <strong>Total de alunos</strong>
+          <span id="totalAlunos">0</span>
+        </div>
+        <div class="card">
+          <strong>Média geral da turma</strong>
+          <span id="mediaTurma">0,00</span>
+        </div>
+        <div class="card">
+          <strong>Notas abaixo de 6</strong>
+          <span id="quantidadeBaixas">0</span>
+        </div>
+        <div class="card">
+          <strong>Avaliações não realizadas</strong>
+          <span id="quantidadePendencias">0</span>
+        </div>
+      </div>
+
+      <div class="rodape-info">
+        <strong>Observação:</strong> quando uma nota ficar em branco, o sistema entende que o aluno não realizou aquela avaliação. Os dados ficam salvos automaticamente no navegador.
+      </div>
+    </section>
+
+    <div class="print-only">
+      <h2>Boletim de Notas</h2>
+      <p><strong>Escola:</strong> EMPEIEF Janetta Klemz Jacob</p>
+      <p><strong>Turma:</strong> <span id="printTurma">4º ano</span> • <strong>Ano letivo:</strong> <span id="printAno">2026</span></p>
+    </div>
+
+    <section class="tabela-wrap">
+      <table id="tabelaNotas">
+        <thead>
+          <tr>
+            <th>Aluno</th>
+            <th>Port. AV1</th>
+            <th>AV2</th>
+            <th>AV3</th>
+            <th>Total</th>
+            <th>Mat. AV1</th>
+            <th>AV2</th>
+            <th>AV3</th>
+            <th>Total</th>
+            <th>Ciên. AV1</th>
+            <th>AV2</th>
+            <th>AV3</th>
+            <th>Total</th>
+            <th>Geo. AV1</th>
+            <th>AV2</th>
+            <th>AV3</th>
+            <th>Total</th>
+            <th>Hist. AV1</th>
+            <th>AV2</th>
+            <th>AV3</th>
+            <th>Total</th>
+            <th>Média Final</th>
+            <th>Não realizou</th>
+            <th>Parecer automático</th>
+            <th class="no-print">Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const disciplinas = [
+      'portugues',
+      'matematica',
+      'ciencias',
+      'geografia',
+      'historia'
+    ];
+
+    const nomesDisciplinas = {
+      portugues: 'Português',
+      matematica: 'Matemática',
+      ciencias: 'Ciências',
+      geografia: 'Geografia',
+      historia: 'História'
+    };
+
+    let alunos = [];
+
+    function modeloAluno(nome) {
+      return {
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        nome,
+        notas: {
+          portugues: ['', '', ''],
+          matematica: ['', '', ''],
+          ciencias: ['', '', ''],
+          geografia: ['', '', ''],
+          historia: ['', '', '']
+        }
+      };
+    }
+
+    function adicionarAluno() {
+      const campo = document.getElementById('nomeAluno');
+      const nome = campo.value.trim();
+
+      if (!nome) {
+        alert('Digite o nome do aluno.');
+        return;
+      }
+
+      alunos.push(modeloAluno(nome));
+      campo.value = '';
+      renderizarTabela();
+      salvarDados();
+    }
+
+    function excluirAluno(id) {
+      if (!confirm('Deseja excluir este aluno?')) return;
+      alunos = alunos.filter(aluno => aluno.id !== id);
+      renderizarTabela();
+      salvarDados();
+    }
+
+    function atualizarNome(id, valor) {
+      const aluno = alunos.find(a => a.id === id);
+      if (!aluno) return;
+      aluno.nome = valor;
+      salvarDados();
+      atualizarResumo();
+    }
+
+    function atualizarNota(id, disciplina, indice, valor) {
+      const aluno = alunos.find(a => a.id === id);
+      if (!aluno) return;
+
+      if (valor === '') {
+        aluno.notas[disciplina][indice] = '';
+      } else {
+        let numero = Number(valor);
+        if (numero < 0) numero = 0;
+        if (numero > 10) numero = 10;
+        aluno.notas[disciplina][indice] = numero;
+      }
+
+      renderizarTabela();
+      salvarDados();
+    }
+
+    function calcularTotalDisciplina(notas) {
+      return notas.reduce((soma, nota) => soma + (nota === '' ? 0 : Number(nota)), 0);
+    }
+
+    function listarPendencias(aluno) {
+      const pendencias = [];
+
+      disciplinas.forEach(disciplina => {
+        aluno.notas[disciplina].forEach((nota, indice) => {
+          if (nota === '') {
+            pendencias.push(`${nomesDisciplinas[disciplina]} AV${indice + 1}`);
+          }
+        });
+      });
+
+      return pendencias;
+    }
+
+    function calcularMediaFinal(aluno) {
+      const totais = disciplinas.map(d => calcularTotalDisciplina(aluno.notas[d]));
+      const somaTotais = totais.reduce((acc, valor) => acc + valor, 0);
+      return somaTotais / disciplinas.length;
+    }
+
+    function gerarParecer(aluno) {
+      const media = calcularMediaFinal(aluno);
+      const pendencias = listarPendencias(aluno).length;
+      let baixas = 0;
+
+      disciplinas.forEach(disciplina => {
+        aluno.notas[disciplina].forEach(nota => {
+          if (nota !== '' && Number(nota) < 6) baixas++;
+        });
+      });
+
+      if (pendencias > 0) {
+        return 'Há avaliações não realizadas. Recomenda-se oportunizar nova realização e acompanhar a recuperação das aprendizagens.';
+      }
+
+      if (media >= 24 && baixas === 0) {
+        return 'Apresenta ótimo desempenho nas disciplinas avaliadas, com aprendizagem consolidada e participação satisfatória nas atividades.';
+      }
+
+      if (media >= 18) {
+        return 'Apresenta bom desempenho geral, com avanços nas aprendizagens. É importante manter a participação e reforçar conteúdos pontuais.';
+      }
+
+      if (media >= 12) {
+        return 'Apresenta desempenho regular. Necessita de acompanhamento mais próximo, retomada de conteúdos e incentivo à realização das atividades.';
+      }
+
+      return 'Apresenta dificuldades significativas nas avaliações. Necessita de intervenção pedagógica, reforço contínuo e acompanhamento da família.';
+    }
+
+    function formatarNumero(valor) {
+      return Number(valor).toFixed(1).replace('.', ',');
+    }
+
+    function renderizarTabela() {
+      const tbody = document.querySelector('#tabelaNotas tbody');
+      tbody.innerHTML = '';
+
+      alunos.forEach(aluno => {
+        const tr = document.createElement('tr');
+
+        let html = `
+          <td class="nome-coluna">
+            <input type="text" value="${escapeHtml(aluno.nome)}" oninput="atualizarNome(${aluno.id}, this.value)">
+          </td>
+        `;
+
+        disciplinas.forEach(disciplina => {
+          aluno.notas[disciplina].forEach((nota, indice) => {
+            const classe = nota !== '' && Number(nota) < 6 ? 'nota nota-baixa' : 'nota';
+            html += `
+              <td>
+                <input class="${classe}" type="number" min="0" max="10" step="0.1"
+                  value="${nota !== '' ? nota : ''}"
+                  oninput="atualizarNota(${aluno.id}, '${disciplina}', ${indice}, this.value)">
+              </td>
+            `;
+          });
+
+          html += `<td class="total-disciplina">${formatarNumero(calcularTotalDisciplina(aluno.notas[disciplina]))}</td>`;
+        });
+
+        const mediaFinal = calcularMediaFinal(aluno);
+        const pendencias = listarPendencias(aluno);
+
+        html += `
+          <td class="media-final">${formatarNumero(mediaFinal)}</td>
+          <td class="status-nao-realizou">${pendencias.length ? escapeHtml(pendencias.join(', ')) : 'Todas realizadas'}</td>
+          <td class="parecer">${escapeHtml(gerarParecer(aluno))}</td>
+          <td class="acoes-linha no-print">
+            <button class="btn btn-cinza" onclick="imprimirAluno(${aluno.id})">Imprimir</button>
+            <button class="btn btn-vermelho" onclick="excluirAluno(${aluno.id})">Excluir</button>
+          </td>
+        `;
+
+        tr.innerHTML = html;
+        tbody.appendChild(tr);
+      });
+
+      atualizarResumo();
+      atualizarCabecalhoImpressao();
+    }
+
+    function atualizarResumo() {
+      document.getElementById('totalAlunos').textContent = alunos.length;
+
+      let somaMedias = 0;
+      let totalBaixas = 0;
+      let totalPendencias = 0;
+
+      alunos.forEach(aluno => {
+        somaMedias += calcularMediaFinal(aluno);
+        totalPendencias += listarPendencias(aluno).length;
+        disciplinas.forEach(disciplina => {
+          aluno.notas[disciplina].forEach(nota => {
+            if (nota !== '' && Number(nota) < 6) totalBaixas++;
+          });
+        });
+      });
+
+      const mediaTurma = alunos.length ? (somaMedias / alunos.length) : 0;
+
+      document.getElementById('mediaTurma').textContent = mediaTurma.toFixed(2).replace('.', ',');
+      document.getElementById('quantidadeBaixas').textContent = totalBaixas;
+      document.getElementById('quantidadePendencias').textContent = totalPendencias;
+    }
+
+    function atualizarCabecalhoImpressao() {
+      document.getElementById('printTurma').textContent = document.getElementById('nomeTurma').value || '4º ano';
+      document.getElementById('printAno').textContent = document.getElementById('anoLetivo').value || new Date().getFullYear();
+    }
+
+    function salvarDados() {
+      const dados = {
+        turma: document.getElementById('nomeTurma').value,
+        anoLetivo: document.getElementById('anoLetivo').value,
+        alunos
+      };
+      localStorage.setItem('sistemaNotas4AnoJanetta', JSON.stringify(dados));
+    }
+
+    function carregarDados() {
+      const salvos = localStorage.getItem('sistemaNotas4AnoJanetta');
+      if (!salvos) {
+        renderizarTabela();
+        return;
+      }
+
+      try {
+        const dados = JSON.parse(salvos);
+        alunos = Array.isArray(dados.alunos) ? dados.alunos : [];
+        document.getElementById('nomeTurma').value = dados.turma || '4º ano';
+        document.getElementById('anoLetivo').value = dados.anoLetivo || '2026';
+        renderizarTabela();
+      } catch (erro) {
+        alert('Não foi possível carregar os dados salvos.');
+        renderizarTabela();
+      }
+    }
+
+    function limparTudo() {
+      if (!confirm('Deseja apagar todos os alunos e notas?')) return;
+      alunos = [];
+      localStorage.removeItem('sistemaNotas4AnoJanetta');
+      renderizarTabela();
+    }
+
+    function exportarCSV() {
+      const cabecalho = [
+        'Aluno',
+        'Português AV1','Português AV2','Português AV3','Total Português',
+        'Matemática AV1','Matemática AV2','Matemática AV3','Total Matemática',
+        'Ciências AV1','Ciências AV2','Ciências AV3','Total Ciências',
+        'Geografia AV1','Geografia AV2','Geografia AV3','Total Geografia',
+        'História AV1','História AV2','História AV3','Total História',
+        'Média Final','Não realizou','Parecer automático'
+      ];
+
+      let linhas = [cabecalho.join(';')];
+
+      alunos.forEach(aluno => {
+        const pendencias = listarPendencias(aluno).join(', ') || 'Todas realizadas';
+        const linha = [aluno.nome];
+
+        disciplinas.forEach(disciplina => {
+          aluno.notas[disciplina].forEach(nota => linha.push(nota === '' ? '' : String(nota).replace('.', ',')));
+          linha.push(String(calcularTotalDisciplina(aluno.notas[disciplina]).toFixed(1)).replace('.', ','));
+        });
+
+        linha.push(String(calcularMediaFinal(aluno).toFixed(1)).replace('.', ','));
+        linha.push(pendencias);
+        linha.push(gerarParecer(aluno));
+        linhas.push(linha.map(valor => `"${String(valor).replaceAll('"', '""')}"`).join(';'));
+      });
+
+      const csv = '\uFEFF' + linhas.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = `notas_4ano_${(document.getElementById('anoLetivo').value || '2026')}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function imprimirBoletim() {
+      atualizarCabecalhoImpressao();
+      window.print();
+    }
+
+    function imprimirAluno(id) {
+      const aluno = alunos.find(a => a.id === id);
+      if (!aluno) return;
+
+      const janela = window.open('', '_blank');
+      const turma = document.getElementById('nomeTurma').value || '4º ano';
+      const ano = document.getElementById('anoLetivo').value || '2026';
+
+      let linhas = '';
+      disciplinas.forEach(disciplina => {
+        const notas = aluno.notas[disciplina];
+        const total = calcularTotalDisciplina(notas);
+        linhas += `
+          <tr>
+            <td>${nomesDisciplinas[disciplina]}</td>
+            <td>${notas[0] === '' ? '-' : notas[0]}</td>
+            <td>${notas[1] === '' ? '-' : notas[1]}</td>
+            <td>${notas[2] === '' ? '-' : notas[2]}</td>
+            <td>${total.toFixed(1).replace('.', ',')}</td>
+          </tr>
+        `;
+      });
+
+      janela.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+          <title>Boletim - ${escapeHtml(aluno.nome)}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 24px; color: #22303c; }
+            h1 { color: #1f4e79; margin-bottom: 8px; }
+            p { margin: 4px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+            th, td { border: 1px solid #cfd8e3; padding: 8px; text-align: center; }
+            th { background: #1f4e79; color: white; }
+            .parecer { margin-top: 18px; padding: 12px; background: #f5f8fc; border-radius: 10px; }
+          </style>
+        </head>
+        <body>
+          <h1>Boletim Individual</h1>
+          <p><strong>Escola:</strong> EMPEIEF Janetta Klemz Jacob</p>
+          <p><strong>Aluno:</strong> ${escapeHtml(aluno.nome)}</p>
+          <p><strong>Turma:</strong> ${escapeHtml(turma)} • <strong>Ano letivo:</strong> ${escapeHtml(ano)}</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Disciplina</th>
+                <th>AV1</th>
+                <th>AV2</th>
+                <th>AV3</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${linhas}
+            </tbody>
+          </table>
+          <p><strong>Média final:</strong> ${calcularMediaFinal(aluno).toFixed(1).replace('.', ',')}</p>
+          <p><strong>Não realizou:</strong> ${escapeHtml(listarPendencias(aluno).join(', ') || 'Todas realizadas')}</p>
+          <div class="parecer"><strong>Parecer automático:</strong> ${escapeHtml(gerarParecer(aluno))}</div>
+          <script>
+            window.onload = function() { window.print(); }
+          <\/script>
+        </body>
+        </html>
+      `);
+      janela.document.close();
+    }
+
+    function escapeHtml(texto) {
+      return String(texto)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    document.getElementById('nomeTurma').addEventListener('input', salvarDados);
+    document.getElementById('anoLetivo').addEventListener('input', salvarDados);
+
+    carregarDados();
+  </script>
+</body>
+</html>

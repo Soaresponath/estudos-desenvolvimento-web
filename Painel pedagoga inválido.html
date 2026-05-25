@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Interativo da Pedagoga | EEEFM Frederico Boldt</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-2: #1d4ed8;
+      --accent: #eff6ff;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #dbe3f0;
+      --shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+    }
+
+    .dark {
+      --bg: #0f172a;
+      --card: #111c34;
+      --text: #e5eefc;
+      --muted: #b8c5de;
+      --primary: #60a5fa;
+      --primary-2: #3b82f6;
+      --accent: #182746;
+      --success: #22c55e;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --border: #243452;
+      --shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, var(--primary), var(--primary-2));
+      color: white;
+      padding: 22px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .brand {
+      padding: 10px 8px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.18);
+      margin-bottom: 18px;
+    }
+
+    .brand h1 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    .brand p {
+      font-size: 0.93rem;
+      opacity: 0.95;
+      line-height: 1.5;
+    }
+
+    .menu {
+      display: grid;
+      gap: 10px;
+    }
+
+    .menu button {
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      padding: 14px 14px;
+      border-radius: 14px;
+      text-align: left;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .menu button.active,
+    .menu button:hover {
+      background: rgba(255,255,255,0.28);
+    }
+
+    .sidebar-box {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    .main {
+      padding: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .topbar-left h2 {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .topbar-left p {
+      color: var(--muted);
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: start;
+    }
+
+    .btn, .input, .select, .textarea {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      color: white;
+      border-color: transparent;
+    }
+
+    .btn.soft {
+      background: var(--accent);
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .progress {
+      width: 100%;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), #4ade80);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .views {
+      display: none;
+    }
+
+    .views.active {
+      display: block;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto auto;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .turmas-grid,
+    .quick-grid,
+    .agenda-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .turma-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 7px solid var(--primary);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.18s ease;
+    }
+
+    .turma-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .alta { border-left-color: var(--danger); }
+    .media { border-left-color: var(--warning); }
+    .baixa { border-left-color: var(--success); }
+
+    .tags {
+      margin: 10px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--accent);
+      padding: 6px 10px;
+      border-radius: 999px;
+      margin: 4px 6px 0 0;
+      font-size: 0.85rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+
+    .kanban-col {
+      background: var(--accent);
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      min-height: 280px;
+    }
+
+    .kanban-col h3 {
+      margin-bottom: 10px;
+    }
+
+    .task {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
+      cursor: grab;
+    }
+
+    .task small {
+      display: block;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .list-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .list-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      margin-top: 8px;
+      background: var(--accent);
+    }
+
+    .accordion {
+      display: grid;
+      gap: 12px;
+    }
+
+    .accordion-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .accordion-header {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 0 16px 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .accordion-item.open .accordion-body {
+      display: block;
+    }
+
+    .floating {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .fab {
+      border: none;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: var(--card);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 20px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      background: var(--accent);
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Painel da Pedagoga</h1>
+        <p>EEEFM Frederico Boldt<br>Turmas do 1º ao 6º ano</p>
+      </div>
+
+      <div class="menu">
+        <button class="menu-btn active" data-view="dashboard">🏠 Visão geral</button>
+        <button class="menu-btn" data-view="turmas">📚 Turmas</button>
+        <button class="menu-btn" data-view="tarefas">✅ Tarefas</button>
+        <button class="menu-btn" data-view="reunioes">👥 Reuniões</button>
+        <button class="menu-btn" data-view="atendimentos">📝 Atendimentos</button>
+        <button class="menu-btn" data-view="diario">📖 Diário</button>
+        <button class="menu-btn" data-view="relatorios">📄 Relatórios</button>
+      </div>
+
+      <div class="sidebar-box">
+        <strong>Hoje:</strong>
+        <div id="dataAtual"></div>
+        <div style="margin-top:8px;"><strong>Salvamento:</strong> automático</div>
+      </div>
+
+      <div class="sidebar-box">
+        <strong>Dicas rápidas</strong><br>
+        Clique nas turmas para destacar.<br>
+        Arraste tarefas entre colunas.<br>
+        Gere PDF em Relatórios.
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h2 id="tituloView">Visão geral</h2>
+          <p>Organização pedagógica com salvamento automático e interações rápidas.</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn soft" id="temaBtn">🌙 Tema</button>
+          <button class="btn soft" id="exportarBtn">⬇️ Backup</button>
+          <label class="btn soft" for="importarArquivo">⬆️ Restaurar</label>
+          <input type="file" id="importarArquivo" hidden>
+          <button class="btn primary" onclick="window.print()">📄 PDF</button>
+        </div>
+      </div>
+
+      <section id="dashboard" class="views active">
+        <div class="grid-4">
+          <div class="card">
+            <div class="muted">Turmas acompanhadas</div>
+            <div class="stat-number">6</div>
+            <div class="muted">Do 1º ao 6º ano</div>
+          </div>
+          <div class="card">
+            <div class="muted">Tarefas concluídas</div>
+            <div class="stat-number" id="statConcluidas">0</div>
+            <div class="progress"><div class="progress-bar" id="barraConcluidas"></div></div>
+          </div>
+          <div class="card">
+            <div class="muted">Reuniões registradas</div>
+            <div class="stat-number" id="statReunioes">0</div>
+            <div class="muted">Acompanhamento contínuo</div>
+          </div>
+          <div class="card">
+            <div class="muted">Atendimentos</div>
+            <div class="stat-number" id="statAtendimentos">0</div>
+            <div class="muted">Escuta e intervenções</div>
+          </div>
+        </div>
+
+        <div class="quick-grid">
+          <div class="card">
+            <h3>Agenda do dia</h3>
+            <div id="agendaHoje" class="agenda-grid"></div>
+          </div>
+          <div class="card">
+            <h3>Prioridades por turma</h3>
+            <div id="resumoTurmas"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="turmas" class="views">
+        <div class="card" style="margin-bottom:16px;">
+          <div class="toolbar">
+            <input class="input" id="buscaTurma" placeholder="Pesquisar turma, foco ou observação">
+            <select class="select" id="filtroPrioridade">
+              <option value="todas">Todas as prioridades</option>
+              <option value="alta">Alta</option>
+              <option value="media">Média</option>
+              <option value="baixa">Baixa</option>
+            </select>
+            <select class="select" id="ordenacaoTurmas">
+              <option value="nome">Ordenar por nome</option>
+              <option value="prioridade">Ordenar por prioridade</option>
+            </select>
+            <button class="btn primary" id="filtrarBtn">Filtrar</button>
+            <button class="btn soft" id="limparFiltroBtn">Limpar</button>
+          </div>
+        </div>
+        <div id="turmasGrid" class="turmas-grid"></div>
+      </section>
+
+      <section id="tarefas" class="views">
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="margin-bottom:10px;">Nova tarefa</h3>
+          <div class="form-grid">
+            <input class="input" type="date" id="tarefaData">
+            <select class="select" id="tarefaTurma"></select>
+            <select class="select" id="tarefaPrioridade">
+              <option value="alta">Alta</option>
+              <option value="media">Média</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </div>
+          <textarea class="textarea" id="tarefaTexto" placeholder="Descreva a tarefa pedagógica..."></textarea>
+          <div class="list-actions">
+            <button class="btn primary" id="addTarefaBtn">Adicionar tarefa</button>
+          </div>
+        </div>
+
+        <div class="kanban">
+          <div class="kanban-col" data-status="pendente">
+            <h3>Pendentes</h3>
+            <div id="colPendente"></div>
+          </div>
+          <div class="kanban-col" data-status="andamento">
+            <h3>Em andamento</h3>
+            <div id="colAndamento"></div>
+          </div>
+          <div class="kanban-col" data-status="concluida">
+            <h3>Concluídas</h3>
+            <div id="colConcluida"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="reunioes" class="views">
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="margin-bottom:10px;">Nova reunião</h3>
+          <div class="form-grid">
+            <input class="input" type="date" id="reuniaoData">
+            <input class="input" type="time" id="reuniaoHora">
+            <select class="select" id="reuniaoTipo">
+              <option>Professor</option>
+              <option>Família</option>
+              <option>Equipe escolar</option>
+              <option>Pedagógica</option>
+            </select>
+          </div>
+          <textarea class="textarea" id="reuniaoTexto" placeholder="Tema, pauta ou encaminhamento da reunião..."></textarea>
+          <div class="list-actions"><button class="btn primary" id="addReuniaoBtn">Adicionar reunião</button></div>
+        </div>
+        <div id="listaReunioes" class="list"></div>
+      </section>
+
+      <section id="atendimentos" class="views">
+        <div class="card" style="margin-bottom:16px;">
+          <h3 style="margin-bottom:10px;">Novo atendimento</h3>
+          <div class="form-grid">
+            <input class="input" type="date" id="atendimentoData">
+            <select class="select" id="atendimentoTurma"></select>
+            <select class="select" id="atendimentoTipo">
+              <option>Aluno</option>
+              <option>Família</option>
+              <option>Professor</option>
+              <option>Turma</option>
+            </select>
+          </div>
+          <textarea class="textarea" id="atendimentoTexto" placeholder="Descreva o atendimento realizado..."></textarea>
+          <div class="list-actions"><button class="btn primary" id="addAtendimentoBtn">Adicionar atendimento</button></div>
+        </div>
+        <div id="listaAtendimentos" class="list"></div>
+      </section>
+
+      <section id="diario" class="views">
+        <div class="card">
+          <h3 style="margin-bottom:10px;">Diário pedagógico com salvamento automático</h3>
+          <div class="form-grid">
+            <input class="input" type="date" id="diarioData">
+            <select class="select" id="diarioTurma"></select>
+          </div>
+          <textarea class="textarea" id="diarioTexto" placeholder="Registre observações, intervenções, avanços, dificuldades e encaminhamentos..."></textarea>
+          <p class="muted" style="margin-top:10px;">O conteúdo é salvo automaticamente enquanto você digita.</p>
+        </div>
+      </section>
+
+      <section id="relatorios" class="views">
+        <div class="accordion">
+          <div class="accordion-item open">
+            <button class="accordion-header">Resumo automático</button>
+            <div class="accordion-body">
+              <textarea class="textarea" id="relatorioTexto" style="min-height:280px;" placeholder="Clique em atualizar para gerar o resumo automático."></textarea>
+              <div class="list-actions">
+                <button class="btn primary" id="gerarResumoBtn">Atualizar resumo</button>
+                <button class="btn soft" id="limparTudoBtn">Limpar todos os dados</button>
+              </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header">Como salvar na internet</button>
+            <div class="accordion-body">
+              Esta versão salva no navegador. Para salvar na internet, você pode integrar com Firebase depois, mantendo esta interface e enviando tarefas, reuniões, atendimentos e diário para a nuvem.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="floating">
+    <button class="fab" title="Ir para tarefas" onclick="ativarView('tarefas')">✅</button>
+    <button class="fab" title="Ir para diário" onclick="ativarView('diario')">📖</button>
+  </div>
+
+  <div class="toast" id="toast">Salvo com sucesso</div>
+
+  <script>
+    const baseTurmas = [
+      { nome: '1º Ano', prioridade: 'alta', foco: ['Alfabetização', 'Adaptação', 'Rotina inicial'], observacoes: ['Acompanhar leitura e escrita.', 'Observar adaptação e participação.'] },
+      { nome: '2º Ano', prioridade: 'media', foco: ['Leitura', 'Escrita', 'Intervenção pedagógica'], observacoes: ['Monitorar fluência leitora.', 'Apoiar alunos com dificuldades.'] },
+      { nome: '3º Ano', prioridade: 'baixa', foco: ['Consolidação', 'Matemática', 'Participação'], observacoes: ['Observar avanços individuais.', 'Analisar rendimento geral.'] },
+      { nome: '4º Ano', prioridade: 'alta', foco: ['Interpretação', 'Produção textual', 'Acompanhamento'], observacoes: ['Planejar ações com família quando necessário.', 'Observar comportamento e rendimento.'] },
+      { nome: '5º Ano', prioridade: 'media', foco: ['Autonomia', 'Estudo', 'Responsabilidade'], observacoes: ['Reforçar rotina de estudos.', 'Acompanhar organização da turma.'] },
+      { nome: '6º Ano', prioridade: 'alta', foco: ['Transição', 'Emocional', 'Rendimento'], observacoes: ['Observar adaptação ao segmento.', 'Fortalecer diálogo com docentes.'] }
+    ];
+
+    const state = {
+      tarefas: JSON.parse(localStorage.getItem('fb_tarefas') || '[]'),
+      reunioes: JSON.parse(localStorage.getItem('fb_reunioes') || '[]'),
+      atendimentos: JSON.parse(localStorage.getItem('fb_atendimentos') || '[]'),
+      diarioTexto: localStorage.getItem('fb_diarioTexto') || '',
+      diarioData: localStorage.getItem('fb_diarioData') || '',
+      diarioTurma: localStorage.getItem('fb_diarioTurma') || '1º Ano',
+      relatorioTexto: localStorage.getItem('fb_relatorioTexto') || '',
+      temaEscuro: localStorage.getItem('fb_temaEscuro') === '1'
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function showToast(msg = 'Salvo com sucesso') {
+      const toast = $('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1600);
+    }
+
+    function hojeISO() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function formatarDataTopo() {
+      const data = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+      $('dataAtual').textContent = data;
+    }
+
+    function preencherSelectsTurmas() {
+      const nomes = [...baseTurmas.map(t => t.nome), 'Geral'];
+      ['tarefaTurma', 'atendimentoTurma'].forEach(id => {
+        $(id).innerHTML = nomes.map(n => `<option>${n}</option>`).join('');
+      });
+      ['diarioTurma'].forEach(id => {
+        $(id).innerHTML = baseTurmas.map(n => `<option ${state.diarioTurma===n.nome?'selected':''}>${n.nome}</option>`).join('');
+      });
+    }
+
+    function ativarView(view) {
+      document.querySelectorAll('.views').forEach(v => v.classList.remove('active'));
+      $(view).classList.add('active');
+      document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+      const btn = document.querySelector(`.menu-btn[data-view="${view}"]`);
+      if (btn) btn.classList.add('active');
+      const nomes = {
+        dashboard: 'Visão geral',
+        turmas: 'Turmas',
+        tarefas: 'Tarefas',
+        reunioes: 'Reuniões',
+        atendimentos: 'Atendimentos',
+        diario: 'Diário',
+        relatorios: 'Relatórios'
+      };
+      $('tituloView').textContent = nomes[view] || 'Painel';
+    }
+
+    document.querySelectorAll('.menu-btn').forEach(btn => {
+      btn.addEventListener('click', () => ativarView(btn.dataset.view));
+    });
+
+    function prioridadePeso(p) {
+      return p === 'alta' ? 1 : p === 'media' ? 2 : 3;
+    }
+
+    function renderTurmas() {
+      let lista = [...baseTurmas];
+      const busca = $('buscaTurma').value.toLowerCase().trim();
+      const prioridade = $('filtroPrioridade').value;
+      const ordenacao = $('ordenacaoTurmas').value;
+
+      if (busca) {
+        lista = lista.filter(t => (t.nome + ' ' + t.foco.join(' ') + ' ' + t.observacoes.join(' ')).toLowerCase().includes(busca));
+      }
+      if (prioridade !== 'todas') {
+        lista = lista.filter(t => t.prioridade === prioridade);
+      }
+      if (ordenacao === 'prioridade') {
+        lista.sort((a,b) => prioridadePeso(a.prioridade) - prioridadePeso(b.prioridade));
+      } else {
+        lista.sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+      }
+
+      $('turmasGrid').innerHTML = lista.length ? lista.map(t => `
+        <div class="turma-card ${t.prioridade}" onclick="destacarTurma('${t.nome}')">
+          <h3>${t.nome}</h3>
+          <div class="pill">Prioridade ${t.prioridade}</div>
+          <div class="tags">${t.foco.map(f => `<span class="tag">${f}</span>`).join('')}</div>
+          <ul style="padding-left:18px;line-height:1.7;">
+            ${t.observacoes.map(o => `<li>${o}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('') : '<div class="empty">Nenhuma turma encontrada.</div>';
+
+      $('resumoTurmas').innerHTML = baseTurmas.map(t => `<div style="margin-bottom:10px;"><strong>${t.nome}</strong> <span class="pill">${t.prioridade}</span></div>`).join('');
+    }
+
+    function destacarTurma(nome) {
+      $('diarioTurma').value = nome;
+      state.diarioTurma = nome;
+      localStorage.setItem('fb_diarioTurma', nome);
+      ativarView('diario');
+      showToast(`Turma ${nome} selecionada no diário`);
+    }
+
+    $('filtrarBtn').addEventListener('click', renderTurmas);
+    $('limparFiltroBtn').addEventListener('click', () => {
+      $('buscaTurma').value = '';
+      $('filtroPrioridade').value = 'todas';
+      $('ordenacaoTurmas').value = 'nome';
+      renderTurmas();
+    });
+
+    function salvarEstado() {
+      localStorage.setItem('fb_tarefas', JSON.stringify(state.tarefas));
+      localStorage.setItem('fb_reunioes', JSON.stringify(state.reunioes));
+      localStorage.setItem('fb_atendimentos', JSON.stringify(state.atendimentos));
+      localStorage.setItem('fb_diarioTexto', state.diarioTexto);
+      localStorage.setItem('fb_diarioData', state.diarioData);
+      localStorage.setItem('fb_diarioTurma', state.diarioTurma);
+      localStorage.setItem('fb_relatorioTexto', state.relatorioTexto);
+    }
+
+    function renderTarefas() {
+      const cols = {
+        pendente: $('colPendente'),
+        andamento: $('colAndamento'),
+        concluida: $('colConcluida')
+      };
+      Object.values(cols).forEach(c => c.innerHTML = '');
+
+      if (!state.tarefas.length) {
+        cols.pendente.innerHTML = '<div class="empty">Nenhuma tarefa cadastrada.</div>';
+      }
+
+      state.tarefas.forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'task';
+        div.draggable = true;
+        div.dataset.id = t.id;
+        div.innerHTML = `
+          <strong>${t.turma}</strong>
+          <div style="margin-top:6px;">${t.texto}</div>
+          <small>${t.data || 'Sem data'} • prioridade ${t.prioridade}</small>
+          <div class="list-actions">
+            <button class="btn soft" onclick="editarTarefa(${t.id})">Editar</button>
+            <button class="btn soft" onclick="excluirTarefa(${t.id})">Excluir</button>
+          </div>
+        `;
+        div.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', t.id);
+        });
+        cols[t.status].appendChild(div);
+      });
+      atualizarIndicadores();
+    }
+
+    document.querySelectorAll('.kanban-col').forEach(col => {
+      col.addEventListener('dragover', e => e.preventDefault());
+      col.addEventListener('drop', e => {
+        e.preventDefault();
+        const id = Number(e.dataTransfer.getData('text/plain'));
+        const status = col.dataset.status;
+        const tarefa = state.tarefas.find(t => t.id === id);
+        if (tarefa) {
+          tarefa.status = status;
+          salvarEstado();
+          renderTarefas();
+          showToast('Tarefa movida');
+        }
+      });
+    });
+
+    $('addTarefaBtn').addEventListener('click', () => {
+      const texto = $('tarefaTexto').value.trim();
+      if (!texto) return showToast('Escreva a tarefa');
+      state.tarefas.unshift({
+        id: Date.now(),
+        data: $('tarefaData').value,
+        turma: $('tarefaTurma').value,
+        prioridade: $('tarefaPrioridade').value,
+        texto,
+        status: 'pendente'
+      });
+      $('tarefaTexto').value = '';
+      $('tarefaPrioridade').value = 'alta';
+      salvarEstado();
+      renderTarefas();
+      showToast('Tarefa adicionada');
+    });
+
+    function editarTarefa(id) {
+      const t = state.tarefas.find(x => x.id === id);
+      const novo = prompt('Editar tarefa:', t.texto);
+      if (novo === null) return;
+      t.texto = novo.trim() || t.texto;
+      salvarEstado();
+      renderTarefas();
+      showToast('Tarefa atualizada');
+    }
+
+    function excluirTarefa(id) {
+      state.tarefas = state.tarefas.filter(t => t.id !== id);
+      salvarEstado();
+      renderTarefas();
+      showToast('Tarefa excluída');
+    }
+
+    function renderReunioes() {
+      $('listaReunioes').innerHTML = state.reunioes.length ? state.reunioes.map(r => `
+        <div class="list-item">
+          <strong>${r.tipo}</strong>
+          <div class="muted" style="margin:6px 0;">${r.data || 'Sem data'} ${r.hora || ''}</div>
+          <div>${r.texto}</div>
+          <div class="list-actions">
+            <button class="btn soft" onclick="excluirReuniao(${r.id})">Excluir</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Nenhuma reunião cadastrada.</div>';
+    }
+
+    $('addReuniaoBtn').addEventListener('click', () => {
+      const texto = $('reuniaoTexto').value.trim();
+      if (!texto) return showToast('Escreva a pauta da reunião');
+      state.reunioes.unshift({
+        id: Date.now(),
+        data: $('reuniaoData').value,
+        hora: $('reuniaoHora').value,
+        tipo: $('reuniaoTipo').value,
+        texto
+      });
+      $('reuniaoTexto').value = '';
+      salvarEstado();
+      renderReunioes();
+      atualizarIndicadores();
+      renderAgendaHoje();
+      showToast('Reunião adicionada');
+    });
+
+    function excluirReuniao(id) {
+      state.reunioes = state.reunioes.filter(r => r.id !== id);
+      salvarEstado();
+      renderReunioes();
+      atualizarIndicadores();
+      renderAgendaHoje();
+      showToast('Reunião excluída');
+    }
+
+    function renderAtendimentos() {
+      $('listaAtendimentos').innerHTML = state.atendimentos.length ? state.atendimentos.map(a => `
+        <div class="list-item">
+          <strong>${a.tipo} • ${a.turma}</strong>
+          <div class="muted" style="margin:6px 0;">${a.data || 'Sem data'}</div>
+          <div>${a.texto}</div>
+          <div class="list-actions">
+            <button class="btn soft" onclick="excluirAtendimento(${a.id})">Excluir</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Nenhum atendimento cadastrado.</div>';
+    }
+
+    $('addAtendimentoBtn').addEventListener('click', () => {
+      const texto = $('atendimentoTexto').value.trim();
+      if (!texto) return showToast('Escreva o atendimento');
+      state.atendimentos.unshift({
+        id: Date.now(),
+        data: $('atendimentoData').value,
+        turma: $('atendimentoTurma').value,
+        tipo: $('atendimentoTipo').value,
+        texto
+      });
+      $('atendimentoTexto').value = '';
+      salvarEstado();
+      renderAtendimentos();
+      atualizarIndicadores();
+      renderAgendaHoje();
+      showToast('Atendimento adicionado');
+    });
+
+    function excluirAtendimento(id) {
+      state.atendimentos = state.atendimentos.filter(a => a.id !== id);
+      salvarEstado();
+      renderAtendimentos();
+      atualizarIndicadores();
+      renderAgendaHoje();
+      showToast('Atendimento excluído');
+    }
+
+    function atualizarIndicadores() {
+      const concluidas = state.tarefas.filter(t => t.status === 'concluida').length;
+      $('statConcluidas').textContent = concluidas;
+      $('statReunioes').textContent = state.reunioes.length;
+      $('statAtendimentos').textContent = state.atendimentos.length;
+      const porcentagem = state.tarefas.length ? Math.round((concluidas / state.tarefas.length) * 100) : 0;
+      $('barraConcluidas').style.width = porcentagem + '%';
+    }
+
+    function renderAgendaHoje() {
+      const hoje = hojeISO();
+      const itens = [
+        ...state.reunioes.filter(r => r.data === hoje).map(r => ({ tipo: 'Reunião', titulo: r.tipo, texto: r.texto })),
+        ...state.atendimentos.filter(a => a.data === hoje).map(a => ({ tipo: 'Atendimento', titulo: `${a.tipo} • ${a.turma}`, texto: a.texto }))
+      ];
+      $('agendaHoje').innerHTML = itens.length ? itens.map(i => `
+        <div class="list-item">
+          <strong>${i.tipo}</strong>
+          <div style="margin:6px 0;">${i.titulo}</div>
+          <div class="muted">${i.texto}</div>
+        </div>
+      `).join('') : '<div class="empty">Nenhum compromisso para hoje.</div>';
+    }
+
+    $('diarioTexto').value = state.diarioTexto;
+    $('diarioData').value = state.diarioData || hojeISO();
+    $('diarioTurma').value = state.diarioTurma;
+    $('relatorioTexto').value = state.relatorioTexto;
+
+    ['diarioTexto', 'diarioData', 'diarioTurma'].forEach(id => {
+      $(id).addEventListener('input', () => {
+        state.diarioTexto = $('diarioTexto').value;
+        state.diarioData = $('diarioData').value;
+        state.diarioTurma = $('diarioTurma').value;
+        salvarEstado();
+      });
+      $(id).addEventListener('change', () => {
+        state.diarioTexto = $('diarioTexto').value;
+        state.diarioData = $('diarioData').value;
+        state.diarioTurma = $('diarioTurma').value;
+        salvarEstado();
+        showToast('Diário salvo');
+      });
+    });
+
+    $('gerarResumoBtn').addEventListener('click', () => {
+      const texto = `RELATÓRIO PEDAGÓGICO
+
+Data do diário: ${$('diarioData').value}
+Turma: ${$('diarioTurma').value}
+
+DIÁRIO:
+${$('diarioTexto').value || 'Sem registro.'}
+
+TAREFAS: ${state.tarefas.length}
+- Pendentes: ${state.tarefas.filter(t=>t.status==='pendente').length}
+- Em andamento: ${state.tarefas.filter(t=>t.status==='andamento').length}
+- Concluídas: ${state.tarefas.filter(t=>t.status==='concluida').length}
+
+REUNIÕES: ${state.reunioes.length}
+${state.reunioes.map((r,i)=>`${i+1}. ${r.data || 'Sem data'} ${r.hora || ''} - ${r.tipo}: ${r.texto}`).join('
+') || 'Nenhuma reunião.'}
+
+ATENDIMENTOS: ${state.atendimentos.length}
+${state.atendimentos.map((a,i)=>`${i+1}. ${a.data || 'Sem data'} - ${a.tipo} / ${a.turma}: ${a.texto}`).join('
+') || 'Nenhum atendimento.'}`;
+      $('relatorioTexto').value = texto;
+      state.relatorioTexto = texto;
+      salvarEstado();
+      showToast('Resumo atualizado');
+    });
+
+    $('limparTudoBtn').addEventListener('click', () => {
+      if (!confirm('Deseja apagar todos os dados do painel?')) return;
+      Object.keys(localStorage).filter(k => k.startsWith('fb_')).forEach(k => localStorage.removeItem(k));
+      location.reload();
+    });
+
+    document.querySelectorAll('.accordion-header').forEach(btn => {
+      btn.addEventListener('click', () => btn.parentElement.classList.toggle('open'));
+    });
+
+    $('temaBtn').addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      state.temaEscuro = document.body.classList.contains('dark');
+      localStorage.setItem('fb_temaEscuro', state.temaEscuro ? '1' : '0');
+    });
+
+    if (state.temaEscuro) document.body.classList.add('dark');
+
+    $('exportarBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'backup_painel_pedagoga.json';
+      a.click();
+      showToast('Backup exportado');
+    });
+
+    $('importarArquivo').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          localStorage.setItem('fb_tarefas', JSON.stringify(data.tarefas || []));
+          localStorage.setItem('fb_reunioes', JSON.stringify(data.reunioes || []));
+          localStorage.setItem('fb_atendimentos', JSON.stringify(data.atendimentos || []));
+          localStorage.setItem('fb_diarioTexto', data.diarioTexto || '');
+          localStorage.setItem('fb_diarioData', data.diarioData || hojeISO());
+          localStorage.setItem('fb_diarioTurma', data.diarioTurma || '1º Ano');
+          localStorage.setItem('fb_relatorioTexto', data.relatorioTexto || '');
+          showToast('Backup restaurado');
+          setTimeout(() => location.reload(), 600);
+        } catch {
+          showToast('Arquivo inválido');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    $('tarefaData').value = hojeISO();
+    $('reuniaoData').value = hojeISO();
+    $('atendimentoData').value = hojeISO();
+
+    preencherSelectsTurmas();
+    renderTurmas();
+    renderTarefas();
+    renderReunioes();
+    renderAtendimentos();
+    atualizarIndicadores();
+    renderAgendaHoje();
+    formatarDataTopo();
+  </script>
+</body>
+</html>

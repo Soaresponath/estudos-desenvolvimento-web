@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Pedagógico Escolar</title>
+  <style>
+    :root{
+      --bg:#f1f5f9;
+      --card:#ffffff;
+      --text:#1e293b;
+      --muted:#64748b;
+      --line:#e2e8f0;
+      --primary:#16a34a;
+      --primary-dark:#0f172a;
+      --soft:#dcfce7;
+      --danger:#dc2626;
+      --shadow:0 10px 25px rgba(15,23,42,.08);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:280px 1fr;
+    }
+    .sidebar{
+      background:#020617;
+      color:#fff;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .brand,.side-note,.card,.module-card,.hero,.stat{
+      background:var(--card);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+    }
+    .brand{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      padding:18px;
+      box-shadow:none;
+    }
+    .brand .title{font-size:22px;font-weight:700}
+    .brand .subtitle{font-size:12px;color:#cbd5e1;text-transform:uppercase;letter-spacing:.08em}
+    .brand .school{font-size:14px;color:#cbd5e1;margin-top:10px}
+    .menu{
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding-right:6px;
+    }
+    .menu button{
+      width:100%;
+      border:none;
+      border-radius:18px;
+      background:rgba(255,255,255,.06);
+      color:#e2e8f0;
+      text-align:left;
+      padding:14px 16px;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .menu button.active,.menu button:hover{
+      background:var(--primary);
+      color:#fff;
+    }
+    .side-note{
+      background:rgba(255,255,255,.06);
+      color:#cbd5e1;
+      padding:16px;
+      box-shadow:none;
+      border:1px solid rgba(255,255,255,.08);
+      font-size:14px;
+      line-height:1.4;
+    }
+    .main{
+      padding:18px;
+    }
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .topbar h2{
+      margin:0;
+      font-size:34px;
+    }
+    .topbar p{
+      margin:6px 0 0;
+      color:var(--muted);
+    }
+    .search{
+      width:320px;
+      max-width:100%;
+    }
+    input, textarea, select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:14px;
+      color:var(--text);
+      background:#fff;
+    }
+    textarea{min-height:120px;resize:vertical}
+    .search input{background:#fff}
+    .dashboard-grid{
+      display:grid;
+      grid-template-columns:1.4fr .9fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#0f172a,#1e293b);
+      color:#fff;
+      padding:24px;
+    }
+    .pill{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      margin-right:8px;
+      background:#22c55e;
+      color:#fff;
+    }
+    .pill.secondary{
+      background:rgba(255,255,255,.12);
+      color:#fff;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.3fr .8fr;
+      gap:16px;
+      margin-top:18px;
+    }
+    .dark-box{
+      background:rgba(255,255,255,.08);
+      border-radius:24px;
+      padding:16px;
+    }
+    .dark-box textarea{
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      border-color:rgba(255,255,255,.12);
+    }
+    .dark-box textarea::placeholder{color:#cbd5e1}
+    .progress{
+      width:100%;
+      height:12px;
+      background:rgba(255,255,255,.16);
+      border-radius:999px;
+      overflow:hidden;
+      margin:10px 0 14px;
+    }
+    .progress > div{
+      height:100%;
+      background:#22c55e;
+      width:0%;
+    }
+    .quick{
+      padding:22px;
+    }
+    .quick h3,.section-title{
+      margin:0 0 6px;
+      font-size:22px;
+    }
+    .muted{color:var(--muted)}
+    .btn{
+      border:none;
+      background:var(--primary);
+      color:#fff;
+      padding:12px 16px;
+      border-radius:16px;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn.secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+    .btn.danger{
+      background:var(--danger);
+    }
+    .btn.full{width:100%}
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .stat{
+      padding:18px;
+    }
+    .stat .label{color:var(--muted);font-size:13px}
+    .stat .value{font-size:34px;font-weight:700;margin-top:6px}
+    .panel-grid{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:18px;
+    }
+    .card{
+      padding:20px;
+    }
+    .card-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
+      margin-bottom:16px;
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .item{
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:16px;
+      background:#fff;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .item h4{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+    .item p{margin:6px 0;color:#475569;white-space:pre-wrap}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f1f5f9;
+      border:1px solid var(--line);
+      font-size:12px;
+    }
+    .badge.green{
+      background:var(--soft);
+      color:#166534;
+      border-color:#bbf7d0;
+    }
+    .empty{
+      border:1px dashed #cbd5e1;
+      text-align:center;
+      padding:28px;
+      border-radius:22px;
+      color:var(--muted);
+      background:#fff;
+    }
+    .module-card{
+      padding:20px;
+    }
+    .module-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:18px;
+    }
+    .class-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+    .class-card{
+      background:#fff;
+      border-radius:24px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .hidden{display:none !important}
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(2,6,23,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:1000;
+    }
+    .modal.show{display:flex}
+    .modal-box{
+      background:#fff;
+      width:min(900px,100%);
+      max-height:90vh;
+      overflow:auto;
+      border-radius:28px;
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+    .modal-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+    }
+    .full{grid-column:1 / -1}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .small{font-size:13px}
+    .two-cols{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:18px;
+    }
+    @media (max-width:1100px){
+      .app{grid-template-columns:1fr}
+      .sidebar{position:sticky;top:0;z-index:30}
+      .menu{display:grid;grid-template-columns:repeat(3,1fr)}
+      .dashboard-grid,.panel-grid,.hero-grid,.module-grid,.class-grid,.stats,.two-cols{grid-template-columns:1fr}
+    }
+    @media (max-width:700px){
+      .menu{grid-template-columns:repeat(2,1fr)}
+      .topbar{flex-direction:column}
+      .topbar h2{font-size:28px}
+      .modal-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="subtitle">Aplicativo escolar</div>
+        <div class="title">Painel Pedagógico</div>
+        <div class="school" id="brandSchool">EEEFM Frederico Boldt</div>
+      </div>
+
+      <div class="menu" id="menu"></div>
+
+      <div class="side-note">
+        <strong>Sistema salvo automaticamente</strong><br>
+        Os registros ficam guardados no navegador do dispositivo.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section id="dashboard" class="view"></section>
+      <section id="ppp" class="view hidden"></section>
+      <section id="action" class="view hidden"></section>
+      <section id="classes" class="view hidden"></section>
+      <section id="teachers" class="view hidden"></section>
+      <section id="meetings" class="view hidden"></section>
+      <section id="trainings" class="view hidden"></section>
+      <section id="assessments" class="view hidden"></section>
+      <section id="inclusion" class="view hidden"></section>
+      <section id="families" class="view hidden"></section>
+      <section id="councils" class="view hidden"></section>
+      <section id="materials" class="view hidden"></section>
+      <section id="referrals" class="view hidden"></section>
+      <section id="records" class="view hidden"></section>
+      <section id="settings" class="view hidden"></section>
+    </main>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <div class="card-head">
+        <div>
+          <h3 class="section-title" id="modalTitle">Novo registro</h3>
+          <p class="muted small">Preencha os campos e clique em salvar.</p>
+        </div>
+        <button class="btn secondary" onclick="closeModal()">Fechar</button>
+      </div>
+      <div class="modal-grid" id="modalFields"></div>
+      <div style="margin-top:18px" class="actions">
+        <button class="btn" onclick="saveModal()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "app-pedagogica-escolar-html-v1";
+
+    const yearGroups = ["1º ano", "2º ano", "3º ano", "4º ano", "5º ano", "6º ano"];
+    const statusOptions = ["Pendente", "Em andamento", "Concluído"];
+    const priorityOptions = ["Baixa", "Média", "Alta"];
+    const followUpTypes = ["Planejamento", "Observação em sala", "Devolutiva", "Formação", "Avaliação"];
+    const familyStatus = ["Agendado", "Realizado", "Retorno necessário"];
+
+    const menuItems = [
+      { key: "dashboard", label: "Painel inicial" },
+      { key: "ppp", label: "PPP e Regimento" },
+      { key: "action", label: "Plano de ação" },
+      { key: "classes", label: "Turmas" },
+      { key: "teachers", label: "Acomp. docente" },
+      { key: "meetings", label: "Reuniões" },
+      { key: "trainings", label: "Formação" },
+      { key: "assessments", label: "Avaliações" },
+      { key: "inclusion", label: "Inclusão" },
+      { key: "families", label: "Famílias" },
+      { key: "councils", label: "Conselho de classe" },
+      { key: "materials", label: "Materiais" },
+      { key: "referrals", label: "Encaminhamentos" },
+      { key: "records", label: "Registros gerais" },
+      { key: "settings", label: "Configurações" },
+    ];
+
+    const defaultData = {
+      schoolName: "EEEFM Frederico Boldt",
+      pedagogueName: "",
+      schoolYear: "2026",
+      summary: "",
+      tasks: [],
+      notifications: [
+        { id: "n1", text: "Verificar pauta da próxima reunião pedagógica." },
+        { id: "n2", text: "Atualizar registros de acompanhamento docente." }
+      ],
+      classes: yearGroups.map(name => ({ id: name, name, teacher: "", shift: "Vespertino", notes: "" })),
+      agenda: [],
+      ppp: {
+        principles: "",
+        goals: "",
+        evaluation: "",
+        regiment: "",
+        familyParticipation: "",
+        actionPlanReview: ""
+      },
+      actionPlan: [],
+      teacherFollowUps: [],
+      meetings: [],
+      trainings: [],
+      assessments: [],
+      inclusionCases: [],
+      familyContacts: [],
+      councils: [],
+      materials: [],
+      referrals: [],
+      records: []
+    };
+
+    let data = loadData();
+    let currentView = "dashboard";
+    let currentSearch = "";
+    let modalConfig = null;
+
+    function uid() {
+      return Math.random().toString(36).slice(2, 10);
+    }
+
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : structuredClone(defaultData);
+      } catch {
+        return structuredClone(defaultData);
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function structuredClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function filterBySearch(items) {
+      return items.filter(item => JSON.stringify(item).toLowerCase().includes(currentSearch.toLowerCase()));
+    }
+
+    function topBar(title, subtitle) {
+      return `
+        <div class="topbar">
+          <div>
+            <h2>${title}</h2>
+            <p>${subtitle}</p>
+          </div>
+          <div class="search">
+            <input type="text" placeholder="Pesquisar registros..." value="${escapeHtml(currentSearch)}" oninput="updateSearch(this.value)">
+          </div>
+        </div>
+      `;
+    }
+
+    function badge(text, green = false) {
+      return `<span class="badge ${green ? "green" : ""}">${escapeHtml(text)}</span>`;
+    }
+
+    function emptyState(text) {
+      return `<div class="empty">${escapeHtml(text)}</div>`;
+    }
+
+    function renderMenu() {
+      const menu = document.getElementById("menu");
+      menu.innerHTML = menuItems.map(item => `
+        <button class="${currentView === item.key ? "active" : ""}" onclick="showView('${item.key}')">${item.label}</button>
+      `).join("");
+      document.getElementById("brandSchool").textContent = data.schoolName || "Painel Pedagógico";
+    }
+
+    function showView(key) {
+      currentView = key;
+      document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
+      document.getElementById(key).classList.remove("hidden");
+      renderMenu();
+      renderAll();
+    }
+
+    function updateSearch(value) {
+      currentSearch = value;
+      renderAll();
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderPPP();
+      renderActionPlan();
+      renderClasses();
+      renderTeachers();
+      renderMeetings();
+      renderTrainings();
+      renderAssessments();
+      renderInclusion();
+      renderFamilies();
+      renderCouncils();
+      renderMaterials();
+      renderReferrals();
+      renderRecords();
+      renderSettings();
+      saveData();
+    }
+
+    function calculateStats() {
+      const pendingTasks = data.tasks.filter(t => t.status !== "Concluído").length;
+      const actionCompleted = data.actionPlan.filter(i => i.status === "Concluído").length;
+      const actionProgress = data.actionPlan.length ? Math.round((actionCompleted / data.actionPlan.length) * 100) : 0;
+      return {
+        pendingTasks,
+        meetings: data.meetings.length,
+        familyContacts: data.familyContacts.length,
+        inclusionCases: data.inclusionCases.length,
+        classes: data.classes.length,
+        actionProgress
+      };
+    }
+
+    function renderDashboard() {
+      const stats = calculateStats();
+      const agenda = filterBySearch(data.agenda);
+      const tasks = filterBySearch(data.tasks);
+
+      document.getElementById("dashboard").innerHTML = `
+        ${topBar("Painel inicial", "Visão geral da gestão pedagógica da unidade escolar.")}
+        <div class="dashboard-grid">
+          <div class="hero">
+            <div>
+              <span class="pill">Sistema escolar pedagógico</span>
+              <span class="pill secondary">Ano letivo ${escapeHtml(data.schoolYear)}</span>
+            </div>
+            <h1 style="font-size:38px;margin:14px 0 8px">Gestão pedagógica completa em formato de aplicativo</h1>
+            <p style="color:#cbd5e1;max-width:900px">Organize PPP, plano de ação, turmas, acompanhamento docente, reuniões, avaliações, inclusão, famílias, conselho de classe e registros da unidade.</p>
+
+            <div class="hero-grid">
+              <div class="dark-box">
+                <p class="small" style="color:#cbd5e1;margin-top:0">Síntese da semana</p>
+                <textarea placeholder="Escreva prioridades, pontos de atenção, demandas da equipe, devolutivas e metas da semana." oninput="updateSummary(this.value)">${escapeHtml(data.summary)}</textarea>
+              </div>
+              <div class="dark-box">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <p class="small" style="color:#cbd5e1;margin:0">Progresso do plano de ação</p>
+                  <strong style="font-size:28px">${stats.actionProgress}%</strong>
+                </div>
+                <div class="progress"><div style="width:${stats.actionProgress}%"></div></div>
+                ${(data.notifications || []).map(n => `
+                  <div style="background:rgba(255,255,255,.08);padding:10px 12px;border-radius:16px;margin-top:8px">${escapeHtml(n.text)}</div>
+                `).join("")}
+              </div>
+            </div>
+          </div>
+
+          <div class="quick">
+            <h3>Controle rápido</h3>
+            <p class="muted">Backup e personalização da rotina pedagógica.</p>
+            <div class="actions" style="margin-top:16px">
+              <button class="btn full" onclick="exportData()">Exportar dados</button>
+              <label class="btn secondary full" style="text-align:center;display:block;cursor:pointer">
+                Importar dados
+                <input type="file" accept="application/json" onchange="importData(event)" style="display:none">
+              </label>
+              <button class="btn full" onclick="openTaskModal()">Adicionar tarefa</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats">
+          ${statCard("Tarefas pendentes", stats.pendingTasks, "Demandas ainda abertas")}
+          ${statCard("Reuniões", stats.meetings, "Registros cadastrados")}
+          ${statCard("Famílias", stats.familyContacts, "Atendimentos e contatos")}
+          ${statCard("Inclusão", stats.inclusionCases, "Casos acompanhados")}
+          ${statCard("Turmas", stats.classes, "Anos acompanhados")}
+        </div>
+
+        <div class="panel-grid">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="section-title">Agenda pedagógica</h3>
+                <p class="muted">Compromissos, ações e lembretes institucionais.</p>
+              </div>
+              <button class="btn" onclick="openModal({
+                title:'Novo compromisso',
+                key:'agenda',
+                fields:[
+                  {name:'date',label:'Data',type:'date'},
+                  {name:'title',label:'Título'},
+                  {name:'category',label:'Categoria'},
+                  {name:'description',label:'Descrição',type:'textarea',full:true}
+                ]
+              })">Novo compromisso</button>
+            </div>
+            <div class="list">
+              ${agenda.length ? agenda.map(item => itemCard({
+                title: item.title || "Sem título",
+                badges: [item.date, item.category].filter(Boolean),
+                text: item.description || "",
+                deleteAction: `deleteItem('agenda','${item.id}')`
+              })).join("") : emptyState("Cadastre compromissos da semana, reuniões, acompanhamentos e ações prioritárias.")}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="section-title">Tarefas da pedagoga</h3>
+                <p class="muted">Organização diária e semanal.</p>
+              </div>
+            </div>
+            <div class="list">
+              ${tasks.length ? tasks.map(item => itemCard({
+                title: item.title || "Sem título",
+                badges: [item.priority, item.status, item.deadline].filter(Boolean),
+                text: "",
+                deleteAction: `deleteItem('tasks','${item.id}')`
+              })).join("") : emptyState("Adicione tarefas com prioridade, prazo e status.")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function statCard(label, value, description) {
+      return `
+        <div class="stat">
+          <div class="label">${escapeHtml(label)}</div>
+          <div class="value">${escapeHtml(String(value))}</div>
+          <div class="muted small">${escapeHtml(description)}</div>
+        </div>
+      `;
+    }
+
+    function itemCard({title, badges = [], text = "", deleteAction}) {
+      return `
+        <div class="item">
+          <div style="flex:1">
+            <div class="badges">${badges.map(b => badge(b)).join("")}</div>
+            <h4>${escapeHtml(title)}</h4>
+            ${text ? `<p>${escapeHtml(text)}</p>` : ""}
+          </div>
+          <div><button class="btn danger" onclick="${deleteAction}">Excluir</button></div>
+        </div>
+      `;
+    }
+
+    function renderPPP() {
+      document.getElementById("ppp").innerHTML = `
+        ${topBar("PPP e Regimento", "Coordenação, avaliação, efetivação e realimentação dos documentos institucionais.")}
+        <div class="module-grid">
+          ${pppCard("Princípios e diretrizes", "principles")}
+          ${pppCard("Metas e objetivos", "goals")}
+          ${pppCard("Avaliação contínua", "evaluation")}
+          ${pppCard("Regimento da unidade", "regiment")}
+          ${pppCard("Participação das famílias", "familyParticipation")}
+          ${pppCard("Realimentação e revisão", "actionPlanReview")}
+        </div>
+      `;
+    }
+
+    function pppCard(label, field) {
+      return `
+        <div class="module-card">
+          <h3 class="section-title">${label}</h3>
+          <textarea oninput="updatePPPField('${field}', this.value)" style="min-height:180px">${escapeHtml(data.ppp[field] || "")}</textarea>
+        </div>
+      `;
+    }
+
+    function renderActionPlan() {
+      renderModuleList("action", {
+        title: "Plano de ação",
+        subtitle: "Metas da unidade, responsáveis, prazos e acompanhamento institucional.",
+        key: "actionPlan",
+        empty: "Cadastre as ações da unidade, com foco em acompanhamento contínuo do plano.",
+        modal: {
+          title: "Nova ação do plano",
+          key: "actionPlan",
+          fields: [
+            {name:'action',label:'Ação'},
+            {name:'owner',label:'Responsável'},
+            {name:'deadline',label:'Prazo',type:'date'},
+            {name:'status',label:'Status',type:'select',options:statusOptions},
+            {name:'notes',label:'Observações',type:'textarea',full:true},
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">
+            ${item.status ? badge(item.status,true) : ""}
+            ${item.deadline ? badge(item.deadline) : ""}
+          </div>
+          <h4>${escapeHtml(item.action || "Sem título")}</h4>
+          <p><strong>Responsável:</strong> ${escapeHtml(item.owner || "")}</p>
+          <p>${escapeHtml(item.notes || "")}</p>
+        `
+      });
+    }
+
+    function renderClasses() {
+      const classes = filterBySearch(data.classes);
+      document.getElementById("classes").innerHTML = `
+        ${topBar("Turmas", "Cadastro por ano, professor responsável e observações pedagógicas.")}
+        <div class="class-grid">
+          ${classes.map((item) => `
+            <div class="class-card">
+              <div class="card-head">
+                <div>
+                  <h3 class="section-title">${escapeHtml(item.name)}</h3>
+                  ${badge("Turma")}
+                </div>
+              </div>
+              <div style="display:grid;gap:12px">
+                <input value="${escapeHtml(item.teacher)}" placeholder="Professor(a) responsável" oninput="updateClass('${item.id}','teacher',this.value)">
+                <input value="${escapeHtml(item.shift)}" placeholder="Turno" oninput="updateClass('${item.id}','shift',this.value)">
+                <textarea style="min-height:150px" placeholder="Observações, demandas, acordos e necessidades da turma." oninput="updateClass('${item.id}','notes',this.value)">${escapeHtml(item.notes)}</textarea>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderTeachers() {
+      renderModuleList("teachers", {
+        title: "Acompanhamento docente",
+        subtitle: "Planejamento, execução, observação em sala, devolutivas e avaliação do trabalho educativo.",
+        key: "teacherFollowUps",
+        empty: "Registre acompanhamentos, visitas em sala, devolutivas e orientações pedagógicas.",
+        modal: {
+          title: "Novo acompanhamento docente",
+          key: "teacherFollowUps",
+          fields: [
+            {name:'teacher',label:'Professor(a)'},
+            {name:'className',label:'Turma',type:'select',options:yearGroups},
+            {name:'type',label:'Tipo',type:'select',options:followUpTypes},
+            {name:'date',label:'Data',type:'date'},
+            {name:'description',label:'Descrição',type:'textarea',full:true},
+            {name:'referrals',label:'Encaminhamentos',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">
+            ${item.className ? badge(item.className) : ""}
+            ${item.type ? badge(item.type,true) : ""}
+            ${item.date ? badge(item.date) : ""}
+          </div>
+          <h4>${escapeHtml(item.teacher || "Sem nome")}</h4>
+          <p>${escapeHtml(item.description || "")}</p>
+          <p><strong>Encaminhamentos:</strong> ${escapeHtml(item.referrals || "")}</p>
+        `
+      });
+    }
+
+    function renderMeetings() {
+      renderModuleList("meetings", {
+        title: "Reuniões",
+        subtitle: "Reuniões pedagógico-administrativas com pauta, participantes, decisões e devolutivas.",
+        key: "meetings",
+        empty: "Cadastre reuniões com equipe diretiva, professores e demais profissionais da unidade.",
+        modal: {
+          title: "Nova reunião",
+          key: "meetings",
+          fields: [
+            {name:'title',label:'Título'},
+            {name:'date',label:'Data',type:'date'},
+            {name:'participants',label:'Participantes'},
+            {name:'agenda',label:'Pauta',type:'textarea',full:true},
+            {name:'decisions',label:'Decisões',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">${item.date ? badge(item.date) : ""}</div>
+          <h4>${escapeHtml(item.title || "Sem título")}</h4>
+          <p><strong>Participantes:</strong> ${escapeHtml(item.participants || "")}</p>
+          <p><strong>Pauta:</strong> ${escapeHtml(item.agenda || "")}</p>
+          <p><strong>Decisões:</strong> ${escapeHtml(item.decisions || "")}</p>
+        `
+      });
+    }
+
+    function renderTrainings() {
+      renderModuleList("trainings", {
+        title: "Formação continuada",
+        subtitle: "Estudos, momentos formativos, socialização de experiências e reflexões em serviço.",
+        key: "trainings",
+        empty: "Registre formações da SME, partilhas, reflexões e ações de desenvolvimento profissional.",
+        modal: {
+          title: "Nova formação",
+          key: "trainings",
+          fields: [
+            {name:'theme',label:'Tema'},
+            {name:'date',label:'Data',type:'date'},
+            {name:'audience',label:'Público'},
+            {name:'objective',label:'Objetivo',type:'textarea',full:true},
+            {name:'record',label:'Registro',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">
+            ${item.date ? badge(item.date) : ""}
+            ${item.audience ? badge(item.audience,true) : ""}
+          </div>
+          <h4>${escapeHtml(item.theme || "Sem tema")}</h4>
+          <p><strong>Objetivo:</strong> ${escapeHtml(item.objective || "")}</p>
+          <p><strong>Registro:</strong> ${escapeHtml(item.record || "")}</p>
+        `
+      });
+    }
+
+    function renderAssessments() {
+      renderModuleList("assessments", {
+        title: "Avaliações",
+        subtitle: "Análises de aprendizagem, necessidades pedagógicas específicas e encaminhamentos por turma.",
+        key: "assessments",
+        empty: "Cadastre resultados, diagnósticos, observações e decisões pedagógicas por turma.",
+        modal: {
+          title: "Novo registro avaliativo",
+          key: "assessments",
+          fields: [
+            {name:'className',label:'Turma',type:'select',options:yearGroups},
+            {name:'period',label:'Período'},
+            {name:'focus',label:'Foco da avaliação'},
+            {name:'analysis',label:'Análise pedagógica',type:'textarea',full:true},
+            {name:'actions',label:'Encaminhamentos',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">
+            ${item.period ? badge(item.period) : ""}
+            ${item.focus ? badge(item.focus,true) : ""}
+          </div>
+          <h4>${escapeHtml(item.className || "Sem turma")}</h4>
+          <p><strong>Análise:</strong> ${escapeHtml(item.analysis || "")}</p>
+          <p><strong>Encaminhamentos:</strong> ${escapeHtml(item.actions || "")}</p>
+        `
+      });
+    }
+
+    function renderInclusion() {
+      renderModuleList("inclusion", {
+        title: "Inclusão",
+        subtitle: "Necessidades educacionais específicas, planos de apoio e articulações com profissionais e responsáveis.",
+        key: "inclusionCases",
+        empty: "Cadastre alunos acompanhados, apoios individualizados e encaminhamentos de inclusão.",
+        modal: {
+          title: "Novo caso de inclusão",
+          key: "inclusionCases",
+          fields: [
+            {name:'student',label:'Educando(a)'},
+            {name:'className',label:'Turma',type:'select',options:yearGroups},
+            {name:'need',label:'Necessidade específica'},
+            {name:'supportPlan',label:'Plano de apoio',type:'textarea',full:true},
+            {name:'articulation',label:'Articulação com responsáveis e rede',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">
+            ${item.className ? badge(item.className) : ""}
+            ${item.need ? badge(item.need,true) : ""}
+          </div>
+          <h4>${escapeHtml(item.student || "Sem nome")}</h4>
+          <p><strong>Plano de apoio:</strong> ${escapeHtml(item.supportPlan || "")}</p>
+          <p><strong>Articulação:</strong> ${escapeHtml(item.articulation || "")}</p>
+        `
+      });
+    }
+
+    function renderFamilies() {
+      renderModuleList("families", {
+        title: "Famílias",
+        subtitle: "Atendimentos, devolutivas, comunicação e participação das famílias no processo pedagógico.",
+        key: "familyContacts",
+        empty: "Cadastre reuniões, devolutivas e registros de comunicação com as famílias.",
+        modal: {
+          title: "Novo atendimento à família",
+          key: "familyContacts",
+          fields: [
+            {name:'family',label:'Família / responsável'},
+            {name:'student',label:'Educando(a)'},
+            {name:'date',label:'Data',type:'date'},
+            {name:'status',label:'Status',type:'select',options:familyStatus},
+            {name:'subject',label:'Assunto'},
+            {name:'record',label:'Registro',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">
+            ${item.student ? badge(item.student) : ""}
+            ${item.status ? badge(item.status,true) : ""}
+            ${item.date ? badge(item.date) : ""}
+          </div>
+          <h4>${escapeHtml(item.family || "Sem família")}</h4>
+          <p><strong>Assunto:</strong> ${escapeHtml(item.subject || "")}</p>
+          <p>${escapeHtml(item.record || "")}</p>
+        `
+      });
+    }
+
+    function renderCouncils() {
+      renderModuleList("councils", {
+        title: "Conselho de classe",
+        subtitle: "Análises, pautas e encaminhamentos pedagógicos para garantia do direito à educação.",
+        key: "councils",
+        empty: "Registre conselhos por turma, com foco em análise pedagógica e decisões coletivas.",
+        modal: {
+          title: "Novo conselho de classe",
+          key: "councils",
+          fields: [
+            {name:'className',label:'Turma',type:'select',options:yearGroups},
+            {name:'date',label:'Data',type:'date'},
+            {name:'agenda',label:'Pauta',type:'textarea',full:true},
+            {name:'actions',label:'Encaminhamentos',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">${item.date ? badge(item.date) : ""}</div>
+          <h4>${escapeHtml(item.className || "Sem turma")}</h4>
+          <p><strong>Pauta:</strong> ${escapeHtml(item.agenda || "")}</p>
+          <p><strong>Encaminhamentos:</strong> ${escapeHtml(item.actions || "")}</p>
+        `
+      });
+    }
+
+    function renderMaterials() {
+      renderModuleList("materials", {
+        title: "Materiais didático-pedagógicos",
+        subtitle: "Seleção, uso e avaliação dos materiais da unidade escolar.",
+        key: "materials",
+        empty: "Cadastre materiais, critérios definidos e avaliação pedagógica de uso.",
+        modal: {
+          title: "Novo material",
+          key: "materials",
+          fields: [
+            {name:'material',label:'Material'},
+            {name:'segment',label:'Turma / segmento'},
+            {name:'criteria',label:'Critérios de seleção',type:'textarea',full:true},
+            {name:'evaluation',label:'Avaliação do uso',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">${item.segment ? badge(item.segment) : ""}</div>
+          <h4>${escapeHtml(item.material || "Sem nome")}</h4>
+          <p><strong>Critérios:</strong> ${escapeHtml(item.criteria || "")}</p>
+          <p><strong>Avaliação:</strong> ${escapeHtml(item.evaluation || "")}</p>
+        `
+      });
+    }
+
+    function renderReferrals() {
+      renderModuleList("referrals", {
+        title: "Encaminhamentos",
+        subtitle: "Direitos humanos, proteção, adaptação, classificação, reclassificação e articulações institucionais.",
+        key: "referrals",
+        empty: "Cadastre encaminhamentos pedagógicos, administrativos e intersetoriais.",
+        modal: {
+          title: "Novo encaminhamento",
+          key: "referrals",
+          fields: [
+            {name:'caseName',label:'Caso / educando(a)'},
+            {name:'type',label:'Tipo de ação'},
+            {name:'date',label:'Data',type:'date'},
+            {name:'record',label:'Registro',type:'textarea',full:true},
+            {name:'articulation',label:'Articulação com responsáveis ou órgãos',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">
+            ${item.type ? badge(item.type,true) : ""}
+            ${item.date ? badge(item.date) : ""}
+          </div>
+          <h4>${escapeHtml(item.caseName || "Sem caso")}</h4>
+          <p><strong>Registro:</strong> ${escapeHtml(item.record || "")}</p>
+          <p><strong>Articulação:</strong> ${escapeHtml(item.articulation || "")}</p>
+        `
+      });
+    }
+
+    function renderRecords() {
+      renderModuleList("records", {
+        title: "Registros gerais",
+        subtitle: "Espaço para normativas, distribuição de funções, observações administrativas e outras ações do cargo.",
+        key: "records",
+        empty: "Use este espaço para registrar demandas amplas da função pedagógica.",
+        modal: {
+          title: "Novo registro geral",
+          key: "records",
+          fields: [
+            {name:'title',label:'Título'},
+            {name:'category',label:'Categoria'},
+            {name:'description',label:'Descrição',type:'textarea',full:true}
+          ]
+        },
+        renderItem: item => `
+          <div class="badges">${item.category ? badge(item.category) : ""}</div>
+          <h4>${escapeHtml(item.title || "Sem título")}</h4>
+          <p>${escapeHtml(item.description || "")}</p>
+        `
+      });
+    }
+
+    function renderSettings() {
+      document.getElementById("settings").innerHTML = `
+        ${topBar("Configurações", "Personalize dados principais do aplicativo escolar.")}
+        <div class="two-cols">
+          <div class="card">
+            <h3 class="section-title">Identificação da unidade</h3>
+            <div style="display:grid;gap:12px;margin-top:14px">
+              <input value="${escapeHtml(data.schoolName)}" placeholder="Nome da escola" oninput="updateSetting('schoolName',this.value)">
+              <input value="${escapeHtml(data.pedagogueName)}" placeholder="Nome da pedagoga" oninput="updateSetting('pedagogueName',this.value)">
+              <input value="${escapeHtml(data.schoolYear)}" placeholder="Ano letivo" oninput="updateSetting('schoolYear',this.value)">
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <h3 class="section-title">Lembretes do sistema</h3>
+                <p class="muted">Use para destacar pontos importantes no painel inicial.</p>
+              </div>
+              <button class="btn" onclick="addNotification()">Adicionar</button>
+            </div>
+            <div class="list">
+              ${(data.notifications || []).map(note => `
+                <div class="item">
+                  <div style="flex:1">
+                    <input value="${escapeHtml(note.text)}" oninput="updateNotification('${note.id}',this.value)">
+                  </div>
+                  <div><button class="btn danger" onclick="deleteNotification('${note.id}')">Excluir</button></div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderModuleList(sectionId, config) {
+      const items = filterBySearch(data[config.key]);
+      document.getElementById(sectionId).innerHTML = `
+        ${topBar(config.title, config.subtitle)}
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <h3 class="section-title">${config.title}</h3>
+              <p class="muted">${config.subtitle}</p>
+            </div>
+            <button class="btn" onclick='openModal(${JSON.stringify(config.modal).replace(/'/g, "&apos;")})'>Novo registro</button>
+          </div>
+          <div class="list">
+            ${items.length ? items.map(item => `
+              <div class="item">
+                <div style="flex:1">${config.renderItem(item)}</div>
+                <div><button class="btn danger" onclick="deleteItem('${config.key}','${item.id}')">Excluir</button></div>
+              </div>
+            `).join("") : emptyState(config.empty)}
+          </div>
+        </div>
+      `;
+    }
+
+    function updateSummary(value) {
+      data.summary = value;
+      saveData();
+    }
+
+    function updatePPPField(field, value) {
+      data.ppp[field] = value;
+      saveData();
+    }
+
+    function updateClass(id, field, value) {
+      const item = data.classes.find(c => c.id === id);
+      if (item) {
+        item[field] = value;
+        saveData();
+      }
+    }
+
+    function updateSetting(field, value) {
+      data[field] = value;
+      renderAll();
+    }
+
+    function addNotification() {
+      data.notifications.push({ id: uid(), text: "" });
+      renderAll();
+    }
+
+    function updateNotification(id, value) {
+      const item = data.notifications.find(n => n.id === id);
+      if (item) item.text = value;
+      saveData();
+    }
+
+    function deleteNotification(id) {
+      data.notifications = data.notifications.filter(n => n.id !== id);
+      renderAll();
+    }
+
+    function deleteItem(key, id) {
+      data[key] = data[key].filter(item => item.id !== id);
+      renderAll();
+    }
+
+    function openTaskModal() {
+      openModal({
+        title: "Nova tarefa",
+        key: "tasks",
+        fields: [
+          {name:'title',label:'Tarefa'},
+          {name:'priority',label:'Prioridade',type:'select',options:priorityOptions},
+          {name:'status',label:'Status',type:'select',options:statusOptions},
+          {name:'deadline',label:'Prazo',type:'date'}
+        ]
+      });
+    }
+
+    function openModal(config) {
+      if (typeof config === "string") config = JSON.parse(config);
+      modalConfig = config;
+      document.getElementById("modalTitle").textContent = config.title || "Novo registro";
+      const fields = document.getElementById("modalFields");
+      fields.innerHTML = config.fields.map(field => {
+        if (field.type === "textarea") {
+          return `
+            <div class="${field.full ? "full" : ""}">
+              <label>${field.label}</label>
+              <textarea data-name="${field.name}"></textarea>
+            </div>
+          `;
+        }
+        if (field.type === "select") {
+          return `
+            <div class="${field.full ? "full" : ""}">
+              <label>${field.label}</label>
+              <select data-name="${field.name}">
+                <option value="">Selecione</option>
+                ${(field.options || []).map(opt => `<option value="${escapeHtml(opt)}">${escapeHtml(opt)}</option>`).join("")}
+              </select>
+            </div>
+          `;
+        }
+        return `
+          <div class="${field.full ? "full" : ""}">
+            <label>${field.label}</label>
+            <input type="${field.type || "text"}" data-name="${field.name}">
+          </div>
+        `;
+      }).join("");
+      document.getElementById("modal").classList.add("show");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("show");
+      modalConfig = null;
+    }
+
+    function saveModal() {
+      if (!modalConfig) return;
+      const record = { id: uid() };
+      document.querySelectorAll("#modalFields [data-name]").forEach(field => {
+        record[field.getAttribute("data-name")] = field.value;
+      });
+      data[modalConfig.key].unshift(record);
+      closeModal();
+      renderAll();
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `app-pedagogica-${data.schoolYear}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          data = JSON.parse(e.target.result);
+          renderAll();
+        } catch {
+          alert("Arquivo inválido.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    renderMenu();
+    renderAll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Profissional de Estudos - CC Estácio</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --panel-soft: #eef3f9;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe3ee;
+      --primary: #2346a0;
+      --primary-hover: #1b3780;
+      --danger: #dc2626;
+      --danger-soft: #fee2e2;
+      --success: #16a34a;
+      --warning: #d97706;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+
+      --web: #2563eb;
+      --arquitetura: #7c3aed;
+      --bd: #059669;
+      --paradigmas: #ea580c;
+      --matlog: #ca8a04;
+    }
+
+    body.dark {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1f2937;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #374151;
+      --primary: #60a5fa;
+      --primary-hover: #3b82f6;
+      --danger: #f87171;
+      --danger-soft: #3b1c1c;
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: var(--primary);
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .header-panel {
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr 1fr 1fr auto;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    input, select, button {
+      font: inherit;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-secondary {
+      background: var(--panel-soft);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid transparent;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      padding: 18px;
+    }
+
+    .stat-title {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 1.7rem;
+      font-weight: 800;
+    }
+
+    .progress-wrap {
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: var(--panel-soft);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #60a5fa);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr auto auto;
+      gap: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .column {
+      padding: 16px;
+      min-height: 500px;
+    }
+
+    .column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .column-header h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .badge-count {
+      min-width: 34px;
+      text-align: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      font-weight: 800;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .task-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-left: 6px solid var(--primary);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .task-card[data-subject-color="web"] { border-left-color: var(--web); }
+    .task-card[data-subject-color="arquitetura"] { border-left-color: var(--arquitetura); }
+    .task-card[data-subject-color="bd"] { border-left-color: var(--bd); }
+    .task-card[data-subject-color="paradigmas"] { border-left-color: var(--paradigmas); }
+    .task-card[data-subject-color="matlog"] { border-left-color: var(--matlog); }
+
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .task-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 10px 0 12px;
+    }
+
+    .chip {
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      color: var(--text);
+    }
+
+    .priority-alta { color: #b91c1c; background: #fee2e2; }
+    .priority-media { color: #92400e; background: #fef3c7; }
+    .priority-baixa { color: #065f46; background: #d1fae5; }
+
+    .task-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .task-actions button {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 28px 10px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      background: var(--panel-soft);
+    }
+
+    .footer-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    dialog {
+      border: none;
+      border-radius: 18px;
+      width: min(560px, calc(100% - 24px));
+      background: var(--panel);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      padding: 0;
+    }
+
+    dialog::backdrop {
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-content {
+      padding: 22px;
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+    }
+
+    .modal-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1100px) {
+      .form-grid,
+      .toolbar,
+      .stats,
+      .board {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Painel Profissional de Estudos</h1>
+        <p>Ciência da Computação • 2º período • Estácio</p>
+      </div>
+      <button class="btn-secondary" id="themeToggle">🌙 Alternar tema</button>
+    </div>
+
+    <section class="panel header-panel">
+      <strong>Adicionar novo tópico</strong>
+      <div class="form-grid">
+        <input type="text" id="taskInput" placeholder="Ex: Normalização em Banco de Dados" />
+        <select id="subjectInput">
+          <option value="">Disciplina</option>
+          <option value="Desenv. Web">Desenv. Web</option>
+          <option value="Arquitetura de Computadores">Arquitetura de Computadores</option>
+          <option value="Banco de Dados">Banco de Dados</option>
+          <option value="Paradigmas de Linguagens">Paradigmas de Linguagens</option>
+          <option value="Matemática e Lógica">Matemática e Lógica</option>
+        </select>
+        <select id="priorityInput">
+          <option value="Média">Prioridade média</option>
+          <option value="Alta">Prioridade alta</option>
+          <option value="Baixa">Prioridade baixa</option>
+        </select>
+        <input type="date" id="dateInput" />
+        <button class="btn-primary" id="addTaskBtn">Adicionar</button>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="panel stat-card">
+        <div class="stat-title">Total de tópicos</div>
+        <div class="stat-value" id="totalTasks">0</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="stat-title">Concluídos</div>
+        <div class="stat-value" id="doneTasks">0</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="stat-title">Em prática</div>
+        <div class="stat-value" id="doingTasks">0</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="stat-title">Progresso geral</div>
+        <div class="stat-value" id="progressText">0%</div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel toolbar">
+      <input type="text" id="searchInput" placeholder="Pesquisar tópico..." />
+      <select id="filterSubject">
+        <option value="">Todas as disciplinas</option>
+        <option value="Desenv. Web">Desenv. Web</option>
+        <option value="Arquitetura de Computadores">Arquitetura de Computadores</option>
+        <option value="Banco de Dados">Banco de Dados</option>
+        <option value="Paradigmas de Linguagens">Paradigmas de Linguagens</option>
+        <option value="Matemática e Lógica">Matemática e Lógica</option>
+      </select>
+      <select id="filterPriority">
+        <option value="">Todas as prioridades</option>
+        <option value="Alta">Alta</option>
+        <option value="Média">Média</option>
+        <option value="Baixa">Baixa</option>
+      </select>
+      <button class="btn-secondary" id="seedBtn">Carregar base</button>
+      <button class="btn-secondary" id="loadAllBtn">Carregar todas as matérias</button>
+      <button class="btn-danger" id="clearDoneBtn">Limpar concluídos</button>
+    </section>
+
+    <section class="board">
+      <div class="panel column">
+        <div class="column-header">
+          <h2>📚 Para estudar</h2>
+          <span class="badge-count" id="todoCount">0</span>
+        </div>
+        <div class="task-list" id="todoList"></div>
+      </div>
+
+      <div class="panel column">
+        <div class="column-header">
+          <h2>💻 Praticando</h2>
+          <span class="badge-count" id="doingCount">0</span>
+        </div>
+        <div class="task-list" id="doingList"></div>
+      </div>
+
+      <div class="panel column">
+        <div class="column-header">
+          <h2>✅ Concluído</h2>
+          <span class="badge-count" id="doneCount">0</span>
+        </div>
+        <div class="task-list" id="doneList"></div>
+      </div>
+    </section>
+
+    <div class="footer-actions">
+      <button class="btn-secondary" id="exportBtn">Exportar backup</button>
+      <label class="btn-secondary" for="importFile" style="display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
+        Importar backup
+      </label>
+      <input type="file" id="importFile" accept="application/json" hidden />
+    </div>
+  </div>
+
+  <dialog id="editModal">
+    <div class="modal-content">
+      <h3>Editar tópico</h3>
+      <div class="modal-grid">
+        <input type="text" id="editTaskText" placeholder="Título do tópico" />
+        <select id="editTaskSubject">
+          <option value="Desenv. Web">Desenv. Web</option>
+          <option value="Arquitetura de Computadores">Arquitetura de Computadores</option>
+          <option value="Banco de Dados">Banco de Dados</option>
+          <option value="Paradigmas de Linguagens">Paradigmas de Linguagens</option>
+          <option value="Matemática e Lógica">Matemática e Lógica</option>
+        </select>
+        <select id="editTaskPriority">
+          <option value="Alta">Alta</option>
+          <option value="Média">Média</option>
+          <option value="Baixa">Baixa</option>
+        </select>
+        <input type="date" id="editTaskDate" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="cancelEditBtn">Cancelar</button>
+        <button class="btn-primary" id="saveEditBtn">Salvar alterações</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const STORAGE_KEY = 'painel_estudos_profissional_v1';
+    const THEME_KEY = 'painel_estudos_tema';
+
+    const state = {
+      todoList: [],
+      doingList: [],
+      doneList: []
+    };
+
+    let editingTaskId = null;
+    let editingListName = null;
+
+    const els = {
+      taskInput: document.getElementById('taskInput'),
+      subjectInput: document.getElementById('subjectInput'),
+      priorityInput: document.getElementById('priorityInput'),
+      dateInput: document.getElementById('dateInput'),
+      addTaskBtn: document.getElementById('addTaskBtn'),
+      seedBtn: document.getElementById('seedBtn'),
+      loadAllBtn: document.getElementById('loadAllBtn'),
+      clearDoneBtn: document.getElementById('clearDoneBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      importFile: document.getElementById('importFile'),
+      themeToggle: document.getElementById('themeToggle'),
+      searchInput: document.getElementById('searchInput'),
+      filterSubject: document.getElementById('filterSubject'),
+      filterPriority: document.getElementById('filterPriority'),
+      totalTasks: document.getElementById('totalTasks'),
+      doneTasks: document.getElementById('doneTasks'),
+      doingTasks: document.getElementById('doingTasks'),
+      progressText: document.getElementById('progressText'),
+      progressFill: document.getElementById('progressFill'),
+      todoCount: document.getElementById('todoCount'),
+      doingCount: document.getElementById('doingCount'),
+      doneCount: document.getElementById('doneCount'),
+      todoList: document.getElementById('todoList'),
+      doingList: document.getElementById('doingList'),
+      doneList: document.getElementById('doneList'),
+      editModal: document.getElementById('editModal'),
+      editTaskText: document.getElementById('editTaskText'),
+      editTaskSubject: document.getElementById('editTaskSubject'),
+      editTaskPriority: document.getElementById('editTaskPriority'),
+      editTaskDate: document.getElementById('editTaskDate'),
+      cancelEditBtn: document.getElementById('cancelEditBtn'),
+      saveEditBtn: document.getElementById('saveEditBtn')
+    };
+
+    function createTask(text, subject, priority, date) {
+      return {
+        id: crypto.randomUUID ? crypto.randomUUID() : Date.now() + Math.random().toString(16).slice(2),
+        text,
+        subject,
+        priority,
+        date,
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function subjectColorKey(subject) {
+      if (subject === 'Desenv. Web') return 'web';
+      if (subject === 'Arquitetura de Computadores') return 'arquitetura';
+      if (subject === 'Banco de Dados') return 'bd';
+      if (subject === 'Paradigmas de Linguagens') return 'paradigmas';
+      return 'matlog';
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      try {
+        const parsed = JSON.parse(saved);
+        state.todoList = Array.isArray(parsed.todoList) ? parsed.todoList : [];
+        state.doingList = Array.isArray(parsed.doingList) ? parsed.doingList : [];
+        state.doneList = Array.isArray(parsed.doneList) ? parsed.doneList : [];
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      }
+    }
+
+    function saveTheme(theme) {
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    function loadTheme() {
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      if (savedTheme === 'dark') document.body.classList.add('dark');
+      updateThemeButton();
+    }
+
+    function updateThemeButton() {
+      els.themeToggle.textContent = document.body.classList.contains('dark')
+        ? '☀️ Tema claro'
+        : '🌙 Tema escuro';
+    }
+
+    function addTask() {
+      const text = els.taskInput.value.trim();
+      const subject = els.subjectInput.value;
+      const priority = els.priorityInput.value;
+      const date = els.dateInput.value;
+
+      if (!text) {
+        alert('Digite o tópico de estudo.');
+        els.taskInput.focus();
+        return;
+      }
+
+      if (!subject) {
+        alert('Selecione a disciplina.');
+        els.subjectInput.focus();
+        return;
+      }
+
+      state.todoList.push(createTask(text, subject, priority, date));
+      saveState();
+      clearForm();
+      renderAll();
+    }
+
+    function clearForm() {
+      els.taskInput.value = '';
+      els.subjectInput.value = '';
+      els.priorityInput.value = 'Média';
+      els.dateInput.value = '';
+      els.taskInput.focus();
+    }
+
+    function findTask(listName, taskId) {
+      return state[listName].find(task => task.id === taskId);
+    }
+
+    function deleteTask(listName, taskId) {
+      state[listName] = state[listName].filter(task => task.id !== taskId);
+      saveState();
+      renderAll();
+    }
+
+    function moveTask(sourceList, targetList, taskId) {
+      const index = state[sourceList].findIndex(task => task.id === taskId);
+      if (index === -1) return;
+      const [task] = state[sourceList].splice(index, 1);
+      state[targetList].push(task);
+      saveState();
+      renderAll();
+    }
+
+    function openEditModal(listName, taskId) {
+      const task = findTask(listName, taskId);
+      if (!task) return;
+      editingTaskId = taskId;
+      editingListName = listName;
+      els.editTaskText.value = task.text;
+      els.editTaskSubject.value = task.subject;
+      els.editTaskPriority.value = task.priority;
+      els.editTaskDate.value = task.date || '';
+      els.editModal.showModal();
+    }
+
+    function saveTaskEdit() {
+      const task = findTask(editingListName, editingTaskId);
+      if (!task) return;
+      const newText = els.editTaskText.value.trim();
+      if (!newText) {
+        alert('Digite o título do tópico.');
+        return;
+      }
+      task.text = newText;
+      task.subject = els.editTaskSubject.value;
+      task.priority = els.editTaskPriority.value;
+      task.date = els.editTaskDate.value;
+      saveState();
+      renderAll();
+      els.editModal.close();
+    }
+
+    function formatDate(date) {
+      if (!date) return 'Sem prazo';
+      const [year, month, day] = date.split('-');
+      return `${day}/${month}/${year}`;
+    }
+
+    function getPriorityClass(priority) {
+      return priority === 'Alta' ? 'priority-alta' : priority === 'Baixa' ? 'priority-baixa' : 'priority-media';
+    }
+
+    function passesFilters(task) {
+      const search = els.searchInput.value.trim().toLowerCase();
+      const subject = els.filterSubject.value;
+      const priority = els.filterPriority.value;
+
+      const matchesSearch = !search || task.text.toLowerCase().includes(search) || task.subject.toLowerCase().includes(search);
+      const matchesSubject = !subject || task.subject === subject;
+      const matchesPriority = !priority || task.priority === priority;
+
+      return matchesSearch && matchesSubject && matchesPriority;
+    }
+
+    function renderList(listName, element) {
+      const tasks = state[listName].filter(passesFilters);
+      element.innerHTML = '';
+
+      if (!tasks.length) {
+        element.innerHTML = '<div class="empty">Nenhum tópico nesta coluna.</div>';
+      } else {
+        tasks.forEach(task => {
+          const card = document.createElement('article');
+          card.className = 'task-card';
+          card.dataset.subjectColor = subjectColorKey(task.subject);
+
+          let moveButtons = '';
+          if (listName === 'todoList') {
+            moveButtons = `<button class="btn-secondary" data-action="move" data-source="todoList" data-target="doingList" data-id="${task.id}">Começar</button>`;
+          } else if (listName === 'doingList') {
+            moveButtons = `
+              <button class="btn-secondary" data-action="move" data-source="doingList" data-target="todoList" data-id="${task.id}">Pausar</button>
+              <button class="btn-primary" data-action="move" data-source="doingList" data-target="doneList" data-id="${task.id}">Concluir</button>
+            `;
+          } else {
+            moveButtons = `<button class="btn-secondary" data-action="move" data-source="doneList" data-target="doingList" data-id="${task.id}">Revisar</button>`;
+          }
+
+          card.innerHTML = `
+            <div class="task-top">
+              <h3 class="task-title">${task.text}</h3>
+            </div>
+            <div class="chips">
+              <span class="chip">${task.subject}</span>
+              <span class="chip ${getPriorityClass(task.priority)}">Prioridade ${task.priority.toLowerCase()}</span>
+            </div>
+            <div class="task-meta">Prazo: ${formatDate(task.date)}</div>
+            <div class="task-actions">
+              ${moveButtons}
+              <button class="btn-secondary" data-action="edit" data-source="${listName}" data-id="${task.id}">Editar</button>
+              <button class="btn-danger" data-action="delete" data-source="${listName}" data-id="${task.id}">Excluir</button>
+            </div>
+          `;
+
+          element.appendChild(card);
+        });
+      }
+
+      if (listName === 'todoList') els.todoCount.textContent = tasks.length;
+      if (listName === 'doingList') els.doingCount.textContent = tasks.length;
+      if (listName === 'doneList') els.doneCount.textContent = tasks.length;
+    }
+
+    function renderStats() {
+      const total = state.todoList.length + state.doingList.length + state.doneList.length;
+      const done = state.doneList.length;
+      const doing = state.doingList.length;
+      const progress = total ? Math.round((done / total) * 100) : 0;
+
+      els.totalTasks.textContent = total;
+      els.doneTasks.textContent = done;
+      els.doingTasks.textContent = doing;
+      els.progressText.textContent = `${progress}%`;
+      els.progressFill.style.width = `${progress}%`;
+    }
+
+    function renderAll() {
+      renderList('todoList', els.todoList);
+      renderList('doingList', els.doingList);
+      renderList('doneList', els.doneList);
+      renderStats();
+    }
+
+    function clearDoneTasks() {
+      if (!state.doneList.length) {
+        alert('Não há itens concluídos para limpar.');
+        return;
+      }
+      if (!confirm('Deseja apagar todos os tópicos concluídos?')) return;
+      state.doneList = [];
+      saveState();
+      renderAll();
+    }
+
+    function seedSubjects() {
+      const total = state.todoList.length + state.doingList.length + state.doneList.length;
+      if (total > 0 && !confirm('Já existem dados. Deseja adicionar a base inicial mesmo assim?')) return;
+
+      const defaults = [
+        createTask('HTML5, CSS, JavaScript e PHP - fundamentos', 'Desenv. Web', 'Alta', ''),
+        createTask('Componentes de hardware e organização do computador', 'Arquitetura de Computadores', 'Média', ''),
+        createTask('Modelagem conceitual e relacional', 'Banco de Dados', 'Alta', ''),
+        createTask('Paradigmas: estruturado, OO e outros', 'Paradigmas de Linguagens', 'Média', ''),
+        createTask('Funções, lógica proposicional e contagem', 'Matemática e Lógica', 'Alta', '')
+      ];
+
+      state.todoList.push(...defaults);
+      saveState();
+      renderAll();
+    }
+
+    function taskExists(text, subject) {
+      const allTasks = [...state.todoList, ...state.doingList, ...state.doneList];
+      return allTasks.some(task => task.text === text && task.subject === subject);
+    }
+
+    function addSubjectContents(subject, contents, priority = 'Alta') {
+      contents.forEach(content => {
+        if (!taskExists(content, subject)) {
+          state.todoList.push(createTask(content, subject, priority, ''));
+        }
+      });
+    }
+
+    function carregarConteudosWeb() {
+      addSubjectContents('Desenv. Web', [
+        'Introdução',
+        'Ambiente Web: Cliente x Servidor',
+        'HTML - Linguagem de Marcação',
+        'CSS - Estilização',
+        'JavaScript',
+        'PHP - Páginas Dinâmicas',
+        'PHP + Banco de Dados',
+        'Revisão / Preparação'
+      ]);
+    }
+
+    function carregarConteudosArquitetura() {
+      addSubjectContents('Arquitetura de Computadores', [
+        'Introdução',
+        'Base Computacional',
+        'Componentes de Hardware',
+        'Representação de Dados',
+        'Lógica Digital',
+        'Processamento em Paralelo',
+        'Arquitetura CISC x RISC',
+        'Revisão / Preparação'
+      ]);
+    }
+
+    function carregarConteudosBD() {
+      addSubjectContents('Banco de Dados', [
+        'Introdução',
+        'Sistema de Banco de Dados',
+        'Modelagem Conceitual',
+        'Modelagem Lógica',
+        'PostgreSQL - Criação e Manipulação',
+        'Consultas em uma Tabela',
+        'Consultas com JOIN (várias tabelas)',
+        'Revisão / Preparação'
+      ]);
+    }
+
+    function carregarConteudosPython() {
+      addSubjectContents('Paradigmas de Linguagens', [
+        'Introdução',
+        'Paradigmas de Linguagem em Python',
+        'Python Básico',
+        'Python Estruturado',
+        'Python Orientado a Objetos (POO)',
+        'Revisão / Preparação'
+      ]);
+    }
+
+    function carregarConteudosMatematica() {
+      addSubjectContents('Matemática e Lógica', [
+        'Introdução',
+        'Teoria dos Conjuntos e Contagem',
+        'Gráficos e Interpretação',
+        'Funções (aprofundamento)',
+        'Cálculo Proposicional',
+        'Cálculo de Predicados',
+        'Métodos de Demonstração',
+        'Revisão / Preparação'
+      ]);
+    }
+
+    function carregarTodasAsMaterias() {
+      carregarConteudosWeb();
+      carregarConteudosArquitetura();
+      carregarConteudosBD();
+      carregarConteudosPython();
+      carregarConteudosMatematica();
+      saveState();
+      renderAll();
+      alert('Todas as matérias foram carregadas no painel.');
+    }
+
+    function exportBackup() {
+      const data = JSON.stringify(state, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'painel-estudos-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importBackup(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = event => {
+        try {
+          const parsed = JSON.parse(event.target.result);
+          state.todoList = Array.isArray(parsed.todoList) ? parsed.todoList : [];
+          state.doingList = Array.isArray(parsed.doingList) ? parsed.doingList : [];
+          state.doneList = Array.isArray(parsed.doneList) ? parsed.doneList : [];
+          saveState();
+          renderAll();
+          alert('Backup importado com sucesso.');
+        } catch {
+          alert('Arquivo inválido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    document.addEventListener('click', event => {
+      const btn = event.target.closest('button');
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      if (action === 'delete') deleteTask(btn.dataset.source, btn.dataset.id);
+      if (action === 'move') moveTask(btn.dataset.source, btn.dataset.target, btn.dataset.id);
+      if (action === 'edit') openEditModal(btn.dataset.source, btn.dataset.id);
+    });
+
+    els.addTaskBtn.addEventListener('click', addTask);
+    els.taskInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter') addTask();
+    });
+    els.clearDoneBtn.addEventListener('click', clearDoneTasks);
+    els.seedBtn.addEventListener('click', seedSubjects);
+    els.loadAllBtn.addEventListener('click', carregarTodasAsMaterias);
+    els.exportBtn.addEventListener('click', exportBackup);
+    els.importFile.addEventListener('change', e => importBackup(e.target.files[0]));
+    els.searchInput.addEventListener('input', renderAll);
+    els.filterSubject.addEventListener('change', renderAll);
+    els.filterPriority.addEventListener('change', renderAll);
+    els.cancelEditBtn.addEventListener('click', () => els.editModal.close());
+    els.saveEditBtn.addEventListener('click', saveTaskEdit);
+    els.themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      saveTheme(document.body.classList.contains('dark') ? 'dark' : 'light');
+      updateThemeButton();
+    });
+
+    loadState();
+    loadTheme();
+    renderAll();
+  </script>
+</body>
+</html>

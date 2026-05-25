@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEMANA ORGANIZADA - ROSE PONATH</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f7d9e8, #d9ecff);
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      color: #7b2cbf;
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #666;
+      font-size: 16px;
+    }
+
+    .week-box {
+      background: #f8f5ff;
+      border: 1px solid #eadcff;
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .week-box label {
+      font-weight: bold;
+      color: #5a189a;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .week-box input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .week-box input:focus {
+      border-color: #7b2cbf;
+    }
+
+    .save-week-button {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: #7b2cbf;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      align-self: end;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+
+    .tab-button {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 25px;
+      background: #eee;
+      color: #555;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .tab-button:hover {
+      background: #d7b9ff;
+    }
+
+    .tab-button.active {
+      background: #7b2cbf;
+      color: white;
+    }
+
+    .day-panel {
+      display: none;
+      animation: aparecer 0.3s ease-in-out;
+    }
+
+    .day-panel.active {
+      display: block;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .day-title {
+      font-size: 24px;
+      color: #5a189a;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .progress-box {
+      background: #f8f5ff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 18px;
+      border: 1px solid #eadcff;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-weight: bold;
+      color: #5a189a;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 16px;
+      background: #e5e5e5;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #38b000;
+      transition: 0.3s;
+    }
+
+    .task-form {
+      display: grid;
+      grid-template-columns: 1.4fr 0.65fr 0.8fr 0.8fr 0.85fr auto;
+      gap: 10px;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+
+    .task-input,
+    .task-time,
+    .task-select {
+      padding: 13px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
+
+    .task-input:focus,
+    .task-time:focus,
+    .task-select:focus {
+      border-color: #7b2cbf;
+    }
+
+    .add-button {
+      padding: 14px 18px;
+      border: none;
+      border-radius: 12px;
+      background: #38b000;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+
+    .add-button:hover {
+      background: #2d8f00;
+    }
+
+    .fixed-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .fixed-box h3 {
+      color: #9a3412;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .fixed-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .fixed-button {
+      border: none;
+      border-radius: 20px;
+      padding: 9px 12px;
+      background: #fb923c;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .task-list {
+      list-style: none;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #f8f5ff;
+      border-left: 6px solid #9d4edd;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    .task-item.prioridade-alta {
+      border-left-color: #d00000;
+    }
+
+    .task-item.prioridade-media {
+      border-left-color: #ffb703;
+    }
+
+    .task-item.prioridade-baixa {
+      border-left-color: #38b000;
+    }
+
+    .task-item.atrasada {
+      background: #ffe5e5;
+      border: 2px solid #d00000;
+      border-left-width: 8px;
+    }
+
+    .task-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .task-content {
+      flex: 1;
+    }
+
+    .task-text {
+      font-size: 16px;
+      word-break: break-word;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .task-text.completed {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .task-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .tag {
+      padding: 4px 8px;
+      border-radius: 20px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+    }
+
+    .tag-horario {
+      background: #e0f2fe;
+    }
+
+    .tag-categoria {
+      background: #fef3c7;
+    }
+
+    .tag-prioridade {
+      background: #fce7f3;
+    }
+
+    .tag-status {
+      background: #dcfce7;
+    }
+
+    .tag-atrasada {
+      background: #d00000;
+      color: white;
+      border-color: #d00000;
+      font-weight: bold;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .edit-button,
+    .delete-button {
+      border: none;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .edit-button {
+      background: #ffd166;
+      color: #4d3900;
+    }
+
+    .delete-button {
+      background: #ef476f;
+      color: white;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #888;
+      padding: 18px;
+      border: 2px dashed #ddd;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+
+    .dashboard-grid,
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .dashboard-card,
+    .summary-card {
+      background: #f8f5ff;
+      border: 1px solid #eadcff;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .dashboard-card h3,
+    .summary-card h3 {
+      color: #5a189a;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .dashboard-card strong,
+    .summary-card strong {
+      font-size: 28px;
+      color: #333;
+    }
+
+    .dashboard-list {
+      background: #f8f5ff;
+      border: 1px solid #eadcff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .dashboard-list h3,
+    .summary-section-title {
+      color: #5a189a;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .mini-task {
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-left: 5px solid #7b2cbf;
+      font-size: 14px;
+    }
+
+    .mini-task.atrasada {
+      border-left-color: #d00000;
+      background: #ffe5e5;
+    }
+
+    .summary-section-title {
+      margin: 20px 0 10px;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+
+    .summary-table th,
+    .summary-table td {
+      border: 1px solid #e5e5e5;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .summary-table th {
+      background: #7b2cbf;
+      color: white;
+    }
+
+    .summary-table tr:nth-child(even) {
+      background: #faf7ff;
+    }
+
+    .footer-actions {
+      margin-top: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .clear-day-button,
+    .clear-all-button {
+      border: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .clear-day-button {
+      background: #ffb703;
+      color: #3d2b00;
+    }
+
+    .clear-all-button {
+      background: #d00000;
+      color: white;
+    }
+
+    @media (max-width: 980px) {
+      .task-form {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .task-input {
+        grid-column: 1 / -1;
+      }
+
+      .add-button {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .container {
+        padding: 18px;
+      }
+
+      header h1 {
+        font-size: 25px;
+      }
+
+      .week-box,
+      .task-form {
+        grid-template-columns: 1fr;
+      }
+
+      .task-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .task-actions {
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>SEMANA ORGANIZADA - ROSE PONATH</h1>
+      <p>Organize suas tarefas por dia, horário, categoria, prioridade e status.</p>
+    </header>
+
+    <div class="week-box">
+      <div>
+        <label for="semanaPeriodo">Data da semana</label>
+        <input type="text" id="semanaPeriodo" placeholder="Ex.: Semana de 20/05 a 26/05" />
+      </div>
+      <button class="save-week-button" onclick="salvarPeriodoSemana()">Salvar semana</button>
+    </div>
+
+    <nav class="tabs" id="tabs"></nav>
+
+    <main id="panels"></main>
+
+    <div class="footer-actions">
+      <button class="clear-day-button" onclick="limparDiaAtual()">Limpar tarefas do dia</button>
+      <button class="clear-all-button" onclick="limparTudo()">Limpar semana toda</button>
+    </div>
+  </div>
+
+  <script>
+    const dias = [
+      "Segunda-feira",
+      "Terça-feira",
+      "Quarta-feira",
+      "Quinta-feira",
+      "Sexta-feira",
+      "Sábado",
+      "Domingo"
+    ];
+
+    const categorias = [
+      "Pedagógico",
+      "Escola",
+      "Casa",
+      "Estudos",
+      "Pessoal",
+      "Igreja",
+      "Outro"
+    ];
+
+    const prioridades = ["Alta", "Média", "Baixa"];
+    const statusOpcoes = ["Pendente", "Em andamento", "Concluída", "Adiada"];
+
+    const tarefasFixas = [
+      "Planejamento semanal",
+      "Organizar documentos",
+      "Acompanhar pendências",
+      "Revisar agenda do dia",
+      "Registrar atendimentos",
+      "Responder mensagens importantes"
+    ];
+
+    let diaAtual = "Painel inicial";
+    let tarefas = JSON.parse(localStorage.getItem("tarefasSemanaRose")) || criarEstruturaInicial();
+    let periodoSemana = localStorage.getItem("periodoSemanaRose") || "";
+
+    function criarEstruturaInicial() {
+      const estrutura = {};
+      dias.forEach(dia => {
+        estrutura[dia] = [];
+      });
+      return estrutura;
+    }
+
+    function salvarTarefas() {
+      localStorage.setItem("tarefasSemanaRose", JSON.stringify(tarefas));
+    }
+
+    function salvarPeriodoSemana() {
+      const campo = document.getElementById("semanaPeriodo");
+      periodoSemana = campo.value.trim();
+      localStorage.setItem("periodoSemanaRose", periodoSemana);
+      atualizarPainelInicial();
+      alert("Período da semana salvo com sucesso!");
+    }
+
+    function iniciarPrograma() {
+      document.getElementById("semanaPeriodo").value = periodoSemana;
+      corrigirTarefasAntigas();
+      criarAbas();
+      criarPaineis();
+      mostrarDia("Painel inicial");
+      atualizarTudo();
+    }
+
+    function corrigirTarefasAntigas() {
+      dias.forEach(dia => {
+        tarefas[dia].forEach(tarefa => {
+          if (!tarefa.horario) tarefa.horario = "Sem horário";
+          if (!tarefa.categoria) tarefa.categoria = "Outro";
+          if (!tarefa.prioridade) tarefa.prioridade = "Baixa";
+          if (!tarefa.status) tarefa.status = tarefa.concluida ? "Concluída" : "Pendente";
+          tarefa.concluida = tarefa.status === "Concluída";
+        });
+      });
+      salvarTarefas();
+    }
+
+    function criarAbas() {
+      const tabs = document.getElementById("tabs");
+      tabs.innerHTML = "";
+
+      const botoes = ["Painel inicial", ...dias, "Resumo semanal"];
+
+      botoes.forEach(item => {
+        const botao = document.createElement("button");
+        botao.className = "tab-button";
+        botao.textContent = item;
+        botao.onclick = () => mostrarDia(item);
+        botao.id = `tab-${item}`;
+        tabs.appendChild(botao);
+      });
+    }
+
+    function criarPaineis() {
+      const panels = document.getElementById("panels");
+      panels.innerHTML = "";
+
+      criarPainelInicial();
+
+      dias.forEach(dia => {
+        const painel = document.createElement("section");
+        painel.className = "day-panel";
+        painel.id = `panel-${dia}`;
+
+        painel.innerHTML = `
+          <h2 class="day-title">${dia}</h2>
+
+          <div class="progress-box">
+            <p class="progress-text" id="progress-text-${dia}">0 de 0 tarefas concluídas</p>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill-${dia}"></div>
+            </div>
+          </div>
+
+          <div class="fixed-box">
+            <h3>Tarefas fixas</h3>
+            <div class="fixed-actions">
+              ${tarefasFixas.map(tarefa => `<button class="fixed-button" onclick="adicionarTarefaFixa('${dia}', '${tarefa}')">+ ${tarefa}</button>`).join("")}
+            </div>
+          </div>
+
+          <form class="task-form" onsubmit="adicionarTarefa(event, '${dia}')">
+            <input
+              type="text"
+              class="task-input"
+              id="input-${dia}"
+              placeholder="Digite uma nova tarefa..."
+              autocomplete="off"
+            />
+
+            <input
+              type="time"
+              class="task-time"
+              id="time-${dia}"
+            />
+
+            <select class="task-select" id="categoria-${dia}">
+              ${categorias.map(categoria => `<option value="${categoria}">${categoria}</option>`).join("")}
+            </select>
+
+            <select class="task-select" id="prioridade-${dia}">
+              ${prioridades.map(prioridade => `<option value="${prioridade}">${prioridade}</option>`).join("")}
+            </select>
+
+            <select class="task-select" id="status-${dia}">
+              ${statusOpcoes.map(status => `<option value="${status}">${status}</option>`).join("")}
+            </select>
+
+            <button type="submit" class="add-button">Adicionar</button>
+          </form>
+
+          <ul class="task-list" id="list-${dia}"></ul>
+        `;
+
+        panels.appendChild(painel);
+        renderizarTarefas(dia);
+      });
+
+      criarPainelResumo();
+    }
+
+    function criarPainelInicial() {
+      const panels = document.getElementById("panels");
+      const painel = document.createElement("section");
+      painel.className = "day-panel";
+      painel.id = "panel-Painel inicial";
+
+      painel.innerHTML = `
+        <h2 class="day-title">Painel inicial</h2>
+        <p style="text-align:center; margin-bottom:18px; color:#666;" id="painel-periodo"></p>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-card">
+            <h3>Tarefas da semana</h3>
+            <strong id="painel-total">0</strong>
+          </div>
+          <div class="dashboard-card">
+            <h3>Prioridade alta</h3>
+            <strong id="painel-alta">0</strong>
+          </div>
+          <div class="dashboard-card">
+            <h3>Pendentes</h3>
+            <strong id="painel-pendentes">0</strong>
+          </div>
+          <div class="dashboard-card">
+            <h3>Atrasadas</h3>
+            <strong id="painel-atrasadas">0</strong>
+          </div>
+        </div>
+
+        <div class="dashboard-list">
+          <h3>Próximas tarefas com horário</h3>
+          <div id="painel-proximas"></div>
+        </div>
+
+        <div class="dashboard-list">
+          <h3>Tarefas atrasadas</h3>
+          <div id="painel-lista-atrasadas"></div>
+        </div>
+      `;
+
+      panels.appendChild(painel);
+    }
+
+    function criarPainelResumo() {
+      const panels = document.getElementById("panels");
+      const painel = document.createElement("section");
+      painel.className = "day-panel";
+      painel.id = "panel-Resumo semanal";
+
+      painel.innerHTML = `
+        <h2 class="day-title">Resumo semanal</h2>
+
+        <div class="summary-grid">
+          <div class="summary-card">
+            <h3>Total de tarefas</h3>
+            <strong id="resumo-total">0</strong>
+          </div>
+
+          <div class="summary-card">
+            <h3>Concluídas</h3>
+            <strong id="resumo-concluidas">0</strong>
+          </div>
+
+          <div class="summary-card">
+            <h3>Pendentes</h3>
+            <strong id="resumo-pendentes">0</strong>
+          </div>
+
+          <div class="summary-card">
+            <h3>Progresso</h3>
+            <strong id="resumo-percentual">0%</strong>
+          </div>
+        </div>
+
+        <h3 class="summary-section-title">Tarefas por dia</h3>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Dia</th>
+              <th>Total</th>
+              <th>Concluídas</th>
+              <th>Pendentes</th>
+              <th>Atrasadas</th>
+            </tr>
+          </thead>
+          <tbody id="resumo-dias"></tbody>
+        </table>
+
+        <h3 class="summary-section-title">Tarefas por categoria</h3>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="resumo-categorias"></tbody>
+        </table>
+
+        <h3 class="summary-section-title">Tarefas por prioridade</h3>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Prioridade</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="resumo-prioridades"></tbody>
+        </table>
+
+        <h3 class="summary-section-title">Tarefas por status</h3>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="resumo-status"></tbody>
+        </table>
+      `;
+
+      panels.appendChild(painel);
+    }
+
+    function mostrarDia(dia) {
+      diaAtual = dia;
+
+      ["Painel inicial", ...dias, "Resumo semanal"].forEach(item => {
+        document.getElementById(`tab-${item}`).classList.remove("active");
+        document.getElementById(`panel-${item}`).classList.remove("active");
+      });
+
+      document.getElementById(`tab-${dia}`).classList.add("active");
+      document.getElementById(`panel-${dia}`).classList.add("active");
+
+      atualizarTudo();
+    }
+
+    function adicionarTarefa(event, dia) {
+      event.preventDefault();
+
+      const input = document.getElementById(`input-${dia}`);
+      const time = document.getElementById(`time-${dia}`);
+      const categoria = document.getElementById(`categoria-${dia}`);
+      const prioridade = document.getElementById(`prioridade-${dia}`);
+      const status = document.getElementById(`status-${dia}`);
+
+      const texto = input.value.trim();
+
+      if (texto === "") {
+        alert("Digite uma tarefa antes de adicionar.");
+        return;
+      }
+
+      const statusSelecionado = status.value;
+
+      tarefas[dia].push({
+        texto: texto,
+        horario: time.value || "Sem horário",
+        categoria: categoria.value,
+        prioridade: prioridade.value,
+        status: statusSelecionado,
+        concluida: statusSelecionado === "Concluída"
+      });
+
+      input.value = "";
+      time.value = "";
+      categoria.value = categorias[0];
+      prioridade.value = prioridades[0];
+      status.value = "Pendente";
+
+      ordenarPorHorario(dia);
+      salvarTarefas();
+      renderizarTarefas(dia);
+      atualizarTudo();
+    }
+
+    function adicionarTarefaFixa(dia, texto) {
+      tarefas[dia].push({
+        texto: texto,
+        horario: "Sem horário",
+        categoria: "Pedagógico",
+        prioridade: "Média",
+        status: "Pendente",
+        concluida: false
+      });
+
+      salvarTarefas();
+      renderizarTarefas(dia);
+      atualizarTudo();
+    }
+
+    function ordenarPorHorario(dia) {
+      tarefas[dia].sort((a, b) => {
+        if (a.horario === "Sem horário") return 1;
+        if (b.horario === "Sem horário") return -1;
+        return a.horario.localeCompare(b.horario);
+      });
+    }
+
+    function renderizarTarefas(dia) {
+      const lista = document.getElementById(`list-${dia}`);
+      if (!lista) return;
+
+      lista.innerHTML = "";
+
+      atualizarProgressoDia(dia);
+
+      if (tarefas[dia].length === 0) {
+        lista.innerHTML = `<li class="empty-message">Nenhuma tarefa cadastrada para este dia.</li>`;
+        return;
+      }
+
+      tarefas[dia].forEach((tarefa, index) => {
+        const atrasada = verificarAtraso(tarefa);
+        const item = document.createElement("li");
+        item.className = `task-item prioridade-${normalizarTexto(tarefa.prioridade)} ${atrasada ? "atrasada" : ""}`;
+
+        item.innerHTML = `
+          <div class="task-left">
+            <input
+              type="checkbox"
+              class="task-checkbox"
+              ${tarefa.concluida ? "checked" : ""}
+              onchange="alternarConclusao('${dia}', ${index})"
+            />
+
+            <div class="task-content">
+              <span class="task-text ${tarefa.concluida ? "completed" : ""}">${tarefa.texto}</span>
+
+              <div class="task-details">
+                <span class="tag tag-horario">⏰ ${tarefa.horario || "Sem horário"}</span>
+                <span class="tag tag-categoria">📌 ${tarefa.categoria || "Outro"}</span>
+                <span class="tag tag-prioridade">⭐ Prioridade: ${tarefa.prioridade || "Baixa"}</span>
+                <span class="tag tag-status">📍 Status: ${tarefa.status || "Pendente"}</span>
+                ${atrasada ? `<span class="tag tag-atrasada">⚠ Atrasada</span>` : ""}
+              </div>
+            </div>
+          </div>
+
+          <div class="task-actions">
+            <button class="edit-button" onclick="alterarStatus('${dia}', ${index})">Status</button>
+            <button class="edit-button" onclick="editarTarefa('${dia}', ${index})">Editar</button>
+            <button class="delete-button" onclick="excluirTarefa('${dia}', ${index})">Excluir</button>
+          </div>
+        `;
+
+        lista.appendChild(item);
+      });
+    }
+
+    function verificarAtraso(tarefa) {
+      if (!tarefa.horario || tarefa.horario === "Sem horário") return false;
+      if (tarefa.status === "Concluída" || tarefa.concluida) return false;
+      if (tarefa.status === "Adiada") return false;
+
+      const agora = new Date();
+      const horaAtual = agora.toTimeString().slice(0, 5);
+      return tarefa.horario < horaAtual;
+    }
+
+    function normalizarTexto(texto) {
+      return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function atualizarProgressoDia(dia) {
+      const total = tarefas[dia].length;
+      const concluidas = tarefas[dia].filter(tarefa => tarefa.status === "Concluída" || tarefa.concluida).length;
+      const percentual = total === 0 ? 0 : Math.round((concluidas / total) * 100);
+
+      const texto = document.getElementById(`progress-text-${dia}`);
+      const barra = document.getElementById(`progress-fill-${dia}`);
+
+      if (texto && barra) {
+        texto.textContent = `${concluidas} de ${total} tarefas concluídas — ${percentual}%`;
+        barra.style.width = `${percentual}%`;
+      }
+    }
+
+    function alternarConclusao(dia, index) {
+      tarefas[dia][index].concluida = !tarefas[dia][index].concluida;
+      tarefas[dia][index].status = tarefas[dia][index].concluida ? "Concluída" : "Pendente";
+      salvarTarefas();
+      renderizarTarefas(dia);
+      atualizarTudo();
+    }
+
+    function alterarStatus(dia, index) {
+      const tarefa = tarefas[dia][index];
+      const novoStatus = prompt("Informe o status: Pendente, Em andamento, Concluída ou Adiada", tarefa.status || "Pendente");
+
+      if (novoStatus === null) return;
+
+      const statusFinal = novoStatus.trim();
+
+      if (!statusOpcoes.includes(statusFinal)) {
+        alert("Status inválido. Use: Pendente, Em andamento, Concluída ou Adiada.");
+        return;
+      }
+
+      tarefa.status = statusFinal;
+      tarefa.concluida = statusFinal === "Concluída";
+
+      salvarTarefas();
+      renderizarTarefas(dia);
+      atualizarTudo();
+    }
+
+    function editarTarefa(dia, index) {
+      const tarefa = tarefas[dia][index];
+
+      const novoTexto = prompt("Edite a tarefa:", tarefa.texto);
+      if (novoTexto === null) return;
+
+      const textoFinal = novoTexto.trim();
+      if (textoFinal === "") {
+        alert("A tarefa não pode ficar vazia.");
+        return;
+      }
+
+      const novoHorario = prompt("Edite o horário no formato HH:MM ou deixe vazio:", tarefa.horario === "Sem horário" ? "" : tarefa.horario);
+      if (novoHorario === null) return;
+
+      const novaCategoria = prompt(`Edite a categoria:\n${categorias.join(", ")}`, tarefa.categoria);
+      if (novaCategoria === null) return;
+
+      const novaPrioridade = prompt("Edite a prioridade: Alta, Média ou Baixa", tarefa.prioridade);
+      if (novaPrioridade === null) return;
+
+      const novoStatus = prompt("Edite o status: Pendente, Em andamento, Concluída ou Adiada", tarefa.status || "Pendente");
+      if (novoStatus === null) return;
+
+      tarefa.texto = textoFinal;
+      tarefa.horario = novoHorario.trim() || "Sem horário";
+      tarefa.categoria = novaCategoria.trim() || "Outro";
+      tarefa.prioridade = novaPrioridade.trim() || "Baixa";
+      tarefa.status = novoStatus.trim() || "Pendente";
+      tarefa.concluida = tarefa.status === "Concluída";
+
+      ordenarPorHorario(dia);
+      salvarTarefas();
+      renderizarTarefas(dia);
+      atualizarTudo();
+    }
+
+    function excluirTarefa(dia, index) {
+      const confirmar = confirm("Deseja excluir esta tarefa?");
+
+      if (confirmar) {
+        tarefas[dia].splice(index, 1);
+        salvarTarefas();
+        renderizarTarefas(dia);
+        atualizarTudo();
+      }
+    }
+
+    function limparDiaAtual() {
+      if (!dias.includes(diaAtual)) {
+        alert("Escolha um dia da semana para limpar as tarefas.");
+        return;
+      }
+
+      if (tarefas[diaAtual].length === 0) {
+        alert("Este dia já está vazio.");
+        return;
+      }
+
+      const confirmar = confirm(`Deseja apagar todas as tarefas de ${diaAtual}?`);
+
+      if (confirmar) {
+        tarefas[diaAtual] = [];
+        salvarTarefas();
+        renderizarTarefas(diaAtual);
+        atualizarTudo();
+      }
+    }
+
+    function limparTudo() {
+      const confirmar = confirm("Deseja apagar todas as tarefas da semana?");
+
+      if (confirmar) {
+        tarefas = criarEstruturaInicial();
+        salvarTarefas();
+        dias.forEach(dia => renderizarTarefas(dia));
+        atualizarTudo();
+      }
+    }
+
+    function atualizarTudo() {
+      dias.forEach(dia => renderizarTarefas(dia));
+      atualizarPainelInicial();
+      atualizarResumoSemanal();
+    }
+
+    function todasAsTarefasComDia() {
+      return dias.flatMap(dia => tarefas[dia].map(tarefa => ({ ...tarefa, dia })));
+    }
+
+    function atualizarPainelInicial() {
+      const todas = todasAsTarefasComDia();
+      const total = todas.length;
+      const altas = todas.filter(tarefa => tarefa.prioridade === "Alta").length;
+      const pendentes = todas.filter(tarefa => tarefa.status !== "Concluída").length;
+      const atrasadas = todas.filter(tarefa => verificarAtraso(tarefa)).length;
+
+      const painelPeriodo = document.getElementById("painel-periodo");
+      if (painelPeriodo) {
+        painelPeriodo.textContent = periodoSemana ? periodoSemana : "Informe a data da semana no campo acima.";
+      }
+
+      preencherTexto("painel-total", total);
+      preencherTexto("painel-alta", altas);
+      preencherTexto("painel-pendentes", pendentes);
+      preencherTexto("painel-atrasadas", atrasadas);
+
+      const proximas = todas
+        .filter(tarefa => tarefa.horario && tarefa.horario !== "Sem horário" && tarefa.status !== "Concluída")
+        .sort((a, b) => a.horario.localeCompare(b.horario))
+        .slice(0, 8);
+
+      const listaProximas = document.getElementById("painel-proximas");
+      if (listaProximas) {
+        listaProximas.innerHTML = proximas.length === 0
+          ? `<div class="empty-message">Nenhuma próxima tarefa com horário.</div>`
+          : proximas.map(tarefa => `
+              <div class="mini-task ${verificarAtraso(tarefa) ? "atrasada" : ""}">
+                <strong>${tarefa.horario}</strong> — ${tarefa.texto}<br>
+                <small>${tarefa.dia} | ${tarefa.categoria} | ${tarefa.prioridade} | ${tarefa.status}</small>
+              </div>
+            `).join("");
+      }
+
+      const listaAtrasadas = document.getElementById("painel-lista-atrasadas");
+      const atrasadasLista = todas.filter(tarefa => verificarAtraso(tarefa));
+      if (listaAtrasadas) {
+        listaAtrasadas.innerHTML = atrasadasLista.length === 0
+          ? `<div class="empty-message">Nenhuma tarefa atrasada no momento.</div>`
+          : atrasadasLista.map(tarefa => `
+              <div class="mini-task atrasada">
+                <strong>${tarefa.horario}</strong> — ${tarefa.texto}<br>
+                <small>${tarefa.dia} | ${tarefa.categoria} | ${tarefa.prioridade} | ${tarefa.status}</small>
+              </div>
+            `).join("");
+      }
+    }
+
+    function preencherTexto(id, valor) {
+      const elemento = document.getElementById(id);
+      if (elemento) elemento.textContent = valor;
+    }
+
+    function atualizarResumoSemanal() {
+      const todas = todasAsTarefasComDia();
+      const total = todas.length;
+      const concluidas = todas.filter(tarefa => tarefa.status === "Concluída" || tarefa.concluida).length;
+      const pendentes = total - concluidas;
+      const percentual = total === 0 ? 0 : Math.round((concluidas / total) * 100);
+
+      preencherTexto("resumo-total", total);
+      preencherTexto("resumo-concluidas", concluidas);
+      preencherTexto("resumo-pendentes", pendentes);
+      preencherTexto("resumo-percentual", `${percentual}%`);
+
+      atualizarTabelaDias();
+      atualizarTabelaCategorias();
+      atualizarTabelaPrioridades();
+      atualizarTabelaStatus();
+    }
+
+    function atualizarTabelaDias() {
+      const corpo = document.getElementById("resumo-dias");
+      if (!corpo) return;
+
+      corpo.innerHTML = "";
+
+      dias.forEach(dia => {
+        const total = tarefas[dia].length;
+        const concluidas = tarefas[dia].filter(tarefa => tarefa.status === "Concluída" || tarefa.concluida).length;
+        const pendentes = total - concluidas;
+        const atrasadas = tarefas[dia].filter(tarefa => verificarAtraso(tarefa)).length;
+
+        corpo.innerHTML += `
+          <tr>
+            <td>${dia}</td>
+            <td>${total}</td>
+            <td>${concluidas}</td>
+            <td>${pendentes}</td>
+            <td>${atrasadas}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function atualizarTabelaCategorias() {
+      const corpo = document.getElementById("resumo-categorias");
+      if (!corpo) return;
+
+      const contagem = {};
+      categorias.forEach(categoria => contagem[categoria] = 0);
+
+      dias.forEach(dia => {
+        tarefas[dia].forEach(tarefa => {
+          const categoria = tarefa.categoria || "Outro";
+          contagem[categoria] = (contagem[categoria] || 0) + 1;
+        });
+      });
+
+      corpo.innerHTML = "";
+
+      Object.keys(contagem).forEach(categoria => {
+        corpo.innerHTML += `
+          <tr>
+            <td>${categoria}</td>
+            <td>${contagem[categoria]}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function atualizarTabelaPrioridades() {
+      const corpo = document.getElementById("resumo-prioridades");
+      if (!corpo) return;
+
+      const contagem = {
+        Alta: 0,
+        Média: 0,
+        Baixa: 0
+      };
+
+      dias.forEach(dia => {
+        tarefas[dia].forEach(tarefa => {
+          const prioridade = tarefa.prioridade || "Baixa";
+          contagem[prioridade] = (contagem[prioridade] || 0) + 1;
+        });
+      });
+
+      corpo.innerHTML = "";
+
+      Object.keys(contagem).forEach(prioridade => {
+        corpo.innerHTML += `
+          <tr>
+            <td>${prioridade}</td>
+            <td>${contagem[prioridade]}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function atualizarTabelaStatus() {
+      const corpo = document.getElementById("resumo-status");
+      if (!corpo) return;
+
+      const contagem = {
+        "Pendente": 0,
+        "Em andamento": 0,
+        "Concluída": 0,
+        "Adiada": 0
+      };
+
+      dias.forEach(dia => {
+        tarefas[dia].forEach(tarefa => {
+          const status = tarefa.status || "Pendente";
+          contagem[status] = (contagem[status] || 0) + 1;
+        });
+      });
+
+      corpo.innerHTML = "";
+
+      Object.keys(contagem).forEach(status => {
+        corpo.innerHTML += `
+          <tr>
+            <td>${status}</td>
+            <td>${contagem[status]}</td>
+          </tr>
+        `;
+      });
+    }
+
+    iniciarPrograma();
+  </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Organizador de Estudos - CC Estácio</title>
+    <style>
+        /* CSS Integrado - Focado em clareza e organização */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: #1a2a6c;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        input {
+            padding: 12px;
+            width: 350px;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: #1a2a6c;
+        }
+
+        button.add-btn {
+            padding: 12px 25px;
+            background-color: #1a2a6c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button.add-btn:hover {
+            background-color: #2a48ad;
+        }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .column {
+            background-color: #dfe6e9;
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column h2 {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #2d3436;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #b2bec3;
+            padding-bottom: 10px;
+        }
+
+        .task-list {
+            flex-grow: 1;
+            margin-top: 15px;
+        }
+
+        .task-card {
+            background: white;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .task-card strong {
+            display: block;
+            margin-bottom: 12px;
+            color: #2d3436;
+        }
+
+        .task-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-move {
+            background: #f1f2f6;
+            color: #57606f;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-move:hover {
+            background: #dfe4ea;
+        }
+
+        .btn-delete {
+            background: #ff7675;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Painel de Estudos - Ciência da Computação</h1>
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="Ex: Algoritmos em C, Python, Banco de Dados...">
+            <button class="add-btn" onclick="addTask()">Adicionar Tópico</button>
+        </div>
+    </header>
+
+    <main class="kanban-board">
+        <div class="column">
+            <h2>📚 Para Estudar</h2>
+            <div class="task-list" id="todoList"></div>
+        </div>
+
+        <div class="column">
+            <h2>💻 No Código / Praticando</h2>
+            <div class="task-list" id="doingList"></div>
+        </div>
+
+        <div class="column">
+            <h2>✅ Concluído</h2>
+            <div class="task-list" id="doneList"></div>
+        </div>
+    </main>
+
+    <script>
+        /* JavaScript Integrado - Lógica de funcionamento */
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const taskText = input.value.trim();
+
+            if (taskText === "") {
+                alert("Digite o nome da matéria ou atividade.");
+                return;
+            }
+
+            createTaskElement(taskText, 'todoList');
+            input.value = "";
+            input.focus();
+        }
+
+        function createTaskElement(text, listId) {
+            const list = document.getElementById(listId);
+            const card = document.createElement('div');
+            card.className = 'task-card';
+
+            // Define quais botões aparecem dependendo da coluna
+            let buttonsHTML = '';
+            
+            if (listId === 'todoList') {
+                buttonsHTML = `<button class="btn-move" onclick="moveTask(this, 'doingList')">Começar 🚀</button>`;
+            } else if (listId === 'doingList') {
+                buttonsHTML = `
+                    <button class="btn-move" onclick="moveTask(this, 'todoList')">⬅️ Pausar</button>
+                    <button class="btn-move" onclick="moveTask(this, 'doneList')">Terminei! ✅</button>
+                `;
+            } else if (listId === 'doneList') {
+                buttonsHTML = `<button class="btn-move" onclick="moveTask(this, 'doingList')">Revisar 🔄</button>`;
+            }
+
+            card.innerHTML = `
+                <strong>${text}</strong>
+                <div class="task-buttons">
+                    ${buttonsHTML}
+                    <button class="btn-delete" onclick="this.closest('.task-card').remove()">🗑️</button>
+                </div>
+            `;
+            
+            list.appendChild(card);
+        }
+
+        function moveTask(button, targetListId) {
+            const card = button.closest('.task-card');
+            const taskText = card.querySelector('strong').innerText;
+            
+            card.remove();
+            createTaskElement(taskText, targetListId);
+        }
+
+        // Permitir adicionar tarefa ao apertar "Enter"
+        document.getElementById('taskInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+    </script>
+</body>
+</html>

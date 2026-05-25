@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rotina Pedagógica - Frederico Boldt</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f4f6fb;
+      color: #263238;
+      padding: 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #5b7cfa, #7b4ee6);
+      color: white;
+      padding: 25px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 15px;
+      opacity: 0.95;
+    }
+
+    .top-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-info {
+      background: white;
+      padding: 16px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-left: 6px solid #6d5dfc;
+    }
+
+    .card-info h3 {
+      font-size: 14px;
+      color: #546e7a;
+      margin-bottom: 8px;
+    }
+
+    .card-info span {
+      font-size: 25px;
+      font-weight: bold;
+      color: #3f51b5;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    nav button {
+      border: none;
+      background: white;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #3f51b5;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+      transition: 0.2s;
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #3f51b5;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    section {
+      display: none;
+      background: white;
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    h2 {
+      color: #3f51b5;
+      margin-bottom: 15px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #455a64;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #5b7cfa;
+      box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
+    }
+
+    textarea {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    .btn {
+      border: none;
+      background: #3f51b5;
+      color: white;
+      padding: 11px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 5px 5px 5px 0;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      background: #303f9f;
+    }
+
+    .btn-danger {
+      background: #e53935;
+    }
+
+    .btn-danger:hover {
+      background: #c62828;
+    }
+
+    .btn-secondary {
+      background: #607d8b;
+    }
+
+    .btn-secondary:hover {
+      background: #455a64;
+    }
+
+    .lista {
+      margin-top: 15px;
+    }
+
+    .item {
+      background: #f7f8ff;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border-left: 5px solid #5b7cfa;
+    }
+
+    .item h4 {
+      color: #303f9f;
+      margin-bottom: 5px;
+    }
+
+    .item p {
+      font-size: 14px;
+      margin: 4px 0;
+      line-height: 1.4;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 3px 3px 3px 0;
+    }
+
+    .verde { background: #d8f5dc; color: #1b5e20; }
+    .amarelo { background: #fff3cd; color: #8a6d00; }
+    .vermelho { background: #ffd6d6; color: #b71c1c; }
+    .azul { background: #dbeafe; color: #1e40af; }
+    .roxo { background: #ede7f6; color: #512da8; }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f7f8ff;
+      padding: 11px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .check-item input {
+      width: auto;
+    }
+
+    .check-item.done span {
+      text-decoration: line-through;
+      color: #78909c;
+    }
+
+    .search-box {
+      margin-bottom: 12px;
+    }
+
+    .empty {
+      color: #78909c;
+      font-style: italic;
+      margin-top: 10px;
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    @media print {
+      nav, .btn, .footer-actions, input, textarea, select, label {
+        display: none !important;
+      }
+
+      body {
+        background: white;
+      }
+
+      section {
+        display: block !important;
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rotina Pedagógica - EEEFM Frederico Boldt</h1>
+    <p>Organização diária da pedagoga Rose Ponath | Turno vespertino | Acompanhamento do 1º ao 6º ano</p>
+  </header>
+
+  <div class="top-info">
+    <div class="card-info">
+      <h3>Atendimentos registrados</h3>
+      <span id="totalAtendimentos">0</span>
+    </div>
+    <div class="card-info">
+      <h3>Alunos em acompanhamento</h3>
+      <span id="totalAlunos">0</span>
+    </div>
+    <div class="card-info">
+      <h3>Tarefas concluídas hoje</h3>
+      <span id="totalTarefas">0</span>
+    </div>
+    <div class="card-info">
+      <h3>Data de hoje</h3>
+      <span id="dataHoje">--/--</span>
+    </div>
+  </div>
+
+  <nav>
+    <button class="active" onclick="abrirAba('painel', this)">Painel</button>
+    <button onclick="abrirAba('checklist', this)">Checklist Diário</button>
+    <button onclick="abrirAba('atendimentos', this)">Atendimentos</button>
+    <button onclick="abrirAba('alunos', this)">Alunos</button>
+    <button onclick="abrirAba('professores', this)">Escuta Docente</button>
+    <button onclick="abrirAba('agenda', this)">Agenda</button>
+    <button onclick="abrirAba('relatorios', this)">Relatórios</button>
+  </nav>
+
+  <section id="painel" class="active">
+    <h2>Painel Inicial</h2>
+    <p>Use este painel para visualizar rapidamente sua rotina pedagógica e organizar as principais demandas do dia.</p>
+
+    <div class="item">
+      <h4>Foco do dia</h4>
+      <textarea id="focoDia" placeholder="Exemplo: conversar com professores do 1º V1 e 2º V2, organizar alunos com faltas e registrar atendimentos pendentes."></textarea>
+      <button class="btn" onclick="salvarFoco()">Salvar foco do dia</button>
+      <p><strong>Foco salvo:</strong> <span id="focoSalvo">Nenhum foco registrado ainda.</span></p>
+    </div>
+
+    <div class="item">
+      <h4>Lembretes importantes</h4>
+      <p>✔ Verificar demandas urgentes com a direção.</p>
+      <p>✔ Acompanhar alunos com faltas, aprendizagem, comportamento, AEE, laudos e busca ativa.</p>
+      <p>✔ Registrar todos os atendimentos com data, turma, motivo e encaminhamento.</p>
+      <p>✔ Separar o que é orientação ao professor, família, aluno ou demanda coletiva.</p>
+    </div>
+  </section>
+
+  <section id="checklist">
+    <h2>Checklist Diário da Pedagoga</h2>
+    <div id="listaChecklist"></div>
+
+    <div class="form-grid">
+      <div>
+        <label>Nova tarefa</label>
+        <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa" />
+      </div>
+    </div>
+    <button class="btn" onclick="adicionarTarefa()">Adicionar tarefa</button>
+    <button class="btn btn-secondary" onclick="restaurarChecklist()">Restaurar checklist padrão</button>
+  </section>
+
+  <section id="atendimentos">
+    <h2>Registro de Atendimentos</h2>
+    <div class="form-grid">
+      <div>
+        <label>Data</label>
+        <input type="date" id="atData" />
+      </div>
+      <div>
+        <label>Nome do aluno/professor/família</label>
+        <input type="text" id="atNome" placeholder="Nome completo" />
+      </div>
+      <div>
+        <label>Turma</label>
+        <select id="atTurma">
+          <option value="">Selecione</option>
+          <option>1º V1</option>
+          <option>1º V2</option>
+          <option>2º V1</option>
+          <option>2º V2</option>
+          <option>3º V1</option>
+          <option>4º V1</option>
+          <option>5º V1</option>
+          <option>6º V1</option>
+          <option>6º V2</option>
+        </select>
+      </div>
+      <div>
+        <label>Tipo de atendimento</label>
+        <select id="atTipo">
+          <option>Aluno</option>
+          <option>Família</option>
+          <option>Professor</option>
+          <option>Direção</option>
+          <option>Busca ativa</option>
+          <option>AEE / Laudo</option>
+          <option>Comportamento</option>
+          <option>Aprendizagem</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Motivo / demanda</label>
+    <textarea id="atMotivo" placeholder="Descreva o motivo do atendimento."></textarea>
+
+    <label>Encaminhamento / devolutiva</label>
+    <textarea id="atEncaminhamento" placeholder="Descreva o que foi orientado, combinado ou encaminhado."></textarea>
+
+    <button class="btn" onclick="salvarAtendimento()">Salvar atendimento</button>
+    <button class="btn btn-secondary" onclick="limparCamposAtendimento()">Limpar campos</button>
+
+    <div class="search-box">
+      <label>Pesquisar atendimentos</label>
+      <input type="text" id="buscaAtendimento" oninput="renderAtendimentos()" placeholder="Pesquisar por nome, turma, tipo ou motivo" />
+    </div>
+
+    <div id="listaAtendimentos" class="lista"></div>
+  </section>
+
+  <section id="alunos">
+    <h2>Alunos em Acompanhamento</h2>
+    <div class="form-grid">
+      <div>
+        <label>Nome do aluno</label>
+        <input type="text" id="alunoNome" placeholder="Nome do aluno" />
+      </div>
+      <div>
+        <label>Turma</label>
+        <select id="alunoTurma">
+          <option>1º V1</option>
+          <option>1º V2</option>
+          <option>2º V1</option>
+          <option>2º V2</option>
+          <option>3º V1</option>
+          <option>4º V1</option>
+          <option>5º V1</option>
+          <option>6º V1</option>
+          <option>6º V2</option>
+        </select>
+      </div>
+      <div>
+        <label>Situação principal</label>
+        <select id="alunoSituacao">
+          <option>Aprendizagem</option>
+          <option>Faltas</option>
+          <option>Comportamento</option>
+          <option>AEE</option>
+          <option>Laudo</option>
+          <option>Busca ativa</option>
+          <option>Família</option>
+        </select>
+      </div>
+      <div>
+        <label>Nível de atenção</label>
+        <select id="alunoNivel">
+          <option value="verde">Verde - acompanhamento leve</option>
+          <option value="amarelo">Amarelo - atenção</option>
+          <option value="vermelho">Vermelho - prioridade</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Observações</label>
+    <textarea id="alunoObs" placeholder="Exemplo: aluno apresenta dificuldade em leitura, precisa de acompanhamento e conversa com família."></textarea>
+
+    <button class="btn" onclick="salvarAluno()">Salvar aluno</button>
+
+    <div class="search-box">
+      <label>Pesquisar aluno</label>
+      <input type="text" id="buscaAluno" oninput="renderAlunos()" placeholder="Pesquisar por nome, turma ou situação" />
+    </div>
+
+    <div id="listaAlunos" class="lista"></div>
+  </section>
+
+  <section id="professores">
+    <h2>Escuta Pedagógica com Professores</h2>
+    <div class="form-grid">
+      <div>
+        <label>Data</label>
+        <input type="date" id="profData" />
+      </div>
+      <div>
+        <label>Professor(a)</label>
+        <input type="text" id="profNome" placeholder="Nome do professor" />
+      </div>
+      <div>
+        <label>Turma</label>
+        <input type="text" id="profTurma" placeholder="Exemplo: 2º V1" />
+      </div>
+    </div>
+
+    <label>Como está a turma neste momento?</label>
+    <textarea id="profTurmaMomento"></textarea>
+
+    <label>Quais alunos precisam de mais atenção?</label>
+    <textarea id="profAlunosAtencao"></textarea>
+
+    <label>Dificuldades de aprendizagem, comportamento ou frequência</label>
+    <textarea id="profDemandas"></textarea>
+
+    <label>Como a pedagogia pode contribuir?</label>
+    <textarea id="profApoio"></textarea>
+
+    <button class="btn" onclick="salvarEscuta()">Salvar escuta</button>
+
+    <div id="listaEscutas" class="lista"></div>
+  </section>
+
+  <section id="agenda">
+    <h2>Agenda de Retornos e Reuniões</h2>
+    <div class="form-grid">
+      <div>
+        <label>Data</label>
+        <input type="date" id="agData" />
+      </div>
+      <div>
+        <label>Horário</label>
+        <input type="time" id="agHora" />
+      </div>
+      <div>
+        <label>Categoria</label>
+        <select id="agCategoria">
+          <option>Reunião pedagógica</option>
+          <option>Conselho de classe</option>
+          <option>Atendimento à família</option>
+          <option>Retorno com professor</option>
+          <option>Busca ativa</option>
+          <option>Plano de intervenção</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Descrição</label>
+    <textarea id="agDescricao" placeholder="Descreva o compromisso, retorno ou reunião."></textarea>
+
+    <button class="btn" onclick="salvarAgenda()">Salvar agenda</button>
+    <div id="listaAgenda" class="lista"></div>
+  </section>
+
+  <section id="relatorios">
+    <h2>Relatórios e Impressão</h2>
+    <p>Use os botões abaixo para gerar uma visão organizada dos registros salvos neste navegador.</p>
+
+    <div class="footer-actions">
+      <button class="btn" onclick="gerarResumo()">Gerar resumo na tela</button>
+      <button class="btn btn-secondary" onclick="window.print()">Imprimir / salvar em PDF</button>
+      <button class="btn btn-danger" onclick="apagarTudo()">Apagar todos os registros</button>
+    </div>
+
+    <div id="resumoGeral" class="lista"></div>
+  </section>
+
+  <script>
+    const checklistPadrao = [
+      'Conversar com a direção sobre demandas do dia',
+      'Verificar alunos com faltas ou busca ativa',
+      'Registrar atendimentos realizados',
+      'Acompanhar demandas de aprendizagem',
+      'Acompanhar demandas de comportamento',
+      'Verificar pendências com professores',
+      'Organizar encaminhamentos para famílias',
+      'Atualizar agenda de retornos',
+      'Separar documentos ou registros necessários',
+      'Anotar prioridades para o próximo dia'
+    ];
+
+    let tarefas = JSON.parse(localStorage.getItem('tarefasPedagoga')) || checklistPadrao.map(texto => ({ texto, feito: false }));
+    let atendimentos = JSON.parse(localStorage.getItem('atendimentosPedagoga')) || [];
+    let alunos = JSON.parse(localStorage.getItem('alunosPedagoga')) || [];
+    let escutas = JSON.parse(localStorage.getItem('escutasPedagoga')) || [];
+    let agenda = JSON.parse(localStorage.getItem('agendaPedagoga')) || [];
+
+    document.getElementById('dataHoje').textContent = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    document.getElementById('atData').valueAsDate = new Date();
+    document.getElementById('profData').valueAsDate = new Date();
+    document.getElementById('agData').valueAsDate = new Date();
+    document.getElementById('focoSalvo').textContent = localStorage.getItem('focoPedagoga') || 'Nenhum foco registrado ainda.';
+
+    function abrirAba(id, botao) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      botao.classList.add('active');
+      atualizarPainel();
+    }
+
+    function salvarDados() {
+      localStorage.setItem('tarefasPedagoga', JSON.stringify(tarefas));
+      localStorage.setItem('atendimentosPedagoga', JSON.stringify(atendimentos));
+      localStorage.setItem('alunosPedagoga', JSON.stringify(alunos));
+      localStorage.setItem('escutasPedagoga', JSON.stringify(escutas));
+      localStorage.setItem('agendaPedagoga', JSON.stringify(agenda));
+      atualizarPainel();
+    }
+
+    function atualizarPainel() {
+      document.getElementById('totalAtendimentos').textContent = atendimentos.length;
+      document.getElementById('totalAlunos').textContent = alunos.length;
+      document.getElementById('totalTarefas').textContent = tarefas.filter(t => t.feito).length;
+    }
+
+    function salvarFoco() {
+      const foco = document.getElementById('focoDia').value.trim();
+      if (!foco) return alert('Digite o foco do dia.');
+      localStorage.setItem('focoPedagoga', foco);
+      document.getElementById('focoSalvo').textContent = foco;
+      document.getElementById('focoDia').value = '';
+    }
+
+    function renderChecklist() {
+      const lista = document.getElementById('listaChecklist');
+      lista.innerHTML = '';
+
+      tarefas.forEach((tarefa, index) => {
+        const div = document.createElement('div');
+        div.className = 'check-item' + (tarefa.feito ? ' done' : '');
+        div.innerHTML = `
+          <input type="checkbox" ${tarefa.feito ? 'checked' : ''} onchange="marcarTarefa(${index})" />
+          <span>${tarefa.texto}</span>
+          <button class="btn btn-danger" onclick="excluirTarefa(${index})">Excluir</button>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    function marcarTarefa(index) {
+      tarefas[index].feito = !tarefas[index].feito;
+      salvarDados();
+      renderChecklist();
+    }
+
+    function adicionarTarefa() {
+      const texto = document.getElementById('novaTarefa').value.trim();
+      if (!texto) return alert('Digite uma tarefa.');
+      tarefas.push({ texto, feito: false });
+      document.getElementById('novaTarefa').value = '';
+      salvarDados();
+      renderChecklist();
+    }
+
+    function excluirTarefa(index) {
+      tarefas.splice(index, 1);
+      salvarDados();
+      renderChecklist();
+    }
+
+    function restaurarChecklist() {
+      if (!confirm('Deseja restaurar o checklist padrão?')) return;
+      tarefas = checklistPadrao.map(texto => ({ texto, feito: false }));
+      salvarDados();
+      renderChecklist();
+    }
+
+    function salvarAtendimento() {
+      const item = {
+        data: document.getElementById('atData').value,
+        nome: document.getElementById('atNome').value.trim(),
+        turma: document.getElementById('atTurma').value,
+        tipo: document.getElementById('atTipo').value,
+        motivo: document.getElementById('atMotivo').value.trim(),
+        encaminhamento: document.getElementById('atEncaminhamento').value.trim()
+      };
+
+      if (!item.nome || !item.motivo) return alert('Preencha pelo menos o nome e o motivo do atendimento.');
+      atendimentos.unshift(item);
+      salvarDados();
+      limparCamposAtendimento();
+      renderAtendimentos();
+    }
+
+    function limparCamposAtendimento() {
+      document.getElementById('atNome').value = '';
+      document.getElementById('atTurma').value = '';
+      document.getElementById('atTipo').value = 'Aluno';
+      document.getElementById('atMotivo').value = '';
+      document.getElementById('atEncaminhamento').value = '';
+      document.getElementById('atData').valueAsDate = new Date();
+    }
+
+    function renderAtendimentos() {
+      const busca = document.getElementById('buscaAtendimento').value.toLowerCase();
+      const lista = document.getElementById('listaAtendimentos');
+      const filtrados = atendimentos.filter(a => JSON.stringify(a).toLowerCase().includes(busca));
+      lista.innerHTML = filtrados.length ? '' : '<p class="empty">Nenhum atendimento registrado.</p>';
+
+      filtrados.forEach((a, index) => {
+        lista.innerHTML += `
+          <div class="item">
+            <h4>${a.nome}</h4>
+            <span class="badge azul">${formatarData(a.data)}</span>
+            <span class="badge roxo">${a.turma || 'Sem turma'}</span>
+            <span class="badge amarelo">${a.tipo}</span>
+            <p><strong>Motivo:</strong> ${a.motivo}</p>
+            <p><strong>Encaminhamento:</strong> ${a.encaminhamento || 'Não informado'}</p>
+            <button class="btn btn-danger" onclick="excluirAtendimento(${index})">Excluir</button>
+          </div>
+        `;
+      });
+    }
+
+    function excluirAtendimento(index) {
+      if (!confirm('Excluir este atendimento?')) return;
+      atendimentos.splice(index, 1);
+      salvarDados();
+      renderAtendimentos();
+    }
+
+    function salvarAluno() {
+      const item = {
+        nome: document.getElementById('alunoNome').value.trim(),
+        turma: document.getElementById('alunoTurma').value,
+        situacao: document.getElementById('alunoSituacao').value,
+        nivel: document.getElementById('alunoNivel').value,
+        obs: document.getElementById('alunoObs').value.trim()
+      };
+
+      if (!item.nome) return alert('Digite o nome do aluno.');
+      alunos.unshift(item);
+      salvarDados();
+      document.getElementById('alunoNome').value = '';
+      document.getElementById('alunoObs').value = '';
+      renderAlunos();
+    }
+
+    function renderAlunos() {
+      const busca = document.getElementById('buscaAluno').value.toLowerCase();
+      const lista = document.getElementById('listaAlunos');
+      const filtrados = alunos.filter(a => JSON.stringify(a).toLowerCase().includes(busca));
+      lista.innerHTML = filtrados.length ? '' : '<p class="empty">Nenhum aluno em acompanhamento.</p>';
+
+      filtrados.forEach((a, index) => {
+        lista.innerHTML += `
+          <div class="item">
+            <h4>${a.nome}</h4>
+            <span class="badge roxo">${a.turma}</span>
+            <span class="badge azul">${a.situacao}</span>
+            <span class="badge ${a.nivel}">${textoNivel(a.nivel)}</span>
+            <p><strong>Observações:</strong> ${a.obs || 'Não informado'}</p>
+            <button class="btn btn-danger" onclick="excluirAluno(${index})">Excluir</button>
+          </div>
+        `;
+      });
+    }
+
+    function excluirAluno(index) {
+      if (!confirm('Excluir este aluno da lista?')) return;
+      alunos.splice(index, 1);
+      salvarDados();
+      renderAlunos();
+    }
+
+    function salvarEscuta() {
+      const item = {
+        data: document.getElementById('profData').value,
+        professor: document.getElementById('profNome').value.trim(),
+        turma: document.getElementById('profTurma').value.trim(),
+        momento: document.getElementById('profTurmaMomento').value.trim(),
+        alunosAtencao: document.getElementById('profAlunosAtencao').value.trim(),
+        demandas: document.getElementById('profDemandas').value.trim(),
+        apoio: document.getElementById('profApoio').value.trim()
+      };
+
+      if (!item.professor || !item.turma) return alert('Preencha professor e turma.');
+      escutas.unshift(item);
+      salvarDados();
+      document.getElementById('profNome').value = '';
+      document.getElementById('profTurma').value = '';
+      document.getElementById('profTurmaMomento').value = '';
+      document.getElementById('profAlunosAtencao').value = '';
+      document.getElementById('profDemandas').value = '';
+      document.getElementById('profApoio').value = '';
+      renderEscutas();
+    }
+
+    function renderEscutas() {
+      const lista = document.getElementById('listaEscutas');
+      lista.innerHTML = escutas.length ? '' : '<p class="empty">Nenhuma escuta docente registrada.</p>';
+
+      escutas.forEach((e, index) => {
+        lista.innerHTML += `
+          <div class="item">
+            <h4>${e.professor} - ${e.turma}</h4>
+            <span class="badge azul">${formatarData(e.data)}</span>
+            <p><strong>Como está a turma:</strong> ${e.momento || 'Não informado'}</p>
+            <p><strong>Alunos que precisam de atenção:</strong> ${e.alunosAtencao || 'Não informado'}</p>
+            <p><strong>Demandas:</strong> ${e.demandas || 'Não informado'}</p>
+            <p><strong>Apoio da pedagogia:</strong> ${e.apoio || 'Não informado'}</p>
+            <button class="btn btn-danger" onclick="excluirEscuta(${index})">Excluir</button>
+          </div>
+        `;
+      });
+    }
+
+    function excluirEscuta(index) {
+      if (!confirm('Excluir esta escuta?')) return;
+      escutas.splice(index, 1);
+      salvarDados();
+      renderEscutas();
+    }
+
+    function salvarAgenda() {
+      const item = {
+        data: document.getElementById('agData').value,
+        hora: document.getElementById('agHora').value,
+        categoria: document.getElementById('agCategoria').value,
+        descricao: document.getElementById('agDescricao').value.trim()
+      };
+
+      if (!item.data || !item.descricao) return alert('Preencha a data e a descrição.');
+      agenda.push(item);
+      agenda.sort((a, b) => (a.data + a.hora).localeCompare(b.data + b.hora));
+      salvarDados();
+      document.getElementById('agDescricao').value = '';
+      document.getElementById('agHora').value = '';
+      renderAgenda();
+    }
+
+    function renderAgenda() {
+      const lista = document.getElementById('listaAgenda');
+      lista.innerHTML = agenda.length ? '' : '<p class="empty">Nenhum compromisso registrado.</p>';
+
+      agenda.forEach((a, index) => {
+        lista.innerHTML += `
+          <div class="item">
+            <h4>${a.categoria}</h4>
+            <span class="badge azul">${formatarData(a.data)}</span>
+            <span class="badge amarelo">${a.hora || 'Sem horário'}</span>
+            <p>${a.descricao}</p>
+            <button class="btn btn-danger" onclick="excluirAgenda(${index})">Excluir</button>
+          </div>
+        `;
+      });
+    }
+
+    function excluirAgenda(index) {
+      if (!confirm('Excluir este compromisso?')) return;
+      agenda.splice(index, 1);
+      salvarDados();
+      renderAgenda();
+    }
+
+    function gerarResumo() {
+      const resumo = document.getElementById('resumoGeral');
+      resumo.innerHTML = `
+        <div class="item">
+          <h4>Resumo geral da rotina pedagógica</h4>
+          <p><strong>Escola:</strong> EEEFM Frederico Boldt</p>
+          <p><strong>Turno:</strong> Vespertino</p>
+          <p><strong>Total de atendimentos:</strong> ${atendimentos.length}</p>
+          <p><strong>Alunos em acompanhamento:</strong> ${alunos.length}</p>
+          <p><strong>Escutas docentes registradas:</strong> ${escutas.length}</p>
+          <p><strong>Compromissos na agenda:</strong> ${agenda.length}</p>
+          <p><strong>Tarefas concluídas:</strong> ${tarefas.filter(t => t.feito).length} de ${tarefas.length}</p>
+        </div>
+      `;
+    }
+
+    function apagarTudo() {
+      if (!confirm('Tem certeza que deseja apagar todos os registros salvos neste navegador?')) return;
+      localStorage.clear();
+      tarefas = checklistPadrao.map(texto => ({ texto, feito: false }));
+      atendimentos = [];
+      alunos = [];
+      escutas = [];
+      agenda = [];
+      document.getElementById('focoSalvo').textContent = 'Nenhum foco registrado ainda.';
+      renderTudo();
+    }
+
+    function formatarData(data) {
+      if (!data) return 'Sem data';
+      const [ano, mes, dia] = data.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    function textoNivel(nivel) {
+      if (nivel === 'verde') return 'Verde - leve';
+      if (nivel === 'amarelo') return 'Amarelo - atenção';
+      return 'Vermelho - prioridade';
+    }
+
+    function renderTudo() {
+      renderChecklist();
+      renderAtendimentos();
+      renderAlunos();
+      renderEscutas();
+      renderAgenda();
+      atualizarPainel();
+    }
+
+    renderTudo();
+  </script>
+</body>
+</html>

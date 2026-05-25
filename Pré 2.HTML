@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Turma Pré 2 - Adolpho Pagung</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f8fb;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #6bbf59;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #6bbf59;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+button {
+    background: #6bbf59;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #57a64b;
+}
+
+.footer {
+    text-align: center;
+    padding: 10px;
+    color: #777;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <h1>Turma Pré 2</h1>
+    <p>EMPEIEF Adolpho Pagung</p>
+    <p id="data"></p>
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>👩‍🏫 Professora</h2>
+        <p>Profª Responsável: __________________________________</p>
+    </div>
+
+    <div class="card">
+        <h2>🧒 Informações da Turma</h2>
+        <p>Turma: Pré 2</p>
+        <p>Turno: Matutino</p>
+        <p>Faixa etária: 5 anos</p>
+    </div>
+
+    <div class="card">
+        <h2>📅 Rotina do Dia</h2>
+        <ul>
+            <li>Acolhida e oração</li>
+            <li>Música do bom dia</li>
+            <li>Chamadinha</li>
+            <li>Calendário</li>
+            <li>Atividades pedagógicas</li>
+            <li>Lanche / Recreio</li>
+            <li>Brincadeiras</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>📖 Registro de Atividades</h2>
+        <textarea id="registro" placeholder="Escreva aqui o que foi trabalhado no dia..."></textarea>
+        <button onclick="salvar()">💾 Salvar</button>
+    </div>
+
+    <div class="card">
+        <h2>📝 Observações</h2>
+        <textarea id="observacao" placeholder="Anotações importantes sobre os alunos..."></textarea>
+        <button onclick="salvar()">💾 Salvar</button>
+    </div>
+
+</div>
+
+<div class="footer">
+    Página pedagógica - Pré 2 💚
+</div>
+
+<script>
+
+// Mostrar data automática
+let hoje = new Date();
+let dataFormatada = hoje.toLocaleDateString('pt-BR');
+document.getElementById("data").innerText = "Data: " + dataFormatada;
+
+
+// Salvar no navegador
+function salvar() {
+    let registro = document.getElementById("registro").value;
+    let observacao = document.getElementById("observacao").value;
+
+    localStorage.setItem("registro_pre2", registro);
+    localStorage.setItem("observacao_pre2", observacao);
+
+    alert("Dados salvos com sucesso!");
+}
+
+
+// Carregar dados salvos
+window.onload = function() {
+    document.getElementById("registro").value = localStorage.getItem("registro_pre2") || "";
+    document.getElementById("observacao").value = localStorage.getItem("observacao_pre2") || "";
+};
+
+</script>
+
+</body>
+</html>

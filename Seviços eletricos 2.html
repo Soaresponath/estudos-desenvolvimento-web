@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eletricista Profissional | Orçamento Interativo</title>
+  <style>
+    /* Estilos originais mantidos */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+    body { background: #f7f7f7; color: #222; line-height: 1.6; padding-bottom: 80px; } /* Espaço para a barra total */
+    header { background: linear-gradient(135deg, #111827, #1f2937); color: white; padding: 24px 20px; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    nav a { color: white; text-decoration: none; margin-left: 18px; font-weight: bold; }
+    nav a:hover { color: #facc15; }
+    
+    .hero { background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=1400&q=80') center/cover; color: white; padding: 90px 20px; text-align: center; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 14px; }
+    .hero p { max-width: 700px; margin: 0 auto 24px; font-size: 1.1rem; }
+
+    .btn { display: inline-block; padding: 14px 24px; background: #25d366; color: white; text-decoration: none; border-radius: 10px; font-weight: bold; transition: 0.3s; border: none; cursor: pointer; }
+    .btn:hover { background: #1ebe5d; transform: translateY(-2px); }
+
+    section { padding: 60px 0; }
+    .section-title { text-align: center; font-size: 2rem; margin-bottom: 16px; color: #111827; }
+    .section-subtitle { text-align: center; color: #555; max-width: 750px; margin: 0 auto 36px; }
+
+    /* Estilos dos Cards com Checkbox */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .card { 
+      background: white; 
+      padding: 24px; 
+      border-radius: 16px; 
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08); 
+      border-top: 5px solid #facc15; 
+      position: relative;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .card:hover { border-top-color: #25d366; }
+    .card input[type="checkbox"] { position: absolute; top: 20px; right: 20px; transform: scale(1.5); cursor: pointer; }
+    .card h3 { margin-bottom: 10px; color: #111827; padding-right: 25px; }
+    .price { font-size: 1.4rem; font-weight: bold; color: #16a34a; margin: 12px 0; }
+
+    /* Barra de Total Fixa */
+    .total-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #111827;
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+      display: none; /* Escondida por padrão */
+      z-index: 100;
+    }
+    .total-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total-amount { font-size: 1.5rem; font-weight: bold; color: #facc15; }
+
+    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
+    .about-box { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+    .highlight { color: #ca8a04; font-weight: bold; }
+    .contact-box { text-align: center; background: #111827; color: white; padding: 40px 20px; border-radius: 20px; }
+    footer { background: #0f172a; color: #cbd5e1; text-align: center; padding: 20px; font-size: 0.95rem; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .about { grid-template-columns: 1fr; }
+      .total-content { flex-direction: column; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="logo">⚡ Eletricista Profissional</div>
+      <nav>
+        <a href="#inicio">Início</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#sobre">Sobre</a>
+        <a href="#contato">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="inicio">
+    <div class="container">
+      <h1>Serviços elétricos com qualidade e segurança</h1>
+      <p>Selecione os serviços abaixo para simular um orçamento e me chame no WhatsApp.</p>
+      <a class="btn" href="#servicos">Ver Serviços</a>
+    </div>
+  </section>
+
+  <section id="servicos">
+    <div class="container">
+      <h2 class="section-title">Selecione os Serviços</h2>
+      <p class="section-subtitle">Clique nos serviços que você precisa para somar o valor estimado.</p>
+
+      <div class="cards">
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="40" data-name="Troca de tomada">
+          <h3>Troca de tomada</h3>
+          <p>Substituição de tomada comum ou danificada.</p>
+          <div class="price">R$ 40,00</div>
+        </div>
+
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="35" data-name="Troca de interruptor">
+          <h3>Troca de interruptor</h3>
+          <p>Instalação ou substituição simples.</p>
+          <div class="price">R$ 35,00</div>
+        </div>
+
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="60" data-name="Instalação de luminária">
+          <h3>Instalação de luminária</h3>
+          <p>Montagem de plafons e pendentes.</p>
+          <div class="price">R$ 60,00</div>
+        </div>
+
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="120" data-name="Ventilador de teto">
+          <h3>Instalação de ventilador</h3>
+          <p>Instalação com fixação e teste.</p>
+          <div class="price">R$ 120,00</div>
+        </div>
+
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="80" data-name="Troca de disjuntor">
+          <h3>Troca de disjuntor</h3>
+          <p>Substituição com verificação de carga.</p>
+          <div class="price">R$ 80,00</div>
+        </div>
+
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="100" data-name="Reparo Elétrico">
+          <h3>Reparo residencial</h3>
+          <p>Diagnóstico e solução de falhas.</p>
+          <div class="price">R$ 100,00</div>
+        </div>
+
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="90" data-name="Chuveiro Elétrico">
+          <h3>Instalação de chuveiro</h3>
+          <p>Instalação com segurança técnica.</p>
+          <div class="price">R$ 90,00</div>
+        </div>
+
+        <div class="card" onclick="toggleCheckbox(this)">
+          <input type="checkbox" class="service-check" data-price="50" data-name="Visita Técnica">
+          <h3>Visita técnica</h3>
+          <p>Avaliação local para grandes orçamentos.</p>
+          <div class="price">R$ 50,00</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="total-bar" id="totalBar">
+    <div class="container total-content">
+      <div>
+        <span>Total Estimado: </span>
+        <span class="total-amount" id="totalValue">R$ 0,00</span>
+      </div>
+      <button class="btn" onclick="sendWhatsApp()">Solicitar Agora</button>
+    </div>
+  </div>
+
+  <section id="sobre">
+    <div class="container about">
+      <div class="about-box">
+        <h2>Sobre o profissional</h2>
+        <p>Atendimento com foco em <span class="highlight">segurança</span> e <span class="highlight">qualidade</span>.</p>
+      </div>
+      <div class="about-box">
+        <h2>Por que contratar?</h2>
+        <p>✔ Atendimento rápido e preço justo.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Eletricista Profissional - Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    const checks = document.querySelectorAll('.service-check');
+    const totalBar = document.getElementById('totalBar');
+    const totalValueDisplay = document.getElementById('totalValue');
+
+    // Função para marcar o checkbox ao clicar no card
+    function toggleCheckbox(card) {
+      const checkbox = card.querySelector('.service-check');
+      checkbox.checked = !checkbox.checked;
+      calculateTotal();
+    }
+
+    // Evita que o clique no checkbox dispare duas vezes o evento do card
+    checks.forEach(check => {
+      check.addEventListener('click', (e) => {
+        e.stopPropagation();
+        calculateTotal();
+      });
+    });
+
+    function calculateTotal() {
+      let total = 0;
+      let selectedCount = 0;
+
+      checks.forEach(check => {
+        if (check.checked) {
+          total += parseFloat(check.getAttribute('data-price'));
+          selectedCount++;
+        }
+      });
+
+      totalValueDisplay.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+      
+      // Mostra a barra apenas se houver serviços selecionados
+      totalBar.style.display = selectedCount > 0 ? 'block' : 'none';
+    }
+
+    function sendWhatsApp() {
+      const phone = "5527998502527";
+      let message = "Olá! Gostaria de um orçamento para os seguintes serviços:\n\n";
+      let total = 0;
+
+      checks.forEach(check => {
+        if (check.checked) {
+          message += `- ${check.getAttribute('data-name')} (R$ ${check.getAttribute('data-price')})\n`;
+          total += parseFloat(check.getAttribute('data-price'));
+        }
+      });
+
+      message += `\n*Total Estimado: R$ ${total.toFixed(2)}*`;
+      
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+    }
+  </script>
+</body>
+</html>

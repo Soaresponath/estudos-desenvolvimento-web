@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel da Pedagoga</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#f0f4ff}
+header{background:#2563eb;color:white;padding:15px;text-align:center}
+nav{display:flex;gap:10px;flex-wrap:wrap;padding:10px;background:#dbeafe}
+nav button{padding:10px;border:none;border-radius:8px;cursor:pointer}
+section{display:none;padding:15px}
+section.active{display:block}
+.card{background:white;padding:15px;border-radius:10px;margin-bottom:10px}
+textarea,input,select{width:100%;padding:8px;margin:5px 0;border-radius:8px;border:1px solid #ccc}
+button.primary{background:#2563eb;color:white}
+button.ok{background:#16a34a;color:white}
+button.del{background:#ef4444;color:white}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Painel da Pedagoga</h2>
+<div id="data"></div>
+</header>
+
+<nav>
+<button onclick="trocar('turmas')">Turmas</button>
+<button onclick="trocar('tarefas')">Tarefas</button>
+<button onclick="trocar('reunioes')">Reuniões</button>
+<button onclick="trocar('atendimentos')">Atendimentos</button>
+<button onclick="trocar('diario')">Diário</button>
+<button onclick="trocar('planejamento')">Planejamento</button>
+<button onclick="trocar('relatorio')">Relatórios</button>
+</nav>
+
+<!-- TURMAS -->
+<section id="turmas" class="active">
+<h3>Turmas</h3>
+<div id="listaTurmas"></div>
+</section>
+
+<!-- TAREFAS -->
+<section id="tarefas">
+<h3>Tarefas</h3>
+
+<input type="date" id="tarefaData">
+<select id="tarefaTurma">
+<option>1º Ano</option><option>2º Ano</option><option>3º Ano</option>
+<option>4º Ano</option><option>5º Ano</option><option>6º Ano</option>
+</select>
+<textarea id="tarefaTexto" placeholder="Descrição"></textarea>
+<button class="primary" onclick="addTarefa()">Adicionar</button>
+
+<div id="listaTarefas"></div>
+</section>
+
+<!-- REUNIÕES -->
+<section id="reunioes">
+<h3>Reuniões</h3>
+
+<input type="date" id="reuniaoData">
+<input type="time" id="reuniaoHora">
+<textarea id="reuniaoTexto"></textarea>
+<button class="primary" onclick="addReuniao()">Adicionar</button>
+
+<div id="listaReunioes"></div>
+</section>
+
+<!-- ATENDIMENTOS -->
+<section id="atendimentos">
+<h3>Atendimentos</h3>
+
+<input type="date" id="atData">
+<select id="atTipo">
+<option>Aluno</option>
+<option>Professor</option>
+<option>Família</option>
+</select>
+<textarea id="atTexto"></textarea>
+<button class="primary" onclick="addAt()">Adicionar</button>
+
+<div id="listaAt"></div>
+</section>
+
+<!-- DIÁRIO -->
+<section id="diario">
+<h3>Diário</h3>
+
+<input type="date" id="diarioData">
+<textarea id="diarioTexto"></textarea>
+</section>
+
+<!-- PLANEJAMENTO -->
+<section id="planejamento">
+<h3>Planejamento com Professor</h3>
+<textarea id="planejamentoTexto"></textarea>
+</section>
+
+<!-- RELATÓRIO -->
+<section id="relatorio">
+<h3>Relatório</h3>
+<button class="primary" onclick="gerarRelatorio()">Gerar</button>
+<textarea id="relatorioTexto"></textarea>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+// DATA
+document.getElementById("data").innerText =
+new Date().toLocaleDateString("pt-BR");
+
+// TROCA DE TELA
+window.trocar = function(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+// TURMAS
+const turmas = ["1º Ano","2º Ano","3º Ano","4º Ano","5º Ano","6º Ano"];
+document.getElementById("listaTurmas").innerHTML =
+turmas.map(t=>"<div class='card'>"+t+"</div>").join("");
+
+// STORAGE
+let tarefas = JSON.parse(localStorage.getItem("tarefas")||"[]");
+let reunioes = JSON.parse(localStorage.getItem("reunioes")||"[]");
+let atendimentos = JSON.parse(localStorage.getItem("at")||"[]");
+
+// TAREFAS
+window.addTarefa = function(){
+let t={
+id:Date.now(),
+data:tarefaData.value,
+turma:tarefaTurma.value,
+texto:tarefaTexto.value,
+ok:false
+}
+tarefas.push(t);
+salvar();
+renderTarefas();
+}
+
+function renderTarefas(){
+listaTarefas.innerHTML = tarefas.map(t=>`
+<div class="card">
+<b>${t.turma}</b> - ${t.data}<br>
+${t.texto}<br>
+<button class="ok" onclick="toggle(${t.id})">${t.ok?'Concluída':'Marcar concluída'}</button>
+<button class="del" onclick="delT(${t.id})">Excluir</button>
+</div>`).join("")
+}
+
+window.toggle = function(id){
+tarefas = tarefas.map(t=>{
+if(t.id==id) t.ok=!t.ok;
+return t;
+});
+salvar(); renderTarefas();
+}
+
+window.delT = function(id){
+tarefas = tarefas.filter(t=>t.id!=id);
+salvar(); renderTarefas();
+}
+
+// REUNIÕES
+window.addReuniao = function(){
+reunioes.push({
+data:reuniaoData.value,
+hora:reuniaoHora.value,
+texto:reuniaoTexto.value
+});
+salvar(); renderReunioes();
+}
+
+function renderReunioes(){
+listaReunioes.innerHTML = reunioes.map(r=>`
+<div class="card">
+${r.data} ${r.hora}<br>${r.texto}
+</div>`).join("")
+}
+
+// ATENDIMENTOS
+window.addAt = function(){
+atendimentos.push({
+data:atData.value,
+tipo:atTipo.value,
+texto:atTexto.value
+});
+salvar(); renderAt();
+}
+
+function renderAt(){
+listaAt.innerHTML = atendimentos.map(a=>`
+<div class="card">
+${a.data} - ${a.tipo}<br>${a.texto}
+</div>`).join("")
+}
+
+// DIÁRIO + PLANEJAMENTO AUTO SAVE
+["diarioTexto","planejamentoTexto"].forEach(id=>{
+let el=document.getElementById(id);
+el.value = localStorage.getItem(id)||"";
+el.addEventListener("input",()=>{
+localStorage.setItem(id,el.value);
+});
+});
+
+// RELATÓRIO
+window.gerarRelatorio = function(){
+relatorioTexto.value =
+"TAREFAS: "+tarefas.length+
+"\nREUNIÕES: "+reunioes.length+
+"\nATENDIMENTOS: "+atendimentos.length;
+}
+
+// SALVAR
+function salvar(){
+localStorage.setItem("tarefas",JSON.stringify(tarefas));
+localStorage.setItem("reunioes",JSON.stringify(reunioes));
+localStorage.setItem("at",JSON.stringify(atendimentos));
+}
+
+// INICIAL
+renderTarefas();
+renderReunioes();
+renderAt();
+
+});
+</script>
+
+</body>
+</html>

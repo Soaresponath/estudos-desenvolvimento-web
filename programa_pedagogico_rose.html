@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programa Pedagógico - Rosiane Soares Ponath</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f4f6fb;
+      color: #263238;
+    }
+
+    header {
+      background: linear-gradient(135deg, #5b3cc4, #8c6ff7);
+      color: white;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 15px;
+      opacity: 0.95;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1300px;
+      margin: 24px auto;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-left: 6px solid #6f4de2;
+    }
+
+    .card h3 {
+      color: #5b3cc4;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .card .numero {
+      font-size: 32px;
+      font-weight: bold;
+      color: #263238;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tabs button {
+      border: none;
+      background: #e4ddff;
+      color: #4b34a3;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .tabs button:hover,
+    .tabs button.active {
+      background: #6f4de2;
+      color: white;
+    }
+
+    section {
+      display: none;
+      background: white;
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    section h2 {
+      color: #5b3cc4;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e4ddff;
+      padding-bottom: 8px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #c9c9d6;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .campo-grande {
+      grid-column: 1 / -1;
+    }
+
+    .botoes {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      padding: 11px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn-salvar {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-limpar {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-imprimir {
+      background: #0069d9;
+      color: white;
+    }
+
+    .btn-excluir {
+      background: #dc3545;
+      color: white;
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .btn-editar {
+      background: #ffc107;
+      color: #333;
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .btn:hover {
+      opacity: 0.85;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #6f4de2;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background: #f8f6ff;
+    }
+
+    .status-baixo {
+      background: #d4edda;
+      color: #155724;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .status-medio {
+      background: #fff3cd;
+      color: #856404;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .status-alto {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .relatorio-box {
+      background: #f8f6ff;
+      border-left: 6px solid #6f4de2;
+      padding: 18px;
+      border-radius: 12px;
+      line-height: 1.7;
+      margin-top: 16px;
+    }
+
+    .assinatura {
+      margin-top: 50px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .filtro {
+      margin-bottom: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filtro input,
+    .filtro select {
+      max-width: 320px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 13px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      header,
+      .tabs,
+      .dashboard,
+      .botoes,
+      .filtro,
+      footer,
+      .btn {
+        display: none !important;
+      }
+
+      section {
+        display: block !important;
+        box-shadow: none;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Programa Pedagógico</h1>
+    <p>Organização, acompanhamento e registro da atuação da Pedagoga</p>
+    <p><strong>Rosiane Soares Ponath - Pedagoga</strong></p>
+  </header>
+
+  <main class="container">
+    <div class="dashboard">
+      <div class="card">
+        <h3>Turmas cadastradas</h3>
+        <div class="numero" id="totalTurmas">0</div>
+      </div>
+      <div class="card">
+        <h3>Professores cadastrados</h3>
+        <div class="numero" id="totalProfessores">0</div>
+      </div>
+      <div class="card">
+        <h3>Alunos acompanhados</h3>
+        <div class="numero" id="totalAlunos">0</div>
+      </div>
+      <div class="card">
+        <h3>Demandas em aberto</h3>
+        <div class="numero" id="totalDemandas">0</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="active" onclick="abrirAba('inicio', this)">Início</button>
+      <button onclick="abrirAba('turmas', this)">Turmas</button>
+      <button onclick="abrirAba('professores', this)">Professores</button>
+      <button onclick="abrirAba('alunos', this)">Alunos</button>
+      <button onclick="abrirAba('demandas', this)">Demandas</button>
+      <button onclick="abrirAba('atendimentos', this)">Atendimentos</button>
+      <button onclick="abrirAba('plano', this)">Plano de Ação</button>
+      <button onclick="abrirAba('relatorio', this)">Relatório</button>
+    </div>
+
+    <section id="inicio" class="active">
+      <h2>Organização inicial da Pedagoga</h2>
+      <div class="relatorio-box">
+        <p><strong>Objetivo do sistema:</strong> apoiar a Pedagoga na organização das atividades de planejamento, acompanhamento, orientação, avaliação e registro das ações pedagógicas realizadas na unidade escolar.</p>
+        <p><strong>Data de início na nova escola:</strong> 27/05/2026.</p>
+        <p><strong>Prioridades iniciais:</strong> conhecer a realidade escolar, analisar documentos, ouvir professores, identificar demandas, acompanhar alunos, organizar registros e construir um plano de ação pedagógica.</p>
+      </div>
+
+      <h2 style="margin-top: 24px;">Checklist da primeira semana</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Ação</th>
+            <th>Concluído?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Conhecer a equipe gestora</td><td><input type="checkbox" /></td></tr>
+          <tr><td>Conhecer professores e funcionários</td><td><input type="checkbox" /></td></tr>
+          <tr><td>Solicitar PPP, regimento e calendário escolar</td><td><input type="checkbox" /></td></tr>
+          <tr><td>Levantar turmas, professores e horários</td><td><input type="checkbox" /></td></tr>
+          <tr><td>Identificar alunos que precisam de acompanhamento</td><td><input type="checkbox" /></td></tr>
+          <tr><td>Organizar pasta física ou digital da Pedagoga</td><td><input type="checkbox" /></td></tr>
+          <tr><td>Registrar demandas urgentes</td><td><input type="checkbox" /></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="turmas">
+      <h2>Cadastro de Turmas</h2>
+      <form id="formTurma">
+        <div>
+          <label>Nome da turma</label>
+          <input type="text" id="turmaNome" placeholder="Ex: Pré 2, 4º Ano" required />
+        </div>
+        <div>
+          <label>Turno</label>
+          <select id="turmaTurno" required>
+            <option value="">Selecione</option>
+            <option>Matutino</option>
+            <option>Vespertino</option>
+            <option>Integral</option>
+          </select>
+        </div>
+        <div>
+          <label>Professor responsável</label>
+          <input type="text" id="turmaProfessor" placeholder="Nome do professor" />
+        </div>
+        <div>
+          <label>Quantidade de alunos</label>
+          <input type="number" id="turmaQtd" min="0" />
+        </div>
+        <div class="campo-grande">
+          <label>Observações sobre a turma</label>
+          <textarea id="turmaObs" placeholder="Perfil da turma, principais desafios, rotina..."></textarea>
+        </div>
+        <div class="botoes">
+          <button class="btn btn-salvar" type="submit">Salvar turma</button>
+          <button class="btn btn-limpar" type="reset">Limpar</button>
+        </div>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Turma</th>
+            <th>Turno</th>
+            <th>Professor</th>
+            <th>Alunos</th>
+            <th>Observações</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaTurmas"></tbody>
+      </table>
+    </section>
+
+    <section id="professores">
+      <h2>Cadastro de Professores</h2>
+      <form id="formProfessor">
+        <div>
+          <label>Nome do professor</label>
+          <input type="text" id="profNome" required />
+        </div>
+        <div>
+          <label>Turma/Disciplina</label>
+          <input type="text" id="profTurma" placeholder="Ex: 4º Ano / Matemática" />
+        </div>
+        <div>
+          <label>Principal necessidade de apoio</label>
+          <select id="profApoio">
+            <option>Planejamento</option>
+            <option>Avaliação</option>
+            <option>Intervenção pedagógica</option>
+            <option>Indisciplina</option>
+            <option>Inclusão</option>
+            <option>Projetos</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="campo-grande">
+          <label>Observações da escuta pedagógica</label>
+          <textarea id="profObs" placeholder="O que o professor relatou? Quais demandas apresentou?"></textarea>
+        </div>
+        <div class="botoes">
+          <button class="btn btn-salvar" type="submit">Salvar professor</button>
+          <button class="btn btn-limpar" type="reset">Limpar</button>
+        </div>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Professor</th>
+            <th>Turma/Disciplina</th>
+            <th>Apoio necessário</th>
+            <th>Observações</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaProfessores"></tbody>
+      </table>
+    </section>
+
+    <section id="alunos">
+      <h2>Alunos em Acompanhamento</h2>
+      <form id="formAluno">
+        <div>
+          <label>Nome do aluno</label>
+          <input type="text" id="alunoNome" required />
+        </div>
+        <div>
+          <label>Turma</label>
+          <input type="text" id="alunoTurma" required />
+        </div>
+        <div>
+          <label>Tipo de acompanhamento</label>
+          <select id="alunoTipo">
+            <option>Aprendizagem</option>
+            <option>Frequência</option>
+            <option>Comportamento</option>
+            <option>Socialização</option>
+            <option>Adaptação</option>
+            <option>Família</option>
+            <option>Inclusão</option>
+          </select>
+        </div>
+        <div>
+          <label>Nível de atenção</label>
+          <select id="alunoNivel">
+            <option>Baixo</option>
+            <option>Médio</option>
+            <option>Alto</option>
+          </select>
+        </div>
+        <div class="campo-grande">
+          <label>Situação observada</label>
+          <textarea id="alunoSituacao" placeholder="Descreva a situação do aluno..."></textarea>
+        </div>
+        <div class="campo-grande">
+          <label>Intervenção proposta</label>
+          <textarea id="alunoIntervencao" placeholder="O que será feito para acompanhar este aluno?"></textarea>
+        </div>
+        <div class="botoes">
+          <button class="btn btn-salvar" type="submit">Salvar aluno</button>
+          <button class="btn btn-limpar" type="reset">Limpar</button>
+        </div>
+      </form>
+      <div class="filtro">
+        <input type="text" id="buscarAluno" placeholder="Buscar aluno..." oninput="renderizarAlunos()" />
+        <select id="filtroNivel" onchange="renderizarAlunos()">
+          <option value="">Todos os níveis</option>
+          <option>Baixo</option>
+          <option>Médio</option>
+          <option>Alto</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Aluno</th>
+            <th>Turma</th>
+            <th>Tipo</th>
+            <th>Nível</th>
+            <th>Situação</th>
+            <th>Intervenção</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaAlunos"></tbody>
+      </table>
+    </section>
+
+    <section id="demandas">
+      <h2>Demandas Pedagógicas</h2>
+      <form id="formDemanda">
+        <div>
+          <label>Data</label>
+          <input type="date" id="demandaData" required />
+        </div>
+        <div>
+          <label>Origem da demanda</label>
+          <select id="demandaOrigem">
+            <option>Gestão</option>
+            <option>Professor</option>
+            <option>Família</option>
+            <option>Aluno</option>
+            <option>Secretaria</option>
+            <option>Observação da Pedagoga</option>
+          </select>
+        </div>
+        <div>
+          <label>Prioridade</label>
+          <select id="demandaPrioridade">
+            <option>Baixa</option>
+            <option>Média</option>
+            <option>Alta</option>
+          </select>
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="demandaStatus">
+            <option>Aberta</option>
+            <option>Em andamento</option>
+            <option>Concluída</option>
+          </select>
+        </div>
+        <div class="campo-grande">
+          <label>Descrição da demanda</label>
+          <textarea id="demandaDescricao" required></textarea>
+        </div>
+        <div class="campo-grande">
+          <label>Encaminhamento</label>
+          <textarea id="demandaEncaminhamento"></textarea>
+        </div>
+        <div class="botoes">
+          <button class="btn btn-salvar" type="submit">Salvar demanda</button>
+          <button class="btn btn-limpar" type="reset">Limpar</button>
+        </div>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Origem</th>
+            <th>Prioridade</th>
+            <th>Status</th>
+            <th>Descrição</th>
+            <th>Encaminhamento</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaDemandas"></tbody>
+      </table>
+    </section>
+
+    <section id="atendimentos">
+      <h2>Registro de Atendimentos</h2>
+      <form id="formAtendimento">
+        <div>
+          <label>Data</label>
+          <input type="date" id="atData" required />
+        </div>
+        <div>
+          <label>Atendido</label>
+          <input type="text" id="atNome" placeholder="Aluno, professor ou responsável" required />
+        </div>
+        <div>
+          <label>Tipo de atendimento</label>
+          <select id="atTipo">
+            <option>Aluno</option>
+            <option>Professor</option>
+            <option>Família</option>
+            <option>Gestão</option>
+            <option>Conselho de classe</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="campo-grande">
+          <label>Relato do atendimento</label>
+          <textarea id="atRelato" required></textarea>
+        </div>
+        <div class="campo-grande">
+          <label>Encaminhamentos e próximas ações</label>
+          <textarea id="atEncaminhamento"></textarea>
+        </div>
+        <div class="botoes">
+          <button class="btn btn-salvar" type="submit">Salvar atendimento</button>
+          <button class="btn btn-limpar" type="reset">Limpar</button>
+        </div>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Atendido</th>
+            <th>Tipo</th>
+            <th>Relato</th>
+            <th>Encaminhamentos</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaAtendimentos"></tbody>
+      </table>
+    </section>
+
+    <section id="plano">
+      <h2>Plano de Ação Pedagógica</h2>
+      <form id="formPlano">
+        <div>
+          <label>Eixo de atuação</label>
+          <select id="planoEixo">
+            <option>Diagnóstico escolar</option>
+            <option>Apoio ao professor</option>
+            <option>Acompanhamento dos alunos</option>
+            <option>Família e comunidade</option>
+            <option>Projetos pedagógicos</option>
+            <option>Avaliação e resultados</option>
+            <option>Formação continuada</option>
+          </select>
+        </div>
+        <div>
+          <label>Período</label>
+          <input type="text" id="planoPeriodo" placeholder="Ex: Junho/2026" />
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="planoStatus">
+            <option>Planejado</option>
+            <option>Em andamento</option>
+            <option>Concluído</option>
+          </select>
+        </div>
+        <div class="campo-grande">
+          <label>Objetivo</label>
+          <textarea id="planoObjetivo" required></textarea>
+        </div>
+        <div class="campo-grande">
+          <label>Ações previstas</label>
+          <textarea id="planoAcoes" required></textarea>
+        </div>
+        <div class="campo-grande">
+          <label>Resultados esperados</label>
+          <textarea id="planoResultados"></textarea>
+        </div>
+        <div class="botoes">
+          <button class="btn btn-salvar" type="submit">Salvar ação</button>
+          <button class="btn btn-limpar" type="reset">Limpar</button>
+        </div>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Eixo</th>
+            <th>Período</th>
+            <th>Objetivo</th>
+            <th>Ações</th>
+            <th>Resultados</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="listaPlano"></tbody>
+      </table>
+    </section>
+
+    <section id="relatorio">
+      <h2>Relatório Pedagógico Geral</h2>
+      <div class="botoes">
+        <button class="btn btn-imprimir" onclick="window.print()">Imprimir / Salvar em PDF</button>
+        <button class="btn btn-salvar" onclick="gerarRelatorio()">Atualizar relatório</button>
+      </div>
+      <div class="relatorio-box" id="textoRelatorio"></div>
+      <div class="assinatura">
+        _____________________________________<br />
+        <strong>Rosiane Soares Ponath</strong><br />
+        Pedagoga
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Sistema local criado para organização da atuação pedagógica. Os dados ficam salvos no navegador usado.
+  </footer>
+
+  <script>
+    let turmas = JSON.parse(localStorage.getItem('turmas')) || [];
+    let professores = JSON.parse(localStorage.getItem('professores')) || [];
+    let alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+    let demandas = JSON.parse(localStorage.getItem('demandas')) || [];
+    let atendimentos = JSON.parse(localStorage.getItem('atendimentos')) || [];
+    let plano = JSON.parse(localStorage.getItem('plano')) || [];
+
+    function salvarDados() {
+      localStorage.setItem('turmas', JSON.stringify(turmas));
+      localStorage.setItem('professores', JSON.stringify(professores));
+      localStorage.setItem('alunos', JSON.stringify(alunos));
+      localStorage.setItem('demandas', JSON.stringify(demandas));
+      localStorage.setItem('atendimentos', JSON.stringify(atendimentos));
+      localStorage.setItem('plano', JSON.stringify(plano));
+      atualizarDashboard();
+    }
+
+    function abrirAba(id, botao) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      botao.classList.add('active');
+      if (id === 'relatorio') gerarRelatorio();
+    }
+
+    function atualizarDashboard() {
+      document.getElementById('totalTurmas').textContent = turmas.length;
+      document.getElementById('totalProfessores').textContent = professores.length;
+      document.getElementById('totalAlunos').textContent = alunos.length;
+      document.getElementById('totalDemandas').textContent = demandas.filter(d => d.status !== 'Concluída').length;
+    }
+
+    function statusNivel(nivel) {
+      if (nivel === 'Alto' || nivel === 'Alta') return '<span class="status-alto">' + nivel + '</span>';
+      if (nivel === 'Médio' || nivel === 'Média') return '<span class="status-medio">' + nivel + '</span>';
+      return '<span class="status-baixo">' + nivel + '</span>';
+    }
+
+    function excluirItem(lista, indice) {
+      if (confirm('Deseja realmente excluir este registro?')) {
+        lista.splice(indice, 1);
+        salvarDados();
+        renderizarTudo();
+      }
+    }
+
+    document.getElementById('formTurma').addEventListener('submit', function(e) {
+      e.preventDefault();
+      turmas.push({
+        nome: turmaNome.value,
+        turno: turmaTurno.value,
+        professor: turmaProfessor.value,
+        qtd: turmaQtd.value,
+        obs: turmaObs.value
+      });
+      salvarDados();
+      renderizarTurmas();
+      this.reset();
+    });
+
+    function renderizarTurmas() {
+      listaTurmas.innerHTML = turmas.map((t, i) => `
+        <tr>
+          <td>${t.nome}</td>
+          <td>${t.turno}</td>
+          <td>${t.professor}</td>
+          <td>${t.qtd}</td>
+          <td>${t.obs}</td>
+          <td><button class="btn btn-excluir" onclick="excluirItem(turmas, ${i})">Excluir</button></td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('formProfessor').addEventListener('submit', function(e) {
+      e.preventDefault();
+      professores.push({
+        nome: profNome.value,
+        turma: profTurma.value,
+        apoio: profApoio.value,
+        obs: profObs.value
+      });
+      salvarDados();
+      renderizarProfessores();
+      this.reset();
+    });
+
+    function renderizarProfessores() {
+      listaProfessores.innerHTML = professores.map((p, i) => `
+        <tr>
+          <td>${p.nome}</td>
+          <td>${p.turma}</td>
+          <td>${p.apoio}</td>
+          <td>${p.obs}</td>
+          <td><button class="btn btn-excluir" onclick="excluirItem(professores, ${i})">Excluir</button></td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('formAluno').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alunos.push({
+        nome: alunoNome.value,
+        turma: alunoTurma.value,
+        tipo: alunoTipo.value,
+        nivel: alunoNivel.value,
+        situacao: alunoSituacao.value,
+        intervencao: alunoIntervencao.value
+      });
+      salvarDados();
+      renderizarAlunos();
+      this.reset();
+    });
+
+    function renderizarAlunos() {
+      const busca = document.getElementById('buscarAluno').value.toLowerCase();
+      const nivel = document.getElementById('filtroNivel').value;
+      const filtrados = alunos.filter(a =>
+        a.nome.toLowerCase().includes(busca) &&
+        (nivel === '' || a.nivel === nivel)
+      );
+      listaAlunos.innerHTML = filtrados.map((a) => {
+        const indiceReal = alunos.indexOf(a);
+        return `
+          <tr>
+            <td>${a.nome}</td>
+            <td>${a.turma}</td>
+            <td>${a.tipo}</td>
+            <td>${statusNivel(a.nivel)}</td>
+            <td>${a.situacao}</td>
+            <td>${a.intervencao}</td>
+            <td><button class="btn btn-excluir" onclick="excluirItem(alunos, ${indiceReal})">Excluir</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('formDemanda').addEventListener('submit', function(e) {
+      e.preventDefault();
+      demandas.push({
+        data: demandaData.value,
+        origem: demandaOrigem.value,
+        prioridade: demandaPrioridade.value,
+        status: demandaStatus.value,
+        descricao: demandaDescricao.value,
+        encaminhamento: demandaEncaminhamento.value
+      });
+      salvarDados();
+      renderizarDemandas();
+      this.reset();
+    });
+
+    function renderizarDemandas() {
+      listaDemandas.innerHTML = demandas.map((d, i) => `
+        <tr>
+          <td>${d.data}</td>
+          <td>${d.origem}</td>
+          <td>${statusNivel(d.prioridade)}</td>
+          <td>${d.status}</td>
+          <td>${d.descricao}</td>
+          <td>${d.encaminhamento}</td>
+          <td><button class="btn btn-excluir" onclick="excluirItem(demandas, ${i})">Excluir</button></td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('formAtendimento').addEventListener('submit', function(e) {
+      e.preventDefault();
+      atendimentos.push({
+        data: atData.value,
+        nome: atNome.value,
+        tipo: atTipo.value,
+        relato: atRelato.value,
+        encaminhamento: atEncaminhamento.value
+      });
+      salvarDados();
+      renderizarAtendimentos();
+      this.reset();
+    });
+
+    function renderizarAtendimentos() {
+      listaAtendimentos.innerHTML = atendimentos.map((a, i) => `
+        <tr>
+          <td>${a.data}</td>
+          <td>${a.nome}</td>
+          <td>${a.tipo}</td>
+          <td>${a.relato}</td>
+          <td>${a.encaminhamento}</td>
+          <td><button class="btn btn-excluir" onclick="excluirItem(atendimentos, ${i})">Excluir</button></td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('formPlano').addEventListener('submit', function(e) {
+      e.preventDefault();
+      plano.push({
+        eixo: planoEixo.value,
+        periodo: planoPeriodo.value,
+        status: planoStatus.value,
+        objetivo: planoObjetivo.value,
+        acoes: planoAcoes.value,
+        resultados: planoResultados.value
+      });
+      salvarDados();
+      renderizarPlano();
+      this.reset();
+    });
+
+    function renderizarPlano() {
+      listaPlano.innerHTML = plano.map((p, i) => `
+        <tr>
+          <td>${p.eixo}</td>
+          <td>${p.periodo}</td>
+          <td>${p.objetivo}</td>
+          <td>${p.acoes}</td>
+          <td>${p.resultados}</td>
+          <td>${p.status}</td>
+          <td><button class="btn btn-excluir" onclick="excluirItem(plano, ${i})">Excluir</button></td>
+        </tr>
+      `).join('');
+    }
+
+    function gerarRelatorio() {
+      const demandasAbertas = demandas.filter(d => d.status !== 'Concluída').length;
+      const alunosAlto = alunos.filter(a => a.nivel === 'Alto').length;
+
+      textoRelatorio.innerHTML = `
+        <p><strong>Relatório Pedagógico Geral</strong></p>
+        <p>No período registrado, a atuação pedagógica contemplou ações de organização, acompanhamento, orientação, escuta, registro e planejamento das demandas escolares.</p>
+        <p>Foram cadastradas <strong>${turmas.length}</strong> turma(s), <strong>${professores.length}</strong> professor(es), <strong>${alunos.length}</strong> aluno(s) em acompanhamento, <strong>${demandas.length}</strong> demanda(s) pedagógica(s), <strong>${atendimentos.length}</strong> atendimento(s) e <strong>${plano.length}</strong> ação(ões) no plano pedagógico.</p>
+        <p>Atualmente há <strong>${demandasAbertas}</strong> demanda(s) em aberto ou em andamento e <strong>${alunosAlto}</strong> aluno(s) com nível alto de atenção, necessitando acompanhamento mais próximo.</p>
+        <p>As ações desenvolvidas estão alinhadas às atribuições do cargo de Professor P - Pedagogo, especialmente no que se refere ao planejamento, organização, coordenação, acompanhamento e avaliação das atividades educacionais fora da sala de aula, promovendo integração entre equipe escolar, alunos e famílias.</p>
+      `;
+    }
+
+    function renderizarTudo() {
+      renderizarTurmas();
+      renderizarProfessores();
+      renderizarAlunos();
+      renderizarDemandas();
+      renderizarAtendimentos();
+      renderizarPlano();
+      atualizarDashboard();
+    }
+
+    renderizarTudo();
+  </script>
+</body>
+</html>

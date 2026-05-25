@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca Pessoal</title>
+  <style>
+    /* ==================================================
+       CSS = VISUAL DO SITE
+       Aqui controlamos aparência, layout, animações,
+       responsividade e versão para impressão.
+       ================================================== */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #f4f7fb;
+      --card: rgba(255, 255, 255, 0.88);
+      --line: #e5ebf3;
+      --text: #1f2937;
+      --muted: #667085;
+      --primary: #1f4f82;
+      --primary-2: #2e6aa7;
+      --accent: #d4a017;
+      --success: #1f8b4c;
+      --warning: #a56a00;
+      --danger: #c94c4c;
+      --shadow: 0 18px 40px rgba(16, 24, 40, 0.08);
+      --radius: 22px;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(46, 106, 167, 0.08), transparent 30%),
+        radial-gradient(circle at top right, rgba(212, 160, 23, 0.08), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .hero {
+      min-height: 360px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 20px;
+      background:
+        linear-gradient(rgba(16, 34, 58, 0.68), rgba(18, 43, 73, 0.72)),
+        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.18;
+      animation: flutuar 8s ease-in-out infinite;
+    }
+
+    .hero::before {
+      background: #7fc4ff;
+      top: -120px;
+      left: -80px;
+    }
+
+    .hero::after {
+      background: #ffe08a;
+      bottom: -160px;
+      right: -90px;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes flutuar {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-12px) scale(1.04); }
+    }
+
+    .hero-content {
+      max-width: 840px;
+      position: relative;
+      z-index: 1;
+      animation: surgir 1s ease;
+    }
+
+    @keyframes surgir {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      opacity: 0.97;
+      max-width: 760px;
+      margin: 0 auto 18px;
+    }
+
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(6px);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: -42px auto 30px;
+      padding: 0 20px 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .mini-card,
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .mini-card {
+      padding: 18px 18px 16px;
+      animation: surgir 0.8s ease;
+    }
+
+    .mini-card h3 {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .mini-card p {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      padding: 24px;
+      animation: surgir 0.9s ease;
+    }
+
+    .card h2 {
+      color: var(--primary);
+      font-size: 1.35rem;
+      margin-bottom: 10px;
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      color: #374151;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      border: 1px solid #d7e0ea;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 15px;
+      background: rgba(255,255,255,0.9);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--primary-2);
+      box-shadow: 0 0 0 4px rgba(46, 106, 167, 0.12);
+    }
+
+    .actions,
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .actions { margin-top: 6px; }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, opacity 0.16s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary { background: var(--primary-2); color: white; }
+    .btn-secondary { background: #96a4b6; color: white; }
+    .btn-print { background: var(--success); color: white; }
+    .btn-export { background: var(--accent); color: #3d2c00; }
+    .btn-edit { background: #f0ad4e; color: white; padding: 8px 12px; }
+    .btn-delete { background: var(--danger); color: white; padding: 8px 12px; }
+
+    .tip {
+      margin-top: 18px;
+      background: linear-gradient(135deg, rgba(31,79,130,0.08), rgba(212,160,23,0.08));
+      border-left: 5px solid var(--primary-2);
+      border-radius: 16px;
+      padding: 16px;
+      line-height: 1.7;
+      color: #2f4360;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto auto;
+      gap: 12px;
+      margin-bottom: 18px;
+      align-items: end;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid #e8eef5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 920px;
+      background: rgba(255,255,255,0.82);
+    }
+
+    th, td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #edf1f6;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f5f8fc;
+      color: var(--primary);
+      font-size: 0.95rem;
+    }
+
+    tr:hover { background: #fafcff; }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .status-quero { background: #eaf2ff; color: #2a5ea2; }
+    .status-lendo { background: #fff4de; color: var(--warning); }
+    .status-lido { background: #e7f7ee; color: var(--success); }
+
+    .progress-box {
+      min-width: 170px;
+    }
+
+    .progress-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .progress {
+      height: 10px;
+      background: #edf2f7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--primary-2), #6ba9e1);
+      transition: width 0.5s ease;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      font-style: italic;
+      padding: 22px 8px 4px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 14px 20px 28px;
+    }
+
+    @media (max-width: 1100px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .stats,
+      .filters { grid-template-columns: 1fr; }
+      .container { margin-top: -28px; }
+      .hero { min-height: 320px; }
+      .hero-badges { gap: 8px; }
+    }
+
+    @media print {
+      body { background: white; }
+      .hero { min-height: auto; box-shadow: none; }
+      .filters, .actions, .toolbar, .col-actions, #btnCancel { display: none !important; }
+      .container { margin: 0; padding: 0; max-width: 100%; }
+      .card, .mini-card { box-shadow: none; border: 1px solid #ddd; background: white; }
+      .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ==================================================
+       HTML = ESTRUTURA
+       Aqui ficam a capa, os cartões, o formulário,
+       a barra de filtros e a tabela.
+       ================================================== -->
+
+  <header class="hero">
+    <div class="hero-content">
+      <h1>📚 Biblioteca Pessoal</h1>
+      <p>Cadastre os livros que você quer ler, acompanhe o progresso de leitura, filtre sua lista, imprima e exporte seus dados para Excel.</p>
+      <div class="hero-badges">
+        <span class="badge">HTML + CSS + JavaScript</span>
+        <span class="badge">Salvamento automático</span>
+        <span class="badge">Exportação para Excel</span>
+        <span class="badge">Animações suaves</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="stats">
+      <div class="mini-card">
+        <h3>Total de livros</h3>
+        <p id="statTotal">0</p>
+      </div>
+      <div class="mini-card">
+        <h3>Quero ler</h3>
+        <p id="statQuero">0</p>
+      </div>
+      <div class="mini-card">
+        <h3>Lendo</h3>
+        <p id="statLendo">0</p>
+      </div>
+      <div class="mini-card">
+        <h3>Lidos</h3>
+        <p id="statLido">0</p>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="card">
+        <h2>Cadastro de Livros</h2>
+        <p class="subtext">Preencha os campos abaixo. O JavaScript salva tudo no navegador usando <strong>localStorage</strong>.</p>
+
+        <form id="bookForm" class="form-grid">
+          <div class="field">
+            <label for="bookName">Nome do livro</label>
+            <input id="bookName" type="text" placeholder="Ex: O Pequeno Príncipe" required />
+          </div>
+
+          <div class="field">
+            <label for="bookAuthor">Autor do livro</label>
+            <input id="bookAuthor" type="text" placeholder="Ex: Antoine de Saint-Exupéry" required />
+          </div>
+
+          <div class="field">
+            <label for="bookPages">Quantidade de páginas</label>
+            <input id="bookPages" type="number" min="1" placeholder="Ex: 120" required />
+          </div>
+
+          <div class="field">
+            <label for="bookDays">Plano de leitura (dias)</label>
+            <input id="bookDays" type="number" min="1" placeholder="Ex: 7" required />
+          </div>
+
+          <div class="field">
+            <label for="bookStatus">Status</label>
+            <select id="bookStatus">
+              <option>Quero ler</option>
+              <option>Lendo</option>
+              <option>Lido</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="bookProgress">Progresso de leitura (%)</label>
+            <input id="bookProgress" type="number" min="0" max="100" value="0" placeholder="Ex: 35" required />
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn-primary" id="btnSave">Adicionar livro</button>
+            <button type="button" class="btn-secondary" id="btnCancel" style="display:none;">Cancelar edição</button>
+          </div>
+        </form>
+
+        <div class="tip">
+          <strong>Como estudar este projeto:</strong><br>
+          <strong>HTML</strong> cria a estrutura do site.<br>
+          <strong>CSS</strong> deixa o visual profissional e anima as transições.<br>
+          <strong>JavaScript</strong> cadastra, edita, filtra, exporta, imprime e salva os dados.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Lista de Livros</h2>
+        <p class="subtext">Pesquise por título ou autor, filtre por status, imprima sua biblioteca ou exporte para Excel.</p>
+
+        <div class="filters">
+          <div class="field">
+            <label for="searchInput">Filtro de pesquisa</label>
+            <input id="searchInput" type="text" placeholder="Pesquisar por título ou autor" />
+          </div>
+
+          <div class="field">
+            <label for="statusFilter">Filtrar por status</label>
+            <select id="statusFilter">
+              <option>Todos</option>
+              <option>Quero ler</option>
+              <option>Lendo</option>
+              <option>Lido</option>
+            </select>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" class="btn-print" id="btnPrint">Imprimir</button>
+          </div>
+
+          <div class="toolbar">
+            <button type="button" class="btn-export" id="btnExport">Exportar Excel</button>
+          </div>
+        </div>
+
+        <div id="emptyMessage" class="empty">Nenhum livro encontrado.</div>
+
+        <div class="table-wrap">
+          <table id="bookTable" style="display:none;">
+            <thead>
+              <tr>
+                <th>Livro</th>
+                <th>Autor</th>
+                <th>Páginas</th>
+                <th>Dias</th>
+                <th>Páginas/dia</th>
+                <th>Status</th>
+                <th>Progresso</th>
+                <th class="col-actions">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Projeto de estudo em arquivo único com preview renderizado.
+  </footer>
+
+  <script>
+    /* ==================================================
+       JAVASCRIPT = FUNCIONAMENTO
+       Aqui controlamos cadastro, edição, exclusão,
+       filtro, impressão, exportação e localStorage.
+       ================================================== */
+
+    // PEGANDO OS ELEMENTOS DO HTML
+    const bookForm = document.getElementById('bookForm');
+    const bookName = document.getElementById('bookName');
+    const bookAuthor = document.getElementById('bookAuthor');
+    const bookPages = document.getElementById('bookPages');
+    const bookDays = document.getElementById('bookDays');
+    const bookStatus = document.getElementById('bookStatus');
+    const bookProgress = document.getElementById('bookProgress');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const btnSave = document.getElementById('btnSave');
+    const btnCancel = document.getElementById('btnCancel');
+    const btnPrint = document.getElementById('btnPrint');
+    const btnExport = document.getElementById('btnExport');
+    const bookTable = document.getElementById('bookTable');
+    const tableBody = document.getElementById('tableBody');
+    const emptyMessage = document.getElementById('emptyMessage');
+
+    const statTotal = document.getElementById('statTotal');
+    const statQuero = document.getElementById('statQuero');
+    const statLendo = document.getElementById('statLendo');
+    const statLido = document.getElementById('statLido');
+
+    // ARRAY PRINCIPAL ONDE OS LIVROS FICAM SALVOS EM MEMÓRIA
+    let books = [];
+
+    // VARIÁVEL PARA SABER QUAL ITEM ESTÁ SENDO EDITADO
+    let editingIndex = null;
+
+    // FUNÇÃO PARA SALVAR NO NAVEGADOR
+    function saveToStorage() {
+      localStorage.setItem('biblioteca_profissional', JSON.stringify(books));
+    }
+
+    // FUNÇÃO PARA CARREGAR DO NAVEGADOR
+    function loadFromStorage() {
+      const data = localStorage.getItem('biblioteca_profissional');
+      if (data) {
+        books = JSON.parse(data);
+      }
+    }
+
+    // FUNÇÃO PARA LIMPAR O FORMULÁRIO
+    function resetForm() {
+      bookForm.reset();
+      bookStatus.value = 'Quero ler';
+      bookProgress.value = 0;
+      editingIndex = null;
+      btnSave.textContent = 'Adicionar livro';
+      btnCancel.style.display = 'none';
+    }
+
+    // FUNÇÃO PARA AJUSTAR O STATUS DE ACORDO COM O PROGRESSO
+    function normalizeStatus(status, progress) {
+      if (progress >= 100) return 'Lido';
+      if (progress > 0 && progress < 100 && status === 'Quero ler') return 'Lendo';
+      return status;
+    }
+
+    // FUNÇÃO PARA DEFINIR A CLASSE VISUAL DO STATUS
+    function getStatusClass(status) {
+      if (status === 'Quero ler') return 'status status-quero';
+      if (status === 'Lendo') return 'status status-lendo';
+      return 'status status-lido';
+    }
+
+    // FUNÇÃO PARA ATUALIZAR OS CARDS DE RESUMO
+    function renderStats() {
+      statTotal.textContent = books.length;
+      statQuero.textContent = books.filter(book => book.status === 'Quero ler').length;
+      statLendo.textContent = books.filter(book => book.status === 'Lendo').length;
+      statLido.textContent = books.filter(book => book.status === 'Lido').length;
+    }
+
+    // FUNÇÃO PARA FILTRAR LIVROS POR TEXTO E STATUS
+    function getFilteredBooks() {
+      const term = searchInput.value.toLowerCase().trim();
+      const status = statusFilter.value;
+
+      return books.filter(book => {
+        const matchText =
+          book.name.toLowerCase().includes(term) ||
+          book.author.toLowerCase().includes(term);
+
+        const matchStatus = status === 'Todos' || book.status === status;
+
+        return matchText && matchStatus;
+      });
+    }
+
+    // FUNÇÃO PARA RENDERIZAR A TABELA
+    function renderTable() {
+      const filteredBooks = getFilteredBooks();
+      tableBody.innerHTML = '';
+
+      if (filteredBooks.length === 0) {
+        bookTable.style.display = 'none';
+        emptyMessage.style.display = 'block';
+        return;
+      }
+
+      bookTable.style.display = 'table';
+      emptyMessage.style.display = 'none';
+
+      filteredBooks.forEach(filteredBook => {
+        const realIndex = books.findIndex(book => book.id === filteredBook.id);
+        const pagesPerDay = Math.ceil(filteredBook.pages / filteredBook.days);
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${filteredBook.name}</td>
+          <td>${filteredBook.author}</td>
+          <td>${filteredBook.pages}</td>
+          <td>${filteredBook.days}</td>
+          <td>${pagesPerDay}</td>
+          <td><span class="${getStatusClass(filteredBook.status)}">${filteredBook.status}</span></td>
+          <td>
+            <div class="progress-box">
+              <div class="progress-label">${filteredBook.progress}% concluído</div>
+              <div class="progress">
+                <div class="progress-fill" style="width: ${filteredBook.progress}%;"></div>
+              </div>
+            </div>
+          </td>
+          <td class="col-actions">
+            <button class="btn-edit" onclick="editBook(${realIndex})">Editar</button>
+            <button class="btn-delete" onclick="deleteBook(${realIndex})">Excluir</button>
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    // EVENTO DE ENVIO DO FORMULÁRIO
+    bookForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const rawProgress = Number(bookProgress.value);
+      const progress = Math.max(0, Math.min(100, rawProgress));
+      const finalStatus = normalizeStatus(bookStatus.value, progress);
+
+      const bookData = {
+        id: editingIndex !== null ? books[editingIndex].id : Date.now(),
+        name: bookName.value.trim(),
+        author: bookAuthor.value.trim(),
+        pages: Number(bookPages.value),
+        days: Number(bookDays.value),
+        status: finalStatus,
+        progress: progress
+      };
+
+      if (editingIndex !== null) {
+        books[editingIndex] = bookData;
+      } else {
+        books.push(bookData);
+      }
+
+      saveToStorage();
+      renderStats();
+      renderTable();
+      resetForm();
+    });
+
+    // FUNÇÃO GLOBAL PARA EDITAR
+    function editBook(index) {
+      const book = books[index];
+      bookName.value = book.name;
+      bookAuthor.value = book.author;
+      bookPages.value = book.pages;
+      bookDays.value = book.days;
+      bookStatus.value = book.status;
+      bookProgress.value = book.progress;
+      editingIndex = index;
+      btnSave.textContent = 'Salvar edição';
+      btnCancel.style.display = 'inline-block';
+      window.scrollTo({ top: 420, behavior: 'smooth' });
+    }
+
+    // FUNÇÃO GLOBAL PARA EXCLUIR
+    function deleteBook(index) {
+      books.splice(index, 1);
+      saveToStorage();
+      renderStats();
+      renderTable();
+
+      if (editingIndex === index) {
+        resetForm();
+      }
+    }
+
+    // BOTÃO PARA CANCELAR A EDIÇÃO
+    btnCancel.addEventListener('click', function() {
+      resetForm();
+    });
+
+    // FILTRO DE PESQUISA EM TEMPO REAL
+    searchInput.addEventListener('input', renderTable);
+
+    // FILTRO DE STATUS
+    statusFilter.addEventListener('change', renderTable);
+
+    // BOTÃO DE IMPRESSÃO
+    btnPrint.addEventListener('click', function() {
+      window.print();
+    });
+
+    // EXPORTAR PARA EXCEL
+    // Aqui usamos CSV com separador ponto e vírgula.
+    // O Excel abre esse formato normalmente.
+    btnExport.addEventListener('click', function() {
+      const filteredBooks = getFilteredBooks();
+
+      if (filteredBooks.length === 0) {
+        alert('Não há livros para exportar.');
+        return;
+      }
+
+      const headers = ['Livro', 'Autor', 'Paginas', 'Dias', 'Paginas por dia', 'Status', 'Progresso (%)'];
+
+      const rows = filteredBooks.map(book => {
+        const pagesPerDay = Math.ceil(book.pages / book.days);
+        return [
+          book.name,
+          book.author,
+          book.pages,
+          book.days,
+          pagesPerDay,
+          book.status,
+          book.progress
+        ];
+      });
+
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(';'))
+        .join('\n');
+
+      const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'biblioteca_pessoal.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    });
+
+    // INICIALIZAÇÃO
+    loadFromStorage();
+
+    // AJUSTE DE COMPATIBILIDADE PARA DADOS ANTIGOS
+    books = books.map((book, index) => {
+      const progress = Number(book.progress ?? (book.status === 'Lido' ? 100 : 0));
+      const normalizedProgress = Math.max(0, Math.min(100, progress));
+      const normalizedStatus = normalizeStatus(book.status || 'Quero ler', normalizedProgress);
+
+      return {
+        id: book.id || Date.now() + index,
+        name: book.name || book.nome || '',
+        author: book.author || book.autor || 'Autor não informado',
+        pages: Number(book.pages || book.paginas || 0),
+        days: Number(book.days || book.dias || 1),
+        status: normalizedStatus,
+        progress: normalizedProgress
+      };
+    });
+
+    saveToStorage();
+    renderStats();
+    renderTable();
+  </script>
+</body>
+</html>

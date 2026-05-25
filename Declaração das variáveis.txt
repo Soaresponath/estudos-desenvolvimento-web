@@ -1,0 +1,11 @@
+// Declaração das variáveis
+let somaTotal = 0;
+let qtdeInteracoes = 50;
+
+// Laço for decrementando de 1 em 1 até ser maior que 1
+for (let i = qtdeInteracoes; i > 1; i--) {
+    somaTotal++;
+}
+
+// Impressão do resultado
+console.log("O resultado da soma é:", somaTotal);

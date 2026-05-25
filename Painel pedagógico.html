@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Pedagógico Avançado com Alunos</title>
+  <style>
+    :root {
+      --bg: #eef4ff;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #dbeafe;
+      --text: #1e293b;
+      --muted: #64748b;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #dc2626;
+      --border: #cbd5e1;
+      --shadow: 0 8px 24px rgba(37, 99, 235, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header-wrap h1 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+
+    .header-wrap p {
+      opacity: 0.95;
+    }
+
+    .date-box {
+      background: rgba(255,255,255,0.16);
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-weight: bold;
+      min-width: 250px;
+      text-align: center;
+    }
+
+    .app {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    nav button {
+      border: none;
+      background: var(--secondary);
+      color: var(--primary-dark);
+      font-weight: bold;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    nav button.active,
+    nav button:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid #e5e7eb;
+      margin-bottom: 16px;
+    }
+
+    .card h2, .card h3 {
+      margin-bottom: 12px;
+      color: var(--primary-dark);
+    }
+
+    .number {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .toolbar, .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.96rem;
+      background: white;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .big-textarea {
+      min-height: 220px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-soft {
+      background: var(--secondary);
+      color: var(--primary-dark);
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-left: 6px solid var(--primary);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .item h4 {
+      margin-bottom: 8px;
+      color: var(--primary-dark);
+    }
+
+    .item p {
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      margin: 4px 6px 0 0;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-yellow { background: #fef3c7; color: #92400e; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+
+    .status-concluida {
+      border-left-color: var(--success);
+      opacity: 0.95;
+    }
+
+    .status-pendente {
+      border-left-color: var(--warning);
+    }
+
+    .turma-box {
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .turma-box:hover {
+      transform: translateY(-2px);
+    }
+
+    .small {
+      font-size: 0.9rem;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 18px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      color: var(--muted);
+      background: #f8fbff;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 700px) {
+      .header-wrap h1 {
+        font-size: 1.5rem;
+      }
+      .app {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrap">
+      <div>
+        <h1>Painel Pedagógico Avançado</h1>
+        <p>EEEFM Frederico Boldt • Organização da pedagoga com turmas, alunos, tarefas, reuniões, atendimentos, diário, planejamento e relatórios.</p>
+      </div>
+      <div class="date-box" id="dataAtual">Data atual</div>
+    </div>
+  </header>
+
+  <div class="app">
+    <nav>
+      <button class="tab-btn active" onclick="abrirAba('inicio', this)">Visão Geral</button>
+      <button class="tab-btn" onclick="abrirAba('turmas', this)">Turmas</button>
+      <button class="tab-btn" onclick="abrirAba('alunos', this)">Alunos</button>
+      <button class="tab-btn" onclick="abrirAba('tarefas', this)">Tarefas</button>
+      <button class="tab-btn" onclick="abrirAba('reunioes', this)">Reuniões</button>
+      <button class="tab-btn" onclick="abrirAba('atendimentos', this)">Atendimentos</button>
+      <button class="tab-btn" onclick="abrirAba('diario', this)">Diário</button>
+      <button class="tab-btn" onclick="abrirAba('planejamento', this)">Planejamento</button>
+      <button class="tab-btn" onclick="abrirAba('relatorios', this)">Relatórios</button>
+    </nav>
+
+    <section id="inicio" class="active">
+      <div class="grid-4">
+        <div class="card"><div class="number" id="resumoTurmas">6</div><div class="muted">Turmas acompanhadas</div></div>
+        <div class="card"><div class="number" id="resumoAlunos">0</div><div class="muted">Alunos cadastrados</div></div>
+        <div class="card"><div class="number" id="resumoTarefas">0</div><div class="muted">Tarefas registradas</div></div>
+        <div class="card"><div class="number" id="resumoAtendimentos">0</div><div class="muted">Atendimentos realizados</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Turmas do 1º ao 6º ano</h3>
+          <div id="resumoTurmasLista" class="list"></div>
+        </div>
+        <div class="card">
+          <h3>Agenda de hoje</h3>
+          <div id="agendaHoje" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="turmas">
+      <div class="card">
+        <h2>Visualização das turmas</h2>
+        <div class="toolbar">
+          <input type="text" id="buscaTurma" placeholder="Pesquisar turma">
+          <button class="btn btn-primary" onclick="renderTurmas()">Pesquisar</button>
+          <button class="btn btn-soft" onclick="limparBuscaTurma()">Limpar</button>
+        </div>
+        <div id="listaTurmas" class="grid-3"></div>
+      </div>
+    </section>
+
+    <section id="alunos">
+      <div class="grid-2">
+        <div class="card">
+          <h2>Cadastrar aluno</h2>
+          <div class="form-grid">
+            <select id="alunoTurma"></select>
+            <input type="text" id="alunoNome" placeholder="Nome do aluno">
+            <input type="text" id="alunoResponsavel" placeholder="Responsável / família">
+            <select id="alunoSituacao">
+              <option value="Acompanhamento">Acompanhamento</option>
+              <option value="Avanço">Avanço</option>
+              <option value="Atenção">Atenção</option>
+              <option value="Intervenção">Intervenção</option>
+            </select>
+          </div>
+          <textarea id="alunoObservacao" placeholder="Observações iniciais sobre o aluno"></textarea>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="adicionarAluno()">Adicionar aluno</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Filtrar alunos</h2>
+          <div class="form-grid">
+            <select id="filtroAlunoTurma"><option value="Todas">Todas as turmas</option></select>
+            <input type="text" id="filtroAlunoNome" placeholder="Pesquisar nome do aluno">
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="renderAlunos()">Filtrar</button>
+            <button class="btn btn-soft" onclick="limparFiltroAlunos()">Limpar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Lista de alunos</h2>
+        <div id="listaAlunos" class="list"></div>
+      </div>
+    </section>
+
+    <section id="tarefas">
+      <div class="card">
+        <h2>Nova tarefa</h2>
+        <div class="form-grid">
+          <input type="date" id="tarefaData">
+          <select id="tarefaTurma"></select>
+          <select id="tarefaPrioridade">
+            <option value="Alta">Alta</option>
+            <option value="Média">Média</option>
+            <option value="Baixa">Baixa</option>
+          </select>
+        </div>
+        <textarea id="tarefaDescricao" placeholder="Descreva a tarefa pedagógica"></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="adicionarTarefa()">Adicionar tarefa</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Tarefas cadastradas</h2>
+        <div id="listaTarefas" class="list"></div>
+      </div>
+    </section>
+
+    <section id="reunioes">
+      <div class="card">
+        <h2>Registrar reunião</h2>
+        <div class="form-grid">
+          <input type="date" id="reuniaoData">
+          <input type="time" id="reuniaoHora">
+          <select id="reuniaoTipo">
+            <option>Professor</option>
+            <option>Família</option>
+            <option>Equipe escolar</option>
+            <option>Pedagógica</option>
+          </select>
+        </div>
+        <textarea id="reuniaoDescricao" placeholder="Pauta, tema e encaminhamentos da reunião"></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="adicionarReuniao()">Adicionar reunião</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Reuniões registradas</h2>
+        <div id="listaReunioes" class="list"></div>
+      </div>
+    </section>
+
+    <section id="atendimentos">
+      <div class="card">
+        <h2>Registrar atendimento</h2>
+        <div class="form-grid">
+          <input type="date" id="atendimentoData">
+          <select id="atendimentoTurma"></select>
+          <select id="atendimentoTipo">
+            <option>Aluno</option>
+            <option>Família</option>
+            <option>Professor</option>
+            <option>Turma</option>
+          </select>
+        </div>
+        <textarea id="atendimentoDescricao" placeholder="Descreva o atendimento realizado"></textarea>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="adicionarAtendimento()">Adicionar atendimento</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Atendimentos registrados</h2>
+        <div id="listaAtendimentos" class="list"></div>
+      </div>
+    </section>
+
+    <section id="diario">
+      <div class="card">
+        <h2>Diário pedagógico</h2>
+        <div class="form-grid">
+          <input type="date" id="diarioData">
+          <select id="diarioTurma"></select>
+        </div>
+        <textarea id="diarioTexto" class="big-textarea" placeholder="Registre observações, avanços, dificuldades, intervenções e encaminhamentos do dia"></textarea>
+        <p class="muted small">O diário salva automaticamente enquanto você digita.</p>
+      </div>
+    </section>
+
+    <section id="planejamento">
+      <div class="card">
+        <h2>Planejamento com professor</h2>
+        <div class="form-grid">
+          <input type="date" id="planejamentoData">
+          <select id="planejamentoTurma"></select>
+          <input type="text" id="planejamentoProfessor" placeholder="Nome do professor">
+        </div>
+        <textarea id="planejamentoTexto" class="big-textarea" placeholder="Registre combinados, necessidades da turma, intervenções, estratégias, materiais e próximos passos"></textarea>
+        <p class="muted small">O planejamento também salva automaticamente.</p>
+      </div>
+    </section>
+
+    <section id="relatorios">
+      <div class="grid-2">
+        <div class="card">
+          <h2>Relatório geral</h2>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="gerarRelatorioGeral()">Gerar relatório geral</button>
+            <button class="btn btn-soft" onclick="window.print()">Gerar PDF / Imprimir</button>
+          </div>
+          <textarea id="relatorioGeral" class="big-textarea" placeholder="Clique em gerar para montar o relatório geral"></textarea>
+        </div>
+
+        <div class="card">
+          <h2>Relatório individual do aluno</h2>
+          <div class="form-grid">
+            <select id="relatorioAlunoSelect"></select>
+            <button class="btn btn-primary" onclick="gerarRelatorioAluno()">Gerar relatório do aluno</button>
+          </div>
+          <textarea id="relatorioAlunoTexto" class="big-textarea" placeholder="Selecione um aluno para gerar o relatório individual"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">Sistema local com salvamento automático no navegador.</div>
+  </div>
+
+  <script>
+    const turmasBase = [
+      { nome: '1º Ano', foco: 'Alfabetização e adaptação' },
+      { nome: '2º Ano', foco: 'Leitura, escrita e consolidação' },
+      { nome: '3º Ano', foco: 'Consolidação e acompanhamento' },
+      { nome: '4º Ano', foco: 'Leitura, interpretação e produção' },
+      { nome: '5º Ano', foco: 'Autonomia e rotina de estudo' },
+      { nome: '6º Ano', foco: 'Transição, rendimento e organização' }
+    ];
+
+    let alunos = JSON.parse(localStorage.getItem('ped_alunos') || '[]');
+    let tarefas = JSON.parse(localStorage.getItem('ped_tarefas') || '[]');
+    let reunioes = JSON.parse(localStorage.getItem('ped_reunioes') || '[]');
+    let atendimentos = JSON.parse(localStorage.getItem('ped_atendimentos') || '[]');
+
+    function salvarListas() {
+      localStorage.setItem('ped_alunos', JSON.stringify(alunos));
+      localStorage.setItem('ped_tarefas', JSON.stringify(tarefas));
+      localStorage.setItem('ped_reunioes', JSON.stringify(reunioes));
+      localStorage.setItem('ped_atendimentos', JSON.stringify(atendimentos));
+    }
+
+    function abrirAba(id, botao) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      botao.classList.add('active');
+    }
+
+    function hojeISO() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function definirDatasPadrao() {
+      ['tarefaData','reuniaoData','atendimentoData','diarioData','planejamentoData'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.value) el.value = hojeISO();
+      });
+    }
+
+    function carregarDataAtual() {
+      document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR', {
+        weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+      });
+    }
+
+    function preencherSelects() {
+      const opcoesTurmas = turmasBase.map(t => `<option>${t.nome}</option>`).join('');
+      ['alunoTurma','tarefaTurma','atendimentoTurma','diarioTurma','planejamentoTurma'].forEach(id => {
+        document.getElementById(id).innerHTML = opcoesTurmas;
+      });
+      document.getElementById('filtroAlunoTurma').innerHTML = '<option value="Todas">Todas as turmas</option>' + opcoesTurmas;
+      atualizarSelectRelatorioAluno();
+    }
+
+    function atualizarSelectRelatorioAluno() {
+      const select = document.getElementById('relatorioAlunoSelect');
+      if (alunos.length === 0) {
+        select.innerHTML = '<option value="">Nenhum aluno cadastrado</option>';
+        return;
+      }
+      select.innerHTML = alunos.map(a => `<option value="${a.id}">${a.nome} - ${a.turma}</option>`).join('');
+    }
+
+    function renderResumo() {
+      document.getElementById('resumoTurmas').textContent = turmasBase.length;
+      document.getElementById('resumoAlunos').textContent = alunos.length;
+      document.getElementById('resumoTarefas').textContent = tarefas.length;
+      document.getElementById('resumoAtendimentos').textContent = atendimentos.length;
+
+      document.getElementById('resumoTurmasLista').innerHTML = turmasBase.map(t => `
+        <div class="item turma-box" onclick="irParaTurmaNoDiario('${t.nome}')">
+          <h4>${t.nome}</h4>
+          <p><strong>Foco:</strong> ${t.foco}</p>
+          <p><strong>Alunos cadastrados:</strong> ${alunos.filter(a => a.turma === t.nome).length}</p>
+        </div>
+      `).join('');
+
+      const hoje = hojeISO();
+      const compromissos = [
+        ...reunioes.filter(r => r.data === hoje).map(r => `<div class="item"><h4>Reunião</h4><p><strong>${r.tipo}</strong> • ${r.hora || 'Sem horário'}</p><p>${r.descricao}</p></div>`),
+        ...atendimentos.filter(a => a.data === hoje).map(a => `<div class="item"><h4>Atendimento</h4><p><strong>${a.tipo}</strong> • ${a.turma}</p><p>${a.descricao}</p></div>`)
+      ];
+      document.getElementById('agendaHoje').innerHTML = compromissos.length ? compromissos.join('') : '<div class="empty">Nenhum compromisso para hoje.</div>';
+    }
+
+    function renderTurmas() {
+      const busca = document.getElementById('buscaTurma').value.toLowerCase().trim();
+      const lista = turmasBase.filter(t => t.nome.toLowerCase().includes(busca));
+      document.getElementById('listaTurmas').innerHTML = lista.length ? lista.map(t => `
+        <div class="item turma-box" onclick="irParaTurmaNoDiario('${t.nome}')">
+          <h4>${t.nome}</h4>
+          <p><strong>Foco pedagógico:</strong> ${t.foco}</p>
+          <p><strong>Quantidade de alunos cadastrados:</strong> ${alunos.filter(a => a.turma === t.nome).length}</p>
+          <span class="badge badge-blue">Clique para abrir no diário</span>
+        </div>
+      `).join('') : '<div class="empty">Nenhuma turma encontrada.</div>';
+    }
+
+    function limparBuscaTurma() {
+      document.getElementById('buscaTurma').value = '';
+      renderTurmas();
+    }
+
+    function irParaTurmaNoDiario(turma) {
+      document.getElementById('diarioTurma').value = turma;
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById('diario').classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-btn')[6].classList.add('active');
+    }
+
+    function adicionarAluno() {
+      const turma = document.getElementById('alunoTurma').value;
+      const nome = document.getElementById('alunoNome').value.trim();
+      const responsavel = document.getElementById('alunoResponsavel').value.trim();
+      const situacao = document.getElementById('alunoSituacao').value;
+      const observacao = document.getElementById('alunoObservacao').value.trim();
+      if (!nome) return alert('Digite o nome do aluno.');
+      alunos.unshift({ id: Date.now(), turma, nome, responsavel, situacao, observacao });
+      salvarListas();
+      renderAlunos();
+      renderResumo();
+      renderTurmas();
+      atualizarSelectRelatorioAluno();
+      document.getElementById('alunoNome').value = '';
+      document.getElementById('alunoResponsavel').value = '';
+      document.getElementById('alunoObservacao').value = '';
+    }
+
+    function renderAlunos() {
+      const turma = document.getElementById('filtroAlunoTurma').value;
+      const nomeBusca = document.getElementById('filtroAlunoNome').value.toLowerCase().trim();
+      let lista = [...alunos];
+      if (turma !== 'Todas') lista = lista.filter(a => a.turma === turma);
+      if (nomeBusca) lista = lista.filter(a => a.nome.toLowerCase().includes(nomeBusca));
+
+      document.getElementById('listaAlunos').innerHTML = lista.length ? lista.map(a => `
+        <div class="item">
+          <h4>${a.nome}</h4>
+          <p><strong>Turma:</strong> ${a.turma}</p>
+          <p><strong>Responsável:</strong> ${a.responsavel || 'Não informado'}</p>
+          <p><strong>Situação:</strong> ${a.situacao}</p>
+          <p><strong>Observações:</strong> ${a.observacao || 'Sem observações.'}</p>
+          <div class="actions">
+            <button class="btn btn-soft" onclick="editarAluno(${a.id})">Editar</button>
+            <button class="btn btn-danger" onclick="excluirAluno(${a.id})">Excluir</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Nenhum aluno encontrado.</div>';
+    }
+
+    function limparFiltroAlunos() {
+      document.getElementById('filtroAlunoTurma').value = 'Todas';
+      document.getElementById('filtroAlunoNome').value = '';
+      renderAlunos();
+    }
+
+    function editarAluno(id) {
+      const aluno = alunos.find(a => a.id === id);
+      const novaObs = prompt('Atualize as observações do aluno:', aluno.observacao || '');
+      if (novaObs === null) return;
+      aluno.observacao = novaObs;
+      salvarListas();
+      renderAlunos();
+    }
+
+    function excluirAluno(id) {
+      if (!confirm('Deseja excluir este aluno?')) return;
+      alunos = alunos.filter(a => a.id !== id);
+      salvarListas();
+      renderAlunos();
+      renderResumo();
+      renderTurmas();
+      atualizarSelectRelatorioAluno();
+    }
+
+    function adicionarTarefa() {
+      const data = document.getElementById('tarefaData').value;
+      const turma = document.getElementById('tarefaTurma').value;
+      const prioridade = document.getElementById('tarefaPrioridade').value;
+      const descricao = document.getElementById('tarefaDescricao').value.trim();
+      if (!descricao) return alert('Descreva a tarefa.');
+      tarefas.unshift({ id: Date.now(), data, turma, prioridade, descricao, concluida: false });
+      salvarListas();
+      renderTarefas();
+      renderResumo();
+      document.getElementById('tarefaDescricao').value = '';
+    }
+
+    function renderTarefas() {
+      document.getElementById('listaTarefas').innerHTML = tarefas.length ? tarefas.map(t => `
+        <div class="item ${t.concluida ? 'status-concluida' : 'status-pendente'}">
+          <h4>${t.turma} • ${t.data || 'Sem data'}</h4>
+          <p>${t.descricao}</p>
+          <span class="badge ${t.prioridade === 'Alta' ? 'badge-red' : t.prioridade === 'Média' ? 'badge-yellow' : 'badge-green'}">${t.prioridade}</span>
+          <span class="badge ${t.concluida ? 'badge-green' : 'badge-yellow'}">${t.concluida ? 'Concluída' : 'Pendente'}</span>
+          <div class="actions">
+            <button class="btn ${t.concluida ? 'btn-soft' : 'btn-success'}" onclick="alternarTarefa(${t.id})">${t.concluida ? 'Marcar pendente' : 'Marcar concluída'}</button>
+            <button class="btn btn-danger" onclick="excluirTarefa(${t.id})">Excluir</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Nenhuma tarefa cadastrada.</div>';
+    }
+
+    function alternarTarefa(id) {
+      tarefas = tarefas.map(t => t.id === id ? { ...t, concluida: !t.concluida } : t);
+      salvarListas();
+      renderTarefas();
+    }
+
+    function excluirTarefa(id) {
+      tarefas = tarefas.filter(t => t.id !== id);
+      salvarListas();
+      renderTarefas();
+      renderResumo();
+    }
+
+    function adicionarReuniao() {
+      const data = document.getElementById('reuniaoData').value;
+      const hora = document.getElementById('reuniaoHora').value;
+      const tipo = document.getElementById('reuniaoTipo').value;
+      const descricao = document.getElementById('reuniaoDescricao').value.trim();
+      if (!descricao) return alert('Descreva a reunião.');
+      reunioes.unshift({ id: Date.now(), data, hora, tipo, descricao });
+      salvarListas();
+      renderReunioes();
+      renderResumo();
+      document.getElementById('reuniaoDescricao').value = '';
+    }
+
+    function renderReunioes() {
+      document.getElementById('listaReunioes').innerHTML = reunioes.length ? reunioes.map(r => `
+        <div class="item">
+          <h4>${r.tipo}</h4>
+          <p><strong>Data:</strong> ${r.data || 'Sem data'} ${r.hora || ''}</p>
+          <p>${r.descricao}</p>
+          <div class="actions">
+            <button class="btn btn-danger" onclick="excluirReuniao(${r.id})">Excluir</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Nenhuma reunião cadastrada.</div>';
+    }
+
+    function excluirReuniao(id) {
+      reunioes = reunioes.filter(r => r.id !== id);
+      salvarListas();
+      renderReunioes();
+      renderResumo();
+    }
+
+    function adicionarAtendimento() {
+      const data = document.getElementById('atendimentoData').value;
+      const turma = document.getElementById('atendimentoTurma').value;
+      const tipo = document.getElementById('atendimentoTipo').value;
+      const descricao = document.getElementById('atendimentoDescricao').value.trim();
+      if (!descricao) return alert('Descreva o atendimento.');
+      atendimentos.unshift({ id: Date.now(), data, turma, tipo, descricao });
+      salvarListas();
+      renderAtendimentos();
+      renderResumo();
+      document.getElementById('atendimentoDescricao').value = '';
+    }
+
+    function renderAtendimentos() {
+      document.getElementById('listaAtendimentos').innerHTML = atendimentos.length ? atendimentos.map(a => `
+        <div class="item">
+          <h4>${a.tipo} • ${a.turma}</h4>
+          <p><strong>Data:</strong> ${a.data || 'Sem data'}</p>
+          <p>${a.descricao}</p>
+          <div class="actions">
+            <button class="btn btn-danger" onclick="excluirAtendimento(${a.id})">Excluir</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Nenhum atendimento cadastrado.</div>';
+    }
+
+    function excluirAtendimento(id) {
+      atendimentos = atendimentos.filter(a => a.id !== id);
+      salvarListas();
+      renderAtendimentos();
+      renderResumo();
+    }
+
+    function ativarAutoSave() {
+      const campos = ['diarioData','diarioTurma','diarioTexto','planejamentoData','planejamentoTurma','planejamentoProfessor','planejamentoTexto','relatorioGeral','relatorioAlunoTexto'];
+      campos.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = localStorage.getItem(id) || el.value;
+        el.addEventListener('input', () => localStorage.setItem(id, el.value));
+        el.addEventListener('change', () => localStorage.setItem(id, el.value));
+      });
+    }
+
+    function gerarRelatorioGeral() {
+      const texto = `RELATÓRIO GERAL PEDAGÓGICO
+
+Data: ${new Date().toLocaleDateString('pt-BR')}
+
+Turmas acompanhadas: ${turmasBase.length}
+Alunos cadastrados: ${alunos.length}
+Tarefas cadastradas: ${tarefas.length}
+Reuniões registradas: ${reunioes.length}
+Atendimentos registrados: ${atendimentos.length}
+
+DIÁRIO PEDAGÓGICO
+Data: ${document.getElementById('diarioData').value || 'Sem data'}
+Turma: ${document.getElementById('diarioTurma').value || 'Sem turma'}
+Registro: ${document.getElementById('diarioTexto').value || 'Sem registro'}
+
+PLANEJAMENTO COM PROFESSOR
+Data: ${document.getElementById('planejamentoData').value || 'Sem data'}
+Turma: ${document.getElementById('planejamentoTurma').value || 'Sem turma'}
+Professor: ${document.getElementById('planejamentoProfessor').value || 'Sem nome'}
+Planejamento: ${document.getElementById('planejamentoTexto').value || 'Sem planejamento'}
+
+TAREFAS
+${tarefas.map((t,i) => `${i+1}. ${t.data || 'Sem data'} - ${t.turma} - ${t.descricao} - ${t.prioridade} - ${t.concluida ? 'Concluída' : 'Pendente'}`).join('
+') || 'Nenhuma tarefa.'}
+
+REUNIÕES
+${reunioes.map((r,i) => `${i+1}. ${r.data || 'Sem data'} ${r.hora || ''} - ${r.tipo} - ${r.descricao}`).join('
+') || 'Nenhuma reunião.'}
+
+ATENDIMENTOS
+${atendimentos.map((a,i) => `${i+1}. ${a.data || 'Sem data'} - ${a.tipo} - ${a.turma} - ${a.descricao}`).join('
+') || 'Nenhum atendimento.'}`;
+      document.getElementById('relatorioGeral').value = texto;
+      localStorage.setItem('relatorioGeral', texto);
+    }
+
+    function gerarRelatorioAluno() {
+      const id = Number(document.getElementById('relatorioAlunoSelect').value);
+      const aluno = alunos.find(a => a.id === id);
+      if (!aluno) return alert('Selecione um aluno cadastrado.');
+      const atends = atendimentos.filter(a => a.turma === aluno.turma && a.descricao.toLowerCase().includes(aluno.nome.toLowerCase()));
+      const texto = `RELATÓRIO INDIVIDUAL DO ALUNO
+
+Nome: ${aluno.nome}
+Turma: ${aluno.turma}
+Responsável: ${aluno.responsavel || 'Não informado'}
+Situação: ${aluno.situacao}
+Observações iniciais: ${aluno.observacao || 'Sem observações.'}
+
+Atendimentos relacionados encontrados no sistema:
+${atends.length ? atends.map((a,i) => `${i+1}. ${a.data || 'Sem data'} - ${a.tipo}: ${a.descricao}`).join('
+') : 'Nenhum atendimento localizado com o nome do aluno na descrição.'}
+
+Síntese pedagógica:
+Aluno acompanhado no painel pedagógico para observação, intervenção e registro contínuo.`;
+      document.getElementById('relatorioAlunoTexto').value = texto;
+      localStorage.setItem('relatorioAlunoTexto', texto);
+    }
+
+    carregarDataAtual();
+    definirDatasPadrao();
+    preencherSelects();
+    ativarAutoSave();
+    renderResumo();
+    renderTurmas();
+    renderAlunos();
+    renderTarefas();
+    renderReunioes();
+    renderAtendimentos();
+  </script>
+</body>
+</html>

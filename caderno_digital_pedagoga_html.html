@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Caderno Digital da Pedagoga | Frederico Boldt</title>
+  <style>
+    :root {
+      --rosa: #d86b9d;
+      --rosa-claro: #ffe8f2;
+      --lilas: #8d7bea;
+      --azul: #5ca8e8;
+      --verde: #49b889;
+      --amarelo: #ffd166;
+      --vermelho: #ef476f;
+      --texto: #2f2f3a;
+      --cinza: #f5f6fa;
+      --branco: #ffffff;
+      --sombra: 0 18px 45px rgba(70, 58, 110, 0.16);
+      --borda: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, #ffe0ef 0, transparent 32%),
+        radial-gradient(circle at bottom right, #dbeafe 0, transparent 35%),
+        linear-gradient(135deg, #fff7fb, #eef5ff);
+      color: var(--texto);
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 1240px;
+      margin: auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #ffffff, #fff1f7);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--sombra);
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 20px;
+      align-items: center;
+      border: 1px solid rgba(216, 107, 157, 0.18);
+    }
+
+    .titulo h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      color: #b93d7b;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    .titulo p {
+      font-size: 1.05rem;
+      color: #686878;
+      line-height: 1.5;
+    }
+
+    .painel-data {
+      background: var(--branco);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: inset 0 0 0 1px rgba(141, 123, 234, 0.16);
+    }
+
+    .painel-data span {
+      display: block;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #777;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .painel-data strong {
+      display: block;
+      color: var(--lilas);
+      font-size: 1.7rem;
+      margin-top: 6px;
+    }
+
+    .resumo-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 22px 0;
+    }
+
+    .card-resumo {
+      background: rgba(255, 255, 255, 0.84);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 12px 30px rgba(60, 60, 90, 0.1);
+      border: 1px solid rgba(255,255,255,0.7);
+      transition: 0.25s;
+    }
+
+    .card-resumo:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-resumo .icone {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .card-resumo h3 {
+      font-size: 1.7rem;
+      color: #3d3d50;
+    }
+
+    .card-resumo p {
+      color: #747486;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    aside {
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(10px);
+      border-radius: 26px;
+      padding: 18px;
+      box-shadow: var(--sombra);
+      position: sticky;
+      top: 18px;
+    }
+
+    .menu button {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #555568;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      margin-bottom: 8px;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu button:hover,
+    .menu button.ativo {
+      background: linear-gradient(135deg, var(--rosa), var(--lilas));
+      color: white;
+      box-shadow: 0 10px 24px rgba(216, 107, 157, 0.28);
+    }
+
+    main {
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--sombra);
+      min-height: 650px;
+    }
+
+    .aba {
+      display: none;
+      animation: aparecer 0.35s ease;
+    }
+
+    .aba.ativa {
+      display: block;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cabecalho-aba {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 2px dashed #eadced;
+      padding-bottom: 16px;
+    }
+
+    .cabecalho-aba h2 {
+      color: #b93d7b;
+      font-size: 1.8rem;
+    }
+
+    .cabecalho-aba p {
+      color: #777;
+      margin-top: 4px;
+    }
+
+    .busca {
+      width: 280px;
+      padding: 13px 15px;
+      border-radius: 15px;
+      border: 1px solid #ded9ef;
+      outline: none;
+      background: #faf9ff;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      background: #fbfaff;
+      border-radius: 22px;
+      padding: 18px;
+      border: 1px solid #ebe6f7;
+      margin-bottom: 20px;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .campo.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: 800;
+      color: #555568;
+      font-size: 0.9rem;
+    }
+
+    input, select, textarea {
+      padding: 13px 14px;
+      border: 1px solid #ddd8ec;
+      border-radius: 14px;
+      outline: none;
+      background: white;
+      color: var(--texto);
+      font-size: 0.95rem;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--rosa);
+      box-shadow: 0 0 0 4px rgba(216, 107, 157, 0.12);
+    }
+
+    .botoes {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 15px;
+      padding: 13px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.22s;
+    }
+
+    .btn-principal {
+      background: linear-gradient(135deg, var(--rosa), var(--lilas));
+      color: white;
+      box-shadow: 0 10px 22px rgba(216, 107, 157, 0.26);
+    }
+
+    .btn-secundario {
+      background: #edf2ff;
+      color: #5360a8;
+    }
+
+    .btn-perigo {
+      background: #ffe8ee;
+      color: #c9184a;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(0.98);
+    }
+
+    .lista {
+      display: grid;
+      gap: 14px;
+    }
+
+    .registro {
+      background: white;
+      border-radius: 20px;
+      padding: 18px;
+      border-left: 8px solid var(--rosa);
+      box-shadow: 0 10px 24px rgba(60, 60, 90, 0.08);
+      position: relative;
+    }
+
+    .registro h3 {
+      color: #3f3f52;
+      margin-bottom: 7px;
+      padding-right: 90px;
+    }
+
+    .registro p {
+      color: #676779;
+      line-height: 1.45;
+      margin: 5px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      background: var(--rosa-claro);
+      color: #b93d7b;
+      margin-right: 6px;
+      margin-top: 8px;
+    }
+
+    .tag.verde { background: #e3f8ef; color: #138a5b; }
+    .tag.amarelo { background: #fff4cf; color: #987100; }
+    .tag.vermelho { background: #ffe3ea; color: #c9184a; }
+    .tag.azul { background: #e4f2ff; color: #2072b5; }
+
+    .acoes-registro {
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      display: flex;
+      gap: 7px;
+    }
+
+    .mini-btn {
+      border: none;
+      border-radius: 11px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-weight: 800;
+      background: #f3f1fa;
+      color: #555;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .check-item {
+      background: #fff;
+      border: 1px solid #eee7f3;
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: 0 8px 18px rgba(60, 60, 90, 0.05);
+    }
+
+    .check-item input {
+      width: 20px;
+      height: 20px;
+    }
+
+    .check-item.concluido {
+      opacity: 0.62;
+      text-decoration: line-through;
+    }
+
+    .quadro-hoje {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .postit {
+      min-height: 180px;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 12px 24px rgba(60, 60, 90, 0.08);
+      background: #fff6c7;
+    }
+
+    .postit:nth-child(2) { background: #dff3ff; }
+    .postit:nth-child(3) { background: #ffe1ec; }
+
+    .postit h3 {
+      margin-bottom: 10px;
+      color: #4a435a;
+    }
+
+    .postit textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      min-height: 115px;
+      padding: 0;
+      box-shadow: none;
+      resize: none;
+    }
+
+    .relatorio-box {
+      background: #fbfaff;
+      border: 1px dashed #cfc5ec;
+      border-radius: 20px;
+      padding: 18px;
+      line-height: 1.6;
+      color: #565668;
+      white-space: pre-line;
+    }
+
+    .rodape-acoes {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      aside, header, .resumo-cards, .form-grid, .botoes, .busca, .rodape-acoes, .acoes-registro { display: none !important; }
+      main { box-shadow: none; border-radius: 0; }
+      .aba { display: block !important; page-break-after: always; }
+    }
+
+    @media (max-width: 900px) {
+      header,
+      .layout,
+      .resumo-cards,
+      .form-grid,
+      .checklist,
+      .quadro-hoje {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+
+      .cabecalho-aba {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .busca {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="titulo">
+        <h1>📒 Caderno Digital da Pedagoga</h1>
+        <p>EEEFM Frederico Boldt • Turno Vespertino • Registros, acompanhamentos, atendimentos, pendências e relatórios em um só lugar.</p>
+      </div>
+      <div class="painel-data">
+        <span>Hoje</span>
+        <strong id="dataAtual"></strong>
+        <p id="fraseDia" style="margin-top:8px;color:#777;line-height:1.4"></p>
+      </div>
+    </header>
+
+    <section class="resumo-cards">
+      <div class="card-resumo">
+        <div class="icone">👩‍🏫</div>
+        <h3 id="totalProfessores">0</h3>
+        <p>Registros de professores</p>
+      </div>
+      <div class="card-resumo">
+        <div class="icone">🧒</div>
+        <h3 id="totalAlunos">0</h3>
+        <p>Alunos em acompanhamento</p>
+      </div>
+      <div class="card-resumo">
+        <div class="icone">👨‍👩‍👧</div>
+        <h3 id="totalFamilias">0</h3>
+        <p>Atendimentos às famílias</p>
+      </div>
+      <div class="card-resumo">
+        <div class="icone">📌</div>
+        <h3 id="totalPendencias">0</h3>
+        <p>Pendências abertas</p>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside>
+        <nav class="menu">
+          <button class="ativo" onclick="abrirAba('hoje', this)">🌷 Hoje</button>
+          <button onclick="abrirAba('professores', this)">👩‍🏫 Professores</button>
+          <button onclick="abrirAba('alunos', this)">🧒 Alunos em atenção</button>
+          <button onclick="abrirAba('familias', this)">👨‍👩‍👧 Famílias</button>
+          <button onclick="abrirAba('pendencias', this)">📌 Pendências</button>
+          <button onclick="abrirAba('reunioes', this)">📝 Reuniões</button>
+          <button onclick="abrirAba('checklist', this)">✅ Checklist</button>
+          <button onclick="abrirAba('relatorios', this)">📊 Relatórios</button>
+        </nav>
+      </aside>
+
+      <main>
+        <section id="hoje" class="aba ativa">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>🌷 Página do dia</h2>
+              <p>Use como agenda rápida para organizar o turno vespertino.</p>
+            </div>
+            <button class="btn btn-principal" onclick="salvarHoje()">Salvar anotações</button>
+          </div>
+
+          <div class="quadro-hoje">
+            <div class="postit">
+              <h3>Prioridades do dia</h3>
+              <textarea id="prioridadesDia" placeholder="Ex.: conversar com direção, acompanhar turma 2º V1, organizar registros..."></textarea>
+            </div>
+            <div class="postit">
+              <h3>Observações importantes</h3>
+              <textarea id="observacoesDia" placeholder="Anote fatos importantes do turno..."></textarea>
+            </div>
+            <div class="postit">
+              <h3>Devolutivas / retornos</h3>
+              <textarea id="retornosDia" placeholder="Famílias, professores ou alunos que precisam de retorno..."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="professores" class="aba">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>👩‍🏫 Escuta e acompanhamento docente</h2>
+              <p>Registre conversas, necessidades e combinados com professores.</p>
+            </div>
+            <input class="busca" oninput="filtrar('professores')" id="buscaProfessores" placeholder="Buscar professor/turma..." />
+          </div>
+
+          <div class="form-grid">
+            <div class="campo"><label>Professor(a)</label><input id="profNome" placeholder="Nome do professor" /></div>
+            <div class="campo"><label>Turma</label><input id="profTurma" placeholder="Ex.: 1º V1" /></div>
+            <div class="campo"><label>Data</label><input type="date" id="profData" /></div>
+            <div class="campo"><label>Situação</label><select id="profSituacao"><option>Rotina pedagógica</option><option>Dificuldade de aprendizagem</option><option>Comportamento</option><option>Faltas</option><option>Planejamento</option><option>Avaliação</option></select></div>
+            <div class="campo full"><label>Registro da escuta</label><textarea id="profRegistro" placeholder="Como está a turma? Quais alunos precisam de atenção? Em que a pedagoga pode apoiar?"></textarea></div>
+            <div class="campo full"><label>Encaminhamentos combinados</label><textarea id="profEncaminhamento" placeholder="O que ficou combinado? Quem fará? Qual prazo?"></textarea></div>
+            <div class="botoes"><button class="btn btn-principal" onclick="adicionarProfessor()">Adicionar registro</button><button class="btn btn-secundario" onclick="limparCampos(['profNome','profTurma','profData','profRegistro','profEncaminhamento'])">Limpar</button></div>
+          </div>
+          <div id="listaProfessores" class="lista"></div>
+        </section>
+
+        <section id="alunos" class="aba">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>🧒 Alunos em acompanhamento</h2>
+              <p>Organize casos de aprendizagem, comportamento, faltas, AEE, laudos e busca ativa.</p>
+            </div>
+            <input class="busca" oninput="filtrar('alunos')" id="buscaAlunos" placeholder="Buscar aluno/turma..." />
+          </div>
+
+          <div class="form-grid">
+            <div class="campo"><label>Aluno(a)</label><input id="alunoNome" placeholder="Nome do aluno" /></div>
+            <div class="campo"><label>Turma</label><input id="alunoTurma" placeholder="Ex.: 4º V1" /></div>
+            <div class="campo"><label>Data</label><input type="date" id="alunoData" /></div>
+            <div class="campo"><label>Nível de atenção</label><select id="alunoNivel"><option>🟢 Acompanhamento leve</option><option>🟡 Atenção</option><option>🔴 Prioritário</option></select></div>
+            <div class="campo"><label>Motivo</label><select id="alunoMotivo"><option>Aprendizagem</option><option>Comportamento</option><option>Faltas</option><option>AEE</option><option>Laudo</option><option>Busca ativa</option><option>Família</option></select></div>
+            <div class="campo"><label>Status</label><select id="alunoStatus"><option>Em acompanhamento</option><option>Aguardando devolutiva</option><option>Encaminhado</option><option>Resolvido</option></select></div>
+            <div class="campo full"><label>Observações</label><textarea id="alunoObs" placeholder="Descreva a situação observada..."></textarea></div>
+            <div class="campo full"><label>Intervenção / encaminhamento</label><textarea id="alunoIntervencao" placeholder="Ações planejadas, responsáveis e prazo..."></textarea></div>
+            <div class="botoes"><button class="btn btn-principal" onclick="adicionarAluno()">Adicionar aluno</button><button class="btn btn-secundario" onclick="limparCampos(['alunoNome','alunoTurma','alunoData','alunoObs','alunoIntervencao'])">Limpar</button></div>
+          </div>
+          <div id="listaAlunos" class="lista"></div>
+        </section>
+
+        <section id="familias" class="aba">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>👨‍👩‍👧 Atendimento às famílias</h2>
+              <p>Registre atendimentos, orientações, devolutivas e termos combinados.</p>
+            </div>
+            <input class="busca" oninput="filtrar('familias')" id="buscaFamilias" placeholder="Buscar família/aluno..." />
+          </div>
+
+          <div class="form-grid">
+            <div class="campo"><label>Aluno(a)</label><input id="famAluno" placeholder="Nome do aluno" /></div>
+            <div class="campo"><label>Responsável</label><input id="famResp" placeholder="Nome do responsável" /></div>
+            <div class="campo"><label>Data</label><input type="date" id="famData" /></div>
+            <div class="campo"><label>Tipo de atendimento</label><select id="famTipo"><option>Presencial</option><option>Telefone</option><option>WhatsApp</option><option>Reunião</option><option>Busca ativa</option></select></div>
+            <div class="campo full"><label>Assunto tratado</label><textarea id="famAssunto" placeholder="Motivo do atendimento..."></textarea></div>
+            <div class="campo full"><label>Orientações / combinados</label><textarea id="famCombinados" placeholder="O que foi orientado e combinado com a família?"></textarea></div>
+            <div class="botoes"><button class="btn btn-principal" onclick="adicionarFamilia()">Registrar atendimento</button><button class="btn btn-secundario" onclick="limparCampos(['famAluno','famResp','famData','famAssunto','famCombinados'])">Limpar</button></div>
+          </div>
+          <div id="listaFamilias" class="lista"></div>
+        </section>
+
+        <section id="pendencias" class="aba">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>📌 Pendências e retornos</h2>
+              <p>Controle prazos, demandas e situações que precisam de acompanhamento.</p>
+            </div>
+            <input class="busca" oninput="filtrar('pendencias')" id="buscaPendencias" placeholder="Buscar pendência..." />
+          </div>
+
+          <div class="form-grid">
+            <div class="campo"><label>Título da pendência</label><input id="pendTitulo" placeholder="Ex.: Devolutiva à família" /></div>
+            <div class="campo"><label>Prazo</label><input type="date" id="pendPrazo" /></div>
+            <div class="campo"><label>Prioridade</label><select id="pendPrioridade"><option>Baixa</option><option>Média</option><option>Alta</option></select></div>
+            <div class="campo"><label>Status</label><select id="pendStatus"><option>Aberta</option><option>Em andamento</option><option>Concluída</option></select></div>
+            <div class="campo full"><label>Descrição</label><textarea id="pendDescricao" placeholder="Detalhe a pendência..."></textarea></div>
+            <div class="botoes"><button class="btn btn-principal" onclick="adicionarPendencia()">Adicionar pendência</button><button class="btn btn-secundario" onclick="limparCampos(['pendTitulo','pendPrazo','pendDescricao'])">Limpar</button></div>
+          </div>
+          <div id="listaPendencias" class="lista"></div>
+        </section>
+
+        <section id="reunioes" class="aba">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>📝 Reuniões pedagógicas</h2>
+              <p>Registre pauta, participantes, decisões e encaminhamentos.</p>
+            </div>
+            <input class="busca" oninput="filtrar('reunioes')" id="buscaReunioes" placeholder="Buscar reunião..." />
+          </div>
+
+          <div class="form-grid">
+            <div class="campo"><label>Tema</label><input id="reuTema" placeholder="Tema da reunião" /></div>
+            <div class="campo"><label>Data</label><input type="date" id="reuData" /></div>
+            <div class="campo full"><label>Participantes</label><input id="reuParticipantes" placeholder="Direção, pedagogos, professores..." /></div>
+            <div class="campo full"><label>Pauta</label><textarea id="reuPauta" placeholder="Assuntos a serem tratados..."></textarea></div>
+            <div class="campo full"><label>Decisões e encaminhamentos</label><textarea id="reuEncaminhamentos" placeholder="Registre os combinados..."></textarea></div>
+            <div class="botoes"><button class="btn btn-principal" onclick="adicionarReuniao()">Registrar reunião</button><button class="btn btn-secundario" onclick="limparCampos(['reuTema','reuData','reuParticipantes','reuPauta','reuEncaminhamentos'])">Limpar</button></div>
+          </div>
+          <div id="listaReunioes" class="lista"></div>
+        </section>
+
+        <section id="checklist" class="aba">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>✅ Checklist da pedagoga</h2>
+              <p>Marque o que já foi realizado na rotina semanal.</p>
+            </div>
+            <button class="btn btn-perigo" onclick="limparChecklist()">Desmarcar tudo</button>
+          </div>
+          <div id="listaChecklist" class="checklist"></div>
+        </section>
+
+        <section id="relatorios" class="aba">
+          <div class="cabecalho-aba">
+            <div>
+              <h2>📊 Relatório rápido</h2>
+              <p>Gere um resumo automático dos registros salvos no caderno.</p>
+            </div>
+            <div class="botoes"><button class="btn btn-principal" onclick="gerarRelatorio()">Gerar relatório</button><button class="btn btn-secundario" onclick="window.print()">Imprimir / salvar em PDF</button></div>
+          </div>
+          <div id="relatorio" class="relatorio-box">Clique em “Gerar relatório” para criar um resumo dos acompanhamentos.</div>
+          <div class="rodape-acoes">
+            <button class="btn btn-perigo" onclick="apagarTudo()">Apagar todos os dados</button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const banco = {
+      professores: JSON.parse(localStorage.getItem('professores')) || [],
+      alunos: JSON.parse(localStorage.getItem('alunos')) || [],
+      familias: JSON.parse(localStorage.getItem('familias')) || [],
+      pendencias: JSON.parse(localStorage.getItem('pendencias')) || [],
+      reunioes: JSON.parse(localStorage.getItem('reunioes')) || [],
+      hoje: JSON.parse(localStorage.getItem('hoje')) || {},
+      checklist: JSON.parse(localStorage.getItem('checklist')) || {}
+    };
+
+    const checklistPadrao = [
+      'Conversar com a direção sobre demandas do turno',
+      'Verificar alunos em acompanhamento',
+      'Registrar atendimentos realizados',
+      'Acompanhar professores que solicitaram apoio',
+      'Organizar pendências e devolutivas',
+      'Verificar faltas e possíveis casos de busca ativa',
+      'Analisar encaminhamentos do conselho de classe',
+      'Preparar pauta de reunião pedagógica',
+      'Atualizar registros de família',
+      'Planejar intervenções pedagógicas'
+    ];
+
+    const frases = [
+      'Pedagogia também é cuidado, escuta e direção.',
+      'Um bom registro ajuda a transformar acompanhamento em ação.',
+      'Cada devolutiva pode abrir uma nova possibilidade para o aluno.',
+      'Organização pedagógica é carinho em forma de planejamento.'
+    ];
+
+    function iniciar() {
+      document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+      document.getElementById('fraseDia').textContent = frases[Math.floor(Math.random() * frases.length)];
+      carregarHoje();
+      renderizarTudo();
+      montarChecklist();
+    }
+
+    function abrirAba(id, botao) {
+      document.querySelectorAll('.aba').forEach(aba => aba.classList.remove('ativa'));
+      document.getElementById(id).classList.add('ativa');
+      document.querySelectorAll('.menu button').forEach(btn => btn.classList.remove('ativo'));
+      botao.classList.add('ativo');
+    }
+
+    function salvar(chave) {
+      localStorage.setItem(chave, JSON.stringify(banco[chave]));
+      atualizarResumo();
+    }
+
+    function limparCampos(ids) {
+      ids.forEach(id => document.getElementById(id).value = '');
+    }
+
+    function valor(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function dataFormatada(data) {
+      if (!data) return 'Sem data';
+      return data.split('-').reverse().join('/');
+    }
+
+    function salvarHoje() {
+      banco.hoje = {
+        prioridades: valor('prioridadesDia'),
+        observacoes: valor('observacoesDia'),
+        retornos: valor('retornosDia')
+      };
+      localStorage.setItem('hoje', JSON.stringify(banco.hoje));
+      alert('Anotações do dia salvas com sucesso!');
+    }
+
+    function carregarHoje() {
+      document.getElementById('prioridadesDia').value = banco.hoje.prioridades || '';
+      document.getElementById('observacoesDia').value = banco.hoje.observacoes || '';
+      document.getElementById('retornosDia').value = banco.hoje.retornos || '';
+    }
+
+    function adicionarProfessor() {
+      if (!valor('profNome')) return alert('Informe o nome do professor.');
+      banco.professores.unshift({
+        nome: valor('profNome'), turma: valor('profTurma'), data: valor('profData'), situacao: valor('profSituacao'),
+        registro: valor('profRegistro'), encaminhamento: valor('profEncaminhamento')
+      });
+      salvar('professores'); limparCampos(['profNome','profTurma','profData','profRegistro','profEncaminhamento']); renderProfessores();
+    }
+
+    function adicionarAluno() {
+      if (!valor('alunoNome')) return alert('Informe o nome do aluno.');
+      banco.alunos.unshift({
+        nome: valor('alunoNome'), turma: valor('alunoTurma'), data: valor('alunoData'), nivel: valor('alunoNivel'), motivo: valor('alunoMotivo'), status: valor('alunoStatus'),
+        obs: valor('alunoObs'), intervencao: valor('alunoIntervencao')
+      });
+      salvar('alunos'); limparCampos(['alunoNome','alunoTurma','alunoData','alunoObs','alunoIntervencao']); renderAlunos();
+    }
+
+    function adicionarFamilia() {
+      if (!valor('famAluno')) return alert('Informe o nome do aluno.');
+      banco.familias.unshift({
+        aluno: valor('famAluno'), responsavel: valor('famResp'), data: valor('famData'), tipo: valor('famTipo'),
+        assunto: valor('famAssunto'), combinados: valor('famCombinados')
+      });
+      salvar('familias'); limparCampos(['famAluno','famResp','famData','famAssunto','famCombinados']); renderFamilias();
+    }
+
+    function adicionarPendencia() {
+      if (!valor('pendTitulo')) return alert('Informe o título da pendência.');
+      banco.pendencias.unshift({
+        titulo: valor('pendTitulo'), prazo: valor('pendPrazo'), prioridade: valor('pendPrioridade'), status: valor('pendStatus'), descricao: valor('pendDescricao')
+      });
+      salvar('pendencias'); limparCampos(['pendTitulo','pendPrazo','pendDescricao']); renderPendencias();
+    }
+
+    function adicionarReuniao() {
+      if (!valor('reuTema')) return alert('Informe o tema da reunião.');
+      banco.reunioes.unshift({
+        tema: valor('reuTema'), data: valor('reuData'), participantes: valor('reuParticipantes'), pauta: valor('reuPauta'), encaminhamentos: valor('reuEncaminhamentos')
+      });
+      salvar('reunioes'); limparCampos(['reuTema','reuData','reuParticipantes','reuPauta','reuEncaminhamentos']); renderReunioes();
+    }
+
+    function excluir(chave, indice) {
+      if (!confirm('Deseja excluir este registro?')) return;
+      banco[chave].splice(indice, 1);
+      salvar(chave);
+      renderizarTudo();
+    }
+
+    function card(html, chave, indice, cor='') {
+      return `<article class="registro" style="border-left-color:${cor || 'var(--rosa)'}">
+        <div class="acoes-registro"><button class="mini-btn" onclick="excluir('${chave}', ${indice})">Excluir</button></div>
+        ${html}
+      </article>`;
+    }
+
+    function renderProfessores(lista = banco.professores) {
+      document.getElementById('listaProfessores').innerHTML = lista.map((r, i) => card(`
+        <h3>${r.nome} • ${r.turma || 'Turma não informada'}</h3>
+        <p><strong>Data:</strong> ${dataFormatada(r.data)}</p>
+        <p><strong>Registro:</strong> ${r.registro || 'Sem registro detalhado.'}</p>
+        <p><strong>Encaminhamento:</strong> ${r.encaminhamento || 'Não informado.'}</p>
+        <span class="tag azul">${r.situacao}</span>`, 'professores', i, '#8d7bea')).join('') || vazio('Nenhum registro docente cadastrado.');
+    }
+
+    function renderAlunos(lista = banco.alunos) {
+      document.getElementById('listaAlunos').innerHTML = lista.map((r, i) => {
+        const cor = r.nivel.includes('🔴') ? '#ef476f' : r.nivel.includes('🟡') ? '#ffd166' : '#49b889';
+        return card(`
+          <h3>${r.nome} • ${r.turma || 'Turma não informada'}</h3>
+          <p><strong>Data:</strong> ${dataFormatada(r.data)}</p>
+          <p><strong>Observações:</strong> ${r.obs || 'Sem observações.'}</p>
+          <p><strong>Intervenção:</strong> ${r.intervencao || 'Não informada.'}</p>
+          <span class="tag">${r.motivo}</span><span class="tag amarelo">${r.status}</span><span class="tag verde">${r.nivel}</span>`, 'alunos', i, cor);
+      }).join('') || vazio('Nenhum aluno em acompanhamento cadastrado.');
+    }
+
+    function renderFamilias(lista = banco.familias) {
+      document.getElementById('listaFamilias').innerHTML = lista.map((r, i) => card(`
+        <h3>${r.aluno} • Responsável: ${r.responsavel || 'Não informado'}</h3>
+        <p><strong>Data:</strong> ${dataFormatada(r.data)} | <strong>Tipo:</strong> ${r.tipo}</p>
+        <p><strong>Assunto:</strong> ${r.assunto || 'Não informado.'}</p>
+        <p><strong>Combinados:</strong> ${r.combinados || 'Não informado.'}</p>
+        <span class="tag verde">Atendimento familiar</span>`, 'familias', i, '#49b889')).join('') || vazio('Nenhum atendimento familiar registrado.');
+    }
+
+    function renderPendencias(lista = banco.pendencias) {
+      document.getElementById('listaPendencias').innerHTML = lista.map((r, i) => {
+        const cor = r.prioridade === 'Alta' ? '#ef476f' : r.prioridade === 'Média' ? '#ffd166' : '#49b889';
+        return card(`
+          <h3>${r.titulo}</h3>
+          <p><strong>Prazo:</strong> ${dataFormatada(r.prazo)}</p>
+          <p>${r.descricao || 'Sem descrição.'}</p>
+          <span class="tag vermelho">Prioridade: ${r.prioridade}</span><span class="tag azul">${r.status}</span>`, 'pendencias', i, cor);
+      }).join('') || vazio('Nenhuma pendência cadastrada.');
+    }
+
+    function renderReunioes(lista = banco.reunioes) {
+      document.getElementById('listaReunioes').innerHTML = lista.map((r, i) => card(`
+        <h3>${r.tema}</h3>
+        <p><strong>Data:</strong> ${dataFormatada(r.data)}</p>
+        <p><strong>Participantes:</strong> ${r.participantes || 'Não informado.'}</p>
+        <p><strong>Pauta:</strong> ${r.pauta || 'Não informada.'}</p>
+        <p><strong>Encaminhamentos:</strong> ${r.encaminhamentos || 'Não informado.'}</p>
+        <span class="tag azul">Reunião pedagógica</span>`, 'reunioes', i, '#5ca8e8')).join('') || vazio('Nenhuma reunião registrada.');
+    }
+
+    function vazio(msg) {
+      return `<div class="registro"><h3>${msg}</h3><p>Quando você cadastrar, os registros aparecerão aqui.</p></div>`;
+    }
+
+    function montarChecklist() {
+      const box = document.getElementById('listaChecklist');
+      box.innerHTML = checklistPadrao.map((item, i) => {
+        const checked = banco.checklist[i] ? 'checked' : '';
+        const classe = banco.checklist[i] ? 'concluido' : '';
+        return `<label class="check-item ${classe}"><input type="checkbox" ${checked} onchange="marcarCheck(${i}, this)"><span>${item}</span></label>`;
+      }).join('');
+    }
+
+    function marcarCheck(i, el) {
+      banco.checklist[i] = el.checked;
+      localStorage.setItem('checklist', JSON.stringify(banco.checklist));
+      montarChecklist();
+    }
+
+    function limparChecklist() {
+      banco.checklist = {};
+      localStorage.setItem('checklist', JSON.stringify(banco.checklist));
+      montarChecklist();
+    }
+
+    function filtrar(tipo) {
+      const termo = document.getElementById('busca' + capitalizar(tipo)).value.toLowerCase();
+      const lista = banco[tipo].filter(item => JSON.stringify(item).toLowerCase().includes(termo));
+      if (tipo === 'professores') renderProfessores(lista);
+      if (tipo === 'alunos') renderAlunos(lista);
+      if (tipo === 'familias') renderFamilias(lista);
+      if (tipo === 'pendencias') renderPendencias(lista);
+      if (tipo === 'reunioes') renderReunioes(lista);
+    }
+
+    function capitalizar(txt) {
+      return txt.charAt(0).toUpperCase() + txt.slice(1);
+    }
+
+    function atualizarResumo() {
+      document.getElementById('totalProfessores').textContent = banco.professores.length;
+      document.getElementById('totalAlunos').textContent = banco.alunos.length;
+      document.getElementById('totalFamilias').textContent = banco.familias.length;
+      document.getElementById('totalPendencias').textContent = banco.pendencias.filter(p => p.status !== 'Concluída').length;
+    }
+
+    function renderizarTudo() {
+      renderProfessores();
+      renderAlunos();
+      renderFamilias();
+      renderPendencias();
+      renderReunioes();
+      atualizarResumo();
+    }
+
+    function gerarRelatorio() {
+      const abertas = banco.pendencias.filter(p => p.status !== 'Concluída').length;
+      const prioritarios = banco.alunos.filter(a => a.nivel.includes('🔴')).length;
+      const texto = `RELATÓRIO RÁPIDO DO CADERNO DIGITAL DA PEDAGOGA\n\nEscola: EEEFM Frederico Boldt\nTurno: Vespertino\nData de emissão: ${new Date().toLocaleDateString('pt-BR')}\n\n1. REGISTROS GERAIS\n- Registros de escuta/acompanhamento docente: ${banco.professores.length}\n- Alunos em acompanhamento: ${banco.alunos.length}\n- Atendimentos às famílias: ${banco.familias.length}\n- Reuniões registradas: ${banco.reunioes.length}\n- Pendências abertas/em andamento: ${abertas}\n\n2. PONTOS DE ATENÇÃO\n- Alunos classificados como prioritários: ${prioritarios}\n- Pendências que precisam de retorno: ${abertas}\n\n3. ANOTAÇÕES DO DIA\nPrioridades: ${banco.hoje.prioridades || 'Não informado.'}\nObservações: ${banco.hoje.observacoes || 'Não informado.'}\nRetornos: ${banco.hoje.retornos || 'Não informado.'}\n\n4. ORIENTAÇÃO\nRecomenda-se manter os registros atualizados, acompanhar os prazos e retomar os encaminhamentos com professores, famílias e equipe gestora.`;
+      document.getElementById('relatorio').textContent = texto;
+    }
+
+    function apagarTudo() {
+      if (!confirm('Tem certeza que deseja apagar todos os dados salvos neste navegador?')) return;
+      localStorage.clear();
+      location.reload();
+    }
+
+    iniciar();
+  </script>
+</body>
+</html>

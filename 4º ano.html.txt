@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planejador do 4º Ano por Trimestre</title>
+  <style>
+    :root {
+      --bg: #f5f8ff;
+      --card: #ffffff;
+      --line: #dbe5f4;
+      --text: #213547;
+      --muted: #64748b;
+      --blue: #7ec8ff;
+      --blue-strong: #4daef5;
+      --pink: #ffd8e8;
+      --green: #d9f5df;
+      --orange: #ffe8c7;
+      --shadow: 0 10px 28px rgba(67, 97, 138, 0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef7ff 0%, #f9fbff 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #cdeeff, #e7f5ff 60%, #fff);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .hero-box {
+      background: rgba(255,255,255,.8);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .badge {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: .92rem;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .panel, .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: .92rem;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    input, select, textarea, button {
+      font: inherit;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #cfe0f3;
+      border-radius: 12px;
+      padding: 12px 12px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      border: none;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .tab.active { background: var(--blue); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .btn-primary { background: var(--blue-strong); color: white; }
+    .btn-soft { background: #eef6ff; color: var(--text); border: 1px solid var(--line); }
+    .btn-warn { background: #fff1f2; color: #b42318; border: 1px solid #fecdd3; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .mini {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+    }
+
+    .mini h3 {
+      margin: 0;
+      font-size: .9rem;
+      color: var(--muted);
+    }
+
+    .mini strong {
+      display: block;
+      font-size: 1.5rem;
+      margin-top: 8px;
+    }
+
+    .mini.blue { background: #edf7ff; }
+    .mini.pink { background: #fff1f7; }
+    .mini.green { background: #eefdf1; }
+    .mini.orange { background: #fff7eb; }
+
+    .subject-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .subject-card {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .subject-card h3 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+    }
+
+    .entry {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fcfeff;
+    }
+
+    .entry:last-child { margin-bottom: 0; }
+
+    .entry-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .code {
+      display: inline-block;
+      background: #e8f4ff;
+      color: #0f4c81;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: .84rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .entry h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .entry p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: .94rem;
+      white-space: pre-wrap;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .entry-actions button {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: .85rem;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 18px;
+      border: 1px dashed #c9d8ea;
+      border-radius: 16px;
+      background: #fbfdff;
+    }
+
+    .footnote {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    @media print {
+      .hero, .toolbar, .form-panel, .tabs, .entry-actions, .footnote { display: none !important; }
+      body { background: white; }
+      .container { max-width: 100%; padding: 0; }
+      .layout { display: block; }
+      .card, .panel, .subject-card, .entry { box-shadow: none; }
+    }
+
+    @media (max-width: 980px) {
+      .hero, .layout, .toolbar, .summary { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div>
+        <h1>Planejador do 4º Ano</h1>
+        <p>Organize o 1º, 2º e 3º trimestre com habilidades, conteúdos, objetivos, observações e andamento. Os dados iniciais abaixo foram montados com base nos documentos enviados e podem ser editados livremente.</p>
+        <div class="badge-row">
+          <span class="badge">HTML + CSS + JavaScript</span>
+          <span class="badge">Salvamento automático no navegador</span>
+          <span class="badge">Edição sem apagar</span>
+          <span class="badge">Impressão por trimestre</span>
+        </div>
+      </div>
+      <div class="hero-box">
+        <label for="teacherName">Professora</label>
+        <input id="teacherName" placeholder="Digite seu nome" />
+        <div class="badge-row">
+          <span class="badge">Turma: 4º ano</span>
+          <span class="badge">Planejamento trimestral</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <div class="panel">
+        <label for="search">Buscar</label>
+        <input id="search" placeholder="Ex.: EF04GE04, notícia, multiplicação" />
+      </div>
+      <div class="panel">
+        <label for="filterSubject">Filtrar disciplina</label>
+        <select id="filterSubject">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="panel">
+        <label for="filterStatus">Filtrar andamento</label>
+        <select id="filterStatus">
+          <option value="">Todos</option>
+          <option value="Não iniciado">Não iniciado</option>
+          <option value="Em andamento">Em andamento</option>
+          <option value="Concluído">Concluído</option>
+        </select>
+      </div>
+      <div class="panel">
+        <label>&nbsp;</label>
+        <button class="btn btn-soft" id="printBtn">Imprimir trimestre</button>
+      </div>
+      <div class="panel">
+        <label>&nbsp;</label>
+        <button class="btn btn-warn" id="resetBtn">Restaurar dados iniciais</button>
+      </div>
+    </section>
+
+    <div class="tabs" id="tabs"></div>
+
+    <div class="layout">
+      <aside class="panel form-panel">
+        <h2 style="margin-top:0;">Novo item / editar item</h2>
+        <div class="form-grid">
+          <div>
+            <label for="subject">Disciplina</label>
+            <select id="subject"></select>
+          </div>
+          <div>
+            <label for="trimester">Trimestre</label>
+            <select id="trimester">
+              <option value="1º Trimestre">1º Trimestre</option>
+              <option value="2º Trimestre">2º Trimestre</option>
+              <option value="3º Trimestre">3º Trimestre</option>
+            </select>
+          </div>
+          <div>
+            <label for="skillCode">Código da habilidade</label>
+            <input id="skillCode" placeholder="Ex.: EF04MA03/ES" />
+          </div>
+          <div>
+            <label for="title">Título / habilidade</label>
+            <input id="title" placeholder="Escreva o título" />
+          </div>
+          <div>
+            <label for="content">Conteúdo / encaminhamento</label>
+            <textarea id="content" placeholder="Descreva o conteúdo, atividade, objetivo ou observação."></textarea>
+          </div>
+          <div>
+            <label for="status">Andamento</label>
+            <select id="status">
+              <option>Não iniciado</option>
+              <option>Em andamento</option>
+              <option>Concluído</option>
+            </select>
+          </div>
+          <div>
+            <label for="className">Turma</label>
+            <input id="className" value="4º ano" />
+          </div>
+          <div>
+            <label for="notes">Observações</label>
+            <textarea id="notes" placeholder="Anotações da aula, recursos, avaliação, adaptações..."></textarea>
+          </div>
+        </div>
+        <div class="actions" style="margin-top: 14px;">
+          <button class="btn btn-primary" id="saveBtn">Salvar item</button>
+          <button class="btn btn-soft" id="clearBtn">Limpar campos</button>
+        </div>
+      </aside>
+
+      <main>
+        <section class="summary" id="summary"></section>
+        <section class="card" style="padding:16px;">
+          <div class="subject-columns" id="board"></div>
+        </section>
+        <div class="footnote">
+          Observação: os dados iniciais foram pré-carregados com as listas de habilidades visíveis nos PDFs. Onde o documento não mostrou claramente a divisão completa por trimestre, o sistema permanece editável para você complementar.
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const initialData = {
+      "1º Trimestre": {
+        "Português": [
+          { code: "EF15LP01", title: "Função social dos textos", content: "Identificar a função social de textos do cotidiano.", status: "Não iniciado", notes: "" },
+          { code: "EF15LP02", title: "Expectativas antes da leitura", content: "Antecipar sentidos, forma e função social do texto.", status: "Não iniciado", notes: "" },
+          { code: "EF15LP03", title: "Informações explícitas e implícitas", content: "Localizar informações e inferir sentidos no texto.", status: "Não iniciado", notes: "" },
+          { code: "EF35LP07", title: "Conhecimentos linguísticos na produção textual", content: "Usar ortografia, concordância e pontuação na escrita.", status: "Não iniciado", notes: "" },
+          { code: "EF15LP09", title: "Intercâmbio oral", content: "Expressar-se com clareza, tom audível e boa articulação.", status: "Não iniciado", notes: "" },
+          { code: "EF35LP12", title: "Uso do dicionário", content: "Recorrer ao dicionário para esclarecer a escrita de palavras.", status: "Não iniciado", notes: "" },
+          { code: "EF04LP01", title: "Correspondência fonema-grafema", content: "Grafar palavras com regras regulares, diretas e contextuais.", status: "Não iniciado", notes: "" },
+          { code: "EF04LP02", title: "Sílabas VV e CVV", content: "Ler e escrever palavras com ditongos reduzidos na oralidade.", status: "Não iniciado", notes: "" },
+          { code: "EF15LP14", title: "Histórias em quadrinhos e tirinhas", content: "Construir sentido relacionando imagens, palavras e recursos gráficos.", status: "Não iniciado", notes: "" },
+          { code: "EF04LP16/ES", title: "Produção de notícia", content: "Produzir notícias sobre fatos da comunidade ou escola.", status: "Não iniciado", notes: "" },
+          { code: "EF04LP14", title: "Leitura de notícias", content: "Identificar fatos, participantes, local e tempo em notícias.", status: "Não iniciado", notes: "" },
+          { code: "EF35LP16", title: "Estrutura de notícia", content: "Reconhecer manchete, lide e corpo da notícia.", status: "Não iniciado", notes: "" },
+          { code: "EF04LP19", title: "Divulgação científica", content: "Ler e compreender textos expositivos de divulgação científica.", status: "Não iniciado", notes: "" },
+          { code: "EF04LP21/ES", title: "Planejamento de texto de divulgação", content: "Planejar e produzir textos de divulgação científica para crianças.", status: "Não iniciado", notes: "" },
+          { code: "EF35LP18", title: "Sequência de texto instrucional", content: "Reconhecer forma de composição de textos instrucionais.", status: "Não iniciado", notes: "" },
+          { code: "EF04LP23", title: "Registro de pesquisa", content: "Registrar sínteses e informações pesquisadas em fontes confiáveis.", status: "Não iniciado", notes: "" },
+          { code: "EF15LP15", title: "Leitura de imagens", content: "Reconhecer recursos de textos visuais e multissemióticos.", status: "Não iniciado", notes: "" },
+          { code: "EF35LP21", title: "Leitura de tabelas e gráficos", content: "Ler e compreender tabelas, gráficos e infográficos simples.", status: "Não iniciado", notes: "" },
+          { code: "EF35LP26", title: "Revisão textual", content: "Revisar textos com foco em clareza, organização e adequação.", status: "Não iniciado", notes: "" }
+        ],
+        "Matemática": [
+          { code: "EF04MA01/ES", title: "Leitura e ordenação de números", content: "Ler, escrever e ordenar números naturais até dezenas de milhar.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA02/ES", title: "Composição e decomposição", content: "Decompor números naturais por adições e potências de dez.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA03/ES", title: "Problemas com adição e subtração", content: "Resolver e elaborar problemas com estratégias diversas.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA04/ES", title: "Relações entre operações", content: "Usar relações entre adição/subtração e multiplicação/divisão.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA11/ES", title: "Sequências de múltiplos", content: "Identificar regularidades em sequências numéricas compostas por múltiplos.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA12", title: "Regularidades com restos", content: "Investigar grupos de números com restos iguais em divisões.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA16/ES", title: "Localização e movimentação", content: "Explorar malhas, localização e deslocamentos no espaço.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA29/ES", title: "Tecnologias e raciocínio matemático", content: "Aplicar estratégias e registros na resolução de situações matemáticas.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA20/ES", title: "Comprimento, massa e capacidade", content: "Medir e estimar grandezas com unidades padronizadas.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA21", title: "Problemas com medidas", content: "Resolver situações-problema envolvendo medidas.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA26", title: "Leitura de dados", content: "Interpretar informações em tabelas e gráficos.", status: "Não iniciado", notes: "" }
+        ],
+        "Ciências": [
+          { code: "EF04CI01/ES", title: "Misturas", content: "Identificar misturas na vida diária com base em propriedades observáveis.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI02", title: "Transformações nos materiais", content: "Testar e relatar transformações por aquecimento, resfriamento, luz e umidade.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI03", title: "Mudanças reversíveis e irreversíveis", content: "Concluir quais mudanças podem ou não ser revertidas.", status: "Não iniciado", notes: "" }
+        ],
+        "Geografia": [
+          { code: "EF04GE01", title: "Diversidade cultural", content: "Selecionar e valorizar elementos de culturas presentes na comunidade.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE02/ES", title: "Processos migratórios", content: "Descrever processos migratórios e suas contribuições para a sociedade.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE03/ES", title: "Poder público e cidadania", content: "Conhecer unidades político-administrativas e órgãos do poder público municipal.", status: "Não iniciado", notes: "" }
+        ],
+        "História": [
+          { code: "EF04HI01/ES", title: "História como ciência", content: "Reconhecer a História como ciência que estuda a ação humana no tempo e espaço.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI02/ES", title: "Mudanças e permanências", content: "Discutir processos históricos como nomadismo, agricultura e indústria.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI03/ES", title: "Transformações na cidade", content: "Identificar transformações urbanas e seus efeitos no modo de vida.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI04/ES", title: "Circulação de pessoas e produtos", content: "Investigar deslocamentos, caminhos e formas de circulação ao longo do tempo.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI05/ES", title: "Formas de ocupação do território", content: "Analisar ocupações humanas e relações com o espaço vivido.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI06/ES", title: "Memória e patrimônio", content: "Valorizar patrimônio histórico e cultural local.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI07/ES", title: "Fontes históricas", content: "Reconhecer e usar diferentes fontes para compreender o passado.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI08/ES", title: "Povos antigos e organização social", content: "Compreender experiências humanas em diferentes tempos e espaços.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI09/ES", title: "Culturas e modos de vida", content: "Comparar costumes, práticas e permanências históricas.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI10/ES", title: "Fluxos populacionais", content: "Analisar diferentes fluxos populacionais e suas contribuições sociais.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI11/ES", title: "Diversidade dos povos", content: "Reconhecer a diversidade cultural e histórica dos grupos humanos.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI12/ES", title: "Marcação do tempo", content: "Relacionar noções de tempo histórico, calendários e registros.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI13/ES", title: "Trabalho e sociedade", content: "Compreender relações entre trabalho, técnica e organização social.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI14/ES", title: "Comunidade e identidade", content: "Investigar a formação histórica da comunidade local.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI15/ES", title: "Convivência e participação", content: "Relacionar experiências históricas à vida coletiva e cidadania.", status: "Não iniciado", notes: "" },
+          { code: "EF04HI16/ES", title: "Sínteses históricas", content: "Produzir registros e sínteses sobre os temas estudados.", status: "Não iniciado", notes: "" }
+        ]
+      },
+      "2º Trimestre": {
+        "Português": [
+          { code: "", title: "Complementar com o PDF", content: "O sistema está pronto para você inserir as habilidades do 2º trimestre de Português conforme desejar.", status: "Não iniciado", notes: "" }
+        ],
+        "Matemática": [
+          { code: "EF04MA06", title: "Sequências numéricas", content: "Resolver e elaborar atividades com padrões e regularidades.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA07/ES", title: "Problemas multiplicativos", content: "Resolver situações com multiplicação e divisão em diferentes contextos.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA13", title: "Relações inversas", content: "Reconhecer relações inversas entre operações.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA14", title: "Propriedades da igualdade", content: "Investigar igualdades e equivalências.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA17", title: "Prismas e pirâmides", content: "Associar sólidos a planificações e comparar atributos.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA23/ES", title: "Medidas de tempo", content: "Ler, interpretar e resolver situações com tempo e calendário.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA24", title: "Sistema monetário", content: "Resolver problemas envolvendo valores e trocas.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA27/ES", title: "Tabelas e gráficos", content: "Organizar e interpretar dados em representações simples.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA22", title: "Perímetro", content: "Resolver situações envolvendo cálculo e estimativa de perímetro.", status: "Não iniciado", notes: "" }
+        ],
+        "Ciências": [
+          { code: "EF04CI04/ES", title: "Cadeias alimentares", content: "Reconhecer relações alimentares entre seres vivos.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI05", title: "Microrganismos e ambiente", content: "Investigar presença e importância dos microrganismos.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI06", title: "Decomposição", content: "Relacionar fungos e bactérias ao processo de decomposição.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI07", title: "Microrganismos em processos produtivos", content: "Verificar participação de microrganismos em alimentos e medicamentos.", status: "Não iniciado", notes: "" }
+        ],
+        "Geografia": [
+          { code: "EF04GE04/ES", title: "Campo e cidade", content: "Analisar a interdependência entre campo e cidade.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE05", title: "Unidades político-administrativas", content: "Distinguir Distrito, Município, Estado e Região.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE06", title: "Territórios étnico-culturais", content: "Identificar terras indígenas e quilombolas.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE07", title: "Representações cartográficas", content: "Usar mapas, legendas e escalas simples na leitura do espaço.", status: "Não iniciado", notes: "" }
+        ],
+        "História": [
+          { code: "", title: "Complementar com o PDF", content: "Você pode preencher as habilidades do 2º trimestre aqui e reorganizar como quiser.", status: "Não iniciado", notes: "" }
+        ]
+      },
+      "3º Trimestre": {
+        "Português": [
+          { code: "", title: "Complementar com o PDF", content: "O sistema está pronto para você inserir as habilidades do 3º trimestre de Português.", status: "Não iniciado", notes: "" }
+        ],
+        "Matemática": [
+          { code: "EF04MA05/ES", title: "Propriedades das operações", content: "Resolver situações com estratégias de cálculo e verificação.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA08/ES", title: "Problemas de contagem", content: "Explorar agrupamentos e possibilidades com registros pessoais.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA09", title: "Frações unitárias", content: "Reconhecer frações em diferentes contextos.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA10/ES", title: "Números racionais", content: "Relacionar representações e usos de frações e decimais simples.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA15/ES", title: "Número desconhecido", content: "Determinar o número que torna verdadeira uma igualdade.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA18/ES", title: "Ângulos e giros", content: "Identificar giros, direções e noções geométricas no espaço.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA19", title: "Simetria", content: "Reconhecer simetria em figuras e produções geométricas.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA25/ES", title: "Leitura de gráficos", content: "Resolver problemas com dados de tabelas e gráficos.", status: "Não iniciado", notes: "" },
+          { code: "EF04MA28/ES", title: "Probabilidade e análise de dados", content: "Explorar possibilidades e leitura de informações organizadas.", status: "Não iniciado", notes: "" }
+        ],
+        "Ciências": [
+          { code: "EF04CI08", title: "Hábitos de saúde", content: "Reconhecer cuidados com corpo, saúde e prevenção.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI09/ES", title: "Pontos cardeais", content: "Identificar pontos cardeais com observação da paisagem e dos astros.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI10/ES", title: "Sistema solar e observação do céu", content: "Relacionar fenômenos celestes e observação do céu visível.", status: "Não iniciado", notes: "" },
+          { code: "EF04CI11", title: "Lua, Terra e calendários", content: "Associar movimentos cíclicos à construção de calendários.", status: "Não iniciado", notes: "" }
+        ],
+        "Geografia": [
+          { code: "EF04GE08", title: "Produção, circulação e consumo", content: "Descrever o processo produtivo e o consumo de diferentes produtos.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE09", title: "Orientação espacial", content: "Utilizar pontos cardeais e referências para localizar-se.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE10", title: "Mapas e representação do espaço", content: "Interpretar mapas e representações da paisagem local e regional.", status: "Não iniciado", notes: "" },
+          { code: "EF04GE11", title: "Paisagens naturais e antrópicas", content: "Identificar características das paisagens e ações humanas de conservação ou degradação.", status: "Não iniciado", notes: "" }
+        ],
+        "História": [
+          { code: "", title: "Complementar com o PDF", content: "Você pode preencher as habilidades do 3º trimestre aqui e reorganizar como quiser.", status: "Não iniciado", notes: "" }
+        ]
+      }
+    };
+
+    const storageKey = "planejador_4ano_trimestres_v1";
+    const subjects = ["Português", "Matemática", "Ciências", "Geografia", "História"];
+    let currentTrimester = "1º Trimestre";
+    let editingId = null;
+    let state = loadState();
+
+    function loadState() {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) return JSON.parse(saved);
+      return normalize(JSON.parse(JSON.stringify(initialData)));
+    }
+
+    function normalize(data) {
+      Object.keys(data).forEach(trim => {
+        subjects.forEach(subject => {
+          data[trim][subject] = (data[trim][subject] || []).map(item => ({
+            id: item.id || crypto.randomUUID(),
+            className: item.className || "4º ano",
+            ...item
+          }));
+        });
+      });
+      return data;
+    }
+
+    function saveState() {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    }
+
+    function fillSelects() {
+      const subjectSelect = document.getElementById("subject");
+      const filterSubject = document.getElementById("filterSubject");
+      subjectSelect.innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join("");
+      filterSubject.innerHTML = `<option value="">Todas</option>` + subjects.map(s => `<option value="${s}">${s}</option>`).join("");
+    }
+
+    function renderTabs() {
+      const tabs = document.getElementById("tabs");
+      tabs.innerHTML = ["1º Trimestre", "2º Trimestre", "3º Trimestre"].map(trim => `
+        <button class="tab ${trim === currentTrimester ? "active" : ""}" onclick="setTrimester('${trim}')">${trim}</button>
+      `).join("");
+      document.getElementById("trimester").value = currentTrimester;
+    }
+
+    function setTrimester(trim) {
+      currentTrimester = trim;
+      renderTabs();
+      renderSummary();
+      renderBoard();
+    }
+
+    function renderSummary() {
+      const items = subjects.flatMap(subject => state[currentTrimester][subject]);
+      const total = items.length;
+      const done = items.filter(i => i.status === "Concluído").length;
+      const progress = items.filter(i => i.status === "Em andamento").length;
+      const pending = items.filter(i => i.status === "Não iniciado").length;
+
+      document.getElementById("summary").innerHTML = `
+        <div class="mini blue"><h3>Trimestre atual</h3><strong>${currentTrimester}</strong></div>
+        <div class="mini pink"><h3>Total de itens</h3><strong>${total}</strong></div>
+        <div class="mini green"><h3>Concluídos</h3><strong>${done}</strong></div>
+        <div class="mini orange"><h3>Em andamento</h3><strong>${progress}</strong></div>
+      `;
+    }
+
+    function getFilters() {
+      return {
+        search: document.getElementById("search").value.trim().toLowerCase(),
+        subject: document.getElementById("filterSubject").value,
+        status: document.getElementById("filterStatus").value
+      };
+    }
+
+    function renderBoard() {
+      const filters = getFilters();
+      const board = document.getElementById("board");
+      const visibleSubjects = subjects.filter(s => !filters.subject || filters.subject === s);
+
+      board.innerHTML = visibleSubjects.map(subject => {
+        const items = state[currentTrimester][subject].filter(item => {
+          const haystack = `${item.code} ${item.title} ${item.content} ${item.notes} ${item.className}`.toLowerCase();
+          const searchOk = !filters.search || haystack.includes(filters.search);
+          const statusOk = !filters.status || item.status === filters.status;
+          return searchOk && statusOk;
+        });
+
+        return `
+          <div class="subject-card">
+            <h3>${subject}</h3>
+            ${items.length ? items.map(item => `
+              <div class="entry">
+                <div class="entry-top">
+                  <div>
+                    ${item.code ? `<span class="code">${item.code}</span>` : ""}
+                    <h4>${item.title}</h4>
+                  </div>
+                  <div class="entry-actions">
+                    <button onclick="editItem('${currentTrimester}','${subject}','${item.id}')">Editar</button>
+                    <button onclick="deleteItem('${currentTrimester}','${subject}','${item.id}')">Excluir</button>
+                  </div>
+                </div>
+                <p><strong>Conteúdo:</strong> ${item.content || "-"}</p>
+                <p><strong>Turma:</strong> ${item.className || "4º ano"}</p>
+                <p><strong>Andamento:</strong> ${item.status}</p>
+                ${item.notes ? `<p><strong>Observações:</strong> ${item.notes}</p>` : ""}
+              </div>
+            `).join("") : `<div class="empty">Nenhum item encontrado.</div>`}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function clearForm() {
+      editingId = null;
+      document.getElementById("subject").value = subjects[0];
+      document.getElementById("trimester").value = currentTrimester;
+      document.getElementById("skillCode").value = "";
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+      document.getElementById("status").value = "Não iniciado";
+      document.getElementById("className").value = "4º ano";
+      document.getElementById("notes").value = "";
+    }
+
+    function editItem(trim, subject, id) {
+      const item = state[trim][subject].find(i => i.id === id);
+      if (!item) return;
+      editingId = id;
+      currentTrimester = trim;
+      renderTabs();
+      document.getElementById("subject").value = subject;
+      document.getElementById("trimester").value = trim;
+      document.getElementById("skillCode").value = item.code || "";
+      document.getElementById("title").value = item.title || "";
+      document.getElementById("content").value = item.content || "";
+      document.getElementById("status").value = item.status || "Não iniciado";
+      document.getElementById("className").value = item.className || "4º ano";
+      document.getElementById("notes").value = item.notes || "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      renderSummary();
+      renderBoard();
+    }
+
+    function deleteItem(trim, subject, id) {
+      if (!confirm("Deseja excluir este item?")) return;
+      state[trim][subject] = state[trim][subject].filter(i => i.id !== id);
+      saveState();
+      renderSummary();
+      renderBoard();
+    }
+
+    function saveItem() {
+      const subject = document.getElementById("subject").value;
+      const trim = document.getElementById("trimester").value;
+      const item = {
+        id: editingId || crypto.randomUUID(),
+        code: document.getElementById("skillCode").value.trim(),
+        title: document.getElementById("title").value.trim() || "Sem título",
+        content: document.getElementById("content").value.trim(),
+        status: document.getElementById("status").value,
+        className: document.getElementById("className").value.trim() || "4º ano",
+        notes: document.getElementById("notes").value.trim()
+      };
+
+      if (editingId) {
+        subjects.forEach(sub => {
+          ["1º Trimestre", "2º Trimestre", "3º Trimestre"].forEach(tr => {
+            const index = state[tr][sub].findIndex(i => i.id === editingId);
+            if (index >= 0) state[tr][sub].splice(index, 1);
+          });
+        });
+      }
+
+      state[trim][subject].unshift(item);
+      currentTrimester = trim;
+      editingId = null;
+      saveState();
+      clearForm();
+      renderTabs();
+      renderSummary();
+      renderBoard();
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", saveItem);
+    document.getElementById("clearBtn").addEventListener("click", clearForm);
+    document.getElementById("search").addEventListener("input", renderBoard);
+    document.getElementById("filterSubject").addEventListener("change", renderBoard);
+    document.getElementById("filterStatus").addEventListener("change", renderBoard);
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      if (!confirm("Deseja restaurar os dados iniciais? Isso apagará suas alterações salvas no navegador.")) return;
+      state = normalize(JSON.parse(JSON.stringify(initialData)));
+      saveState();
+      clearForm();
+      renderSummary();
+      renderBoard();
+    });
+    document.getElementById("teacherName").addEventListener("input", (e) => {
+      localStorage.setItem("planejador_4ano_professora", e.target.value);
+    });
+    document.getElementById("teacherName").value = localStorage.getItem("planejador_4ano_professora") || "";
+
+    fillSelects();
+    clearForm();
+    renderTabs();
+    renderSummary();
+    renderBoard();
+    window.setTrimester = setTrimester;
+    window.editItem = editItem;
+    window.deleteItem = deleteItem;
+  </script>
+</body>
+</html>

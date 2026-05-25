@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medidor de Barulho da Turma</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #dff7ff, #f8e8ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      background: white;
+      border-radius: 30px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    h1 {
+      color: #4b2e83;
+      font-size: 2.4rem;
+      margin-bottom: 10px;
+    }
+
+    .subtitulo {
+      color: #555;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+
+    .monster-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .monster {
+      width: 220px;
+      height: 220px;
+      border-radius: 50% 50% 45% 45%;
+      background: #6ee7b7;
+      position: relative;
+      transition: 0.3s ease;
+      box-shadow: inset -10px -15px rgba(0, 0, 0, 0.08);
+    }
+
+    .monster::before,
+    .monster::after {
+      content: "";
+      position: absolute;
+      top: -25px;
+      width: 35px;
+      height: 60px;
+      background: inherit;
+      border-radius: 50%;
+    }
+
+    .monster::before {
+      left: 45px;
+      transform: rotate(-25deg);
+    }
+
+    .monster::after {
+      right: 45px;
+      transform: rotate(25deg);
+    }
+
+    .eye {
+      width: 35px;
+      height: 35px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 70px;
+    }
+
+    .eye.left {
+      left: 55px;
+    }
+
+    .eye.right {
+      right: 55px;
+    }
+
+    .eye::after {
+      content: "";
+      width: 15px;
+      height: 15px;
+      background: #222;
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .mouth {
+      position: absolute;
+      left: 50%;
+      bottom: 55px;
+      transform: translateX(-50%);
+      width: 75px;
+      height: 28px;
+      border-radius: 0 0 50px 50px;
+      background: #222;
+      transition: 0.3s ease;
+    }
+
+    .status {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #222;
+      min-height: 45px;
+    }
+
+    .nivel-texto {
+      font-size: 1.2rem;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .bar-box {
+      width: 100%;
+      height: 40px;
+      background: #eee;
+      border-radius: 30px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      border: 2px solid #ddd;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #22c55e;
+      border-radius: 30px;
+      transition: width 0.15s linear, background 0.3s ease;
+    }
+
+    .controles {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      border: none;
+      padding: 14px 22px;
+      border-radius: 18px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.04);
+    }
+
+    .btn-start {
+      background: #4ade80;
+      color: #064e3b;
+    }
+
+    .btn-stop {
+      background: #f87171;
+      color: #7f1d1d;
+    }
+
+    .btn-reset {
+      background: #93c5fd;
+      color: #1e3a8a;
+    }
+
+    .config {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+      background: #f7f7ff;
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .config label {
+      display: block;
+      font-weight: bold;
+      color: #4b2e83;
+      margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .dica {
+      margin-top: 20px;
+      background: #fff7cc;
+      padding: 15px;
+      border-radius: 18px;
+      color: #5c4300;
+      font-size: 1rem;
+    }
+
+    .silencioso {
+      background: #6ee7b7;
+    }
+
+    .medio {
+      background: #fde047;
+      animation: pulse 0.8s infinite alternate;
+    }
+
+    .barulhento {
+      background: #fb7185;
+      animation: shake 0.2s infinite;
+    }
+
+    .barulhento .mouth {
+      width: 90px;
+      height: 55px;
+      border-radius: 50%;
+    }
+
+    .medio .mouth {
+      width: 70px;
+      height: 12px;
+      border-radius: 20px;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.04); }
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-4px); }
+      100% { transform: translateX(0); }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .monster {
+        width: 180px;
+        height: 180px;
+      }
+
+      .status {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Medidor de Barulho da Turma</h1>
+    <p class="subtitulo">Observe o monstrinho e mantenha a sala no volume combinado.</p>
+
+    <section class="monster-area">
+      <div id="monster" class="monster silencioso">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+
+      <div id="status" class="status">Clique em iniciar</div>
+      <div id="nivelTexto" class="nivel-texto">Nível de som: 0%</div>
+    </section>
+
+    <div class="bar-box">
+      <div id="bar" class="bar"></div>
+    </div>
+
+    <div class="controles">
+      <button class="btn-start" onclick="iniciarMedidor()">Iniciar medidor</button>
+      <button class="btn-stop" onclick="pararMedidor()">Parar</button>
+      <button class="btn-reset" onclick="resetarMedidor()">Resetar</button>
+    </div>
+
+    <section class="config">
+      <div>
+        <label for="limiteMedio">Limite amarelo</label>
+        <input id="limiteMedio" type="range" min="10" max="80" value="35" />
+        <span id="valorMedio">35%</span>
+      </div>
+
+      <div>
+        <label for="limiteAlto">Limite vermelho</label>
+        <input id="limiteAlto" type="range" min="20" max="100" value="65" />
+        <span id="valorAlto">65%</span>
+      </div>
+    </section>
+
+    <p class="dica">
+      Combinado da turma: verde = volume adequado, amarelo = atenção, vermelho = precisamos baixar a voz.
+    </p>
+  </main>
+
+  <script>
+    let audioContext;
+    let analyser;
+    let microphone;
+    let dataArray;
+    let animationId;
+    let streamAtual;
+
+    const monster = document.getElementById("monster");
+    const statusText = document.getElementById("status");
+    const nivelTexto = document.getElementById("nivelTexto");
+    const bar = document.getElementById("bar");
+    const limiteMedio = document.getElementById("limiteMedio");
+    const limiteAlto = document.getElementById("limiteAlto");
+    const valorMedio = document.getElementById("valorMedio");
+    const valorAlto = document.getElementById("valorAlto");
+
+    limiteMedio.addEventListener("input", () => {
+      valorMedio.textContent = limiteMedio.value + "%";
+    });
+
+    limiteAlto.addEventListener("input", () => {
+      valorAlto.textContent = limiteAlto.value + "%";
+    });
+
+    async function iniciarMedidor() {
+      try {
+        streamAtual = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        microphone = audioContext.createMediaStreamSource(streamAtual);
+
+        analyser.fftSize = 256;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        microphone.connect(analyser);
+
+        statusText.textContent = "Escutando a turma...";
+        medirSom();
+      } catch (erro) {
+        statusText.textContent = "Permita o microfone para funcionar";
+        alert("Não foi possível acessar o microfone. Verifique a permissão do navegador.");
+      }
+    }
+
+    function medirSom() {
+      analyser.getByteFrequencyData(dataArray);
+
+      let soma = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        soma += dataArray[i];
+      }
+
+      let media = soma / dataArray.length;
+      let nivel = Math.min(100, Math.round((media / 128) * 100));
+
+      atualizarVisual(nivel);
+      animationId = requestAnimationFrame(medirSom);
+    }
+
+    function atualizarVisual(nivel) {
+      const medio = Number(limiteMedio.value);
+      const alto = Number(limiteAlto.value);
+
+      bar.style.width = nivel + "%";
+      nivelTexto.textContent = "Nível de som: " + nivel + "%";
+
+      monster.className = "monster";
+
+      if (nivel < medio) {
+        monster.classList.add("silencioso");
+        statusText.textContent = "Muito bem! Volume adequado.";
+        bar.style.background = "#22c55e";
+      } else if (nivel < alto) {
+        monster.classList.add("medio");
+        statusText.textContent = "Atenção! Vamos falar mais baixo.";
+        bar.style.background = "#facc15";
+      } else {
+        monster.classList.add("barulhento");
+        statusText.textContent = "Muito barulho! Hora do silêncio.";
+        bar.style.background = "#ef4444";
+      }
+    }
+
+    function pararMedidor() {
+      cancelAnimationFrame(animationId);
+
+      if (streamAtual) {
+        streamAtual.getTracks().forEach(track => track.stop());
+      }
+
+      if (audioContext) {
+        audioContext.close();
+      }
+
+      statusText.textContent = "Medidor pausado";
+    }
+
+    function resetarMedidor() {
+      pararMedidor();
+      bar.style.width = "0%";
+      nivelTexto.textContent = "Nível de som: 0%";
+      statusText.textContent = "Clique em iniciar";
+      monster.className = "monster silencioso";
+      bar.style.background = "#22c55e";
+    }
+  </script>
+</body>
+</html>

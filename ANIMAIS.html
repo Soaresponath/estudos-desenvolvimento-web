@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imagens Aleatórias de Cachorros</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        img {
+            margin-top: 20px;
+            max-width: 300px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #erro {
+            color: red;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Imagens Aleatórias de Cachorros 🐶</h1>
+
+    <p>Clique no botão abaixo para carregar uma imagem aleatória de cachorro.</p>
+
+    <button onclick="carregarImagem()">
+        Clique para carregar imagens aleatórias
+    </button>
+
+    <br>
+
+    <img id="imagemDog" src="" alt="Imagem de cachorro">
+
+    <p id="erro"></p>
+
+    <script>
+        async function carregarImagem() {
+            const img = document.getElementById("imagemDog");
+            const erro = document.getElementById("erro");
+
+            // Limpa mensagens anteriores
+            erro.textContent = "";
+            img.style.display = "none";
+
+            try {
+                const resposta = await fetch("https://dog.ceo/api/breeds/image/random");
+
+                // Verifica erro HTTP
+                if (!resposta.ok) {
+                    throw new Error("Erro na requisição: " + resposta.status);
+                }
+
+                const dados = await resposta.json();
+
+                // Validação do JSON
+                if (!dados.message) {
+                    throw new Error("Resposta inválida da API");
+                }
+
+                // Atualiza imagem
+                img.src = dados.message;
+                img.style.display = "block";
+
+            } catch (e) {
+                erro.textContent = "Erro ao carregar imagem: " + e.message;
+                console.error(e);
+            }
+        }
+    </script>
+
+</body>
+</html>

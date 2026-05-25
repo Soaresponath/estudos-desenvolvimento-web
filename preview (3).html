@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Notas - 4º Ano</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background: #2c3e50;
+    color: white;
+}
+
+input {
+    width: 50px;
+    text-align: center;
+}
+
+.baixa {
+    color: red;
+    font-weight: bold;
+}
+
+.nao-fez {
+    color: orange;
+    font-size: 12px;
+}
+
+.total {
+    font-weight: bold;
+    color: green;
+}
+
+button {
+    margin: 10px;
+    padding: 10px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #219150;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>📚 Sistema de Notas - 4º Ano</h1>
+
+<input type="text" id="nomeAluno" placeholder="Nome do aluno">
+<button onclick="adicionarAluno()">Adicionar Aluno</button>
+
+<table id="tabela">
+<thead>
+<tr>
+<th>Aluno</th>
+
+<th>Português AV1</th>
+<th>AV2</th>
+<th>AV3</th>
+<th>Total</th>
+
+<th>Matemática AV1</th>
+<th>AV2</th>
+<th>AV3</th>
+<th>Total</th>
+
+<th>Ciências AV1</th>
+<th>AV2</th>
+<th>AV3</th>
+<th>Total</th>
+
+<th>Geografia AV1</th>
+<th>AV2</th>
+<th>AV3</th>
+<th>Total</th>
+
+<th>História AV1</th>
+<th>AV2</th>
+<th>AV3</th>
+<th>Total</th>
+
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+</table>
+
+<script>
+
+function criarInput() {
+    return `<input type="number" min="0" max="10" step="0.1" oninput="calcular(this)">`;
+}
+
+function adicionarAluno() {
+    let nome = document.getElementById("nomeAluno").value;
+    if (nome == "") {
+        alert("Digite o nome do aluno!");
+        return;
+    }
+
+    let tabela = document.querySelector("#tabela tbody");
+
+    let linha = `
+    <tr>
+        <td>${nome}</td>
+
+        ${criarInput()} ${criarInput()} ${criarInput()} <td class="total">0</td>
+        ${criarInput()} ${criarInput()} ${criarInput()} <td class="total">0</td>
+        ${criarInput()} ${criarInput()} ${criarInput()} <td class="total">0</td>
+        ${criarInput()} ${criarInput()} ${criarInput()} <td class="total">0</td>
+        ${criarInput()} ${criarInput()} ${criarInput()} <td class="total">0</td>
+
+        <td class="nao-fez"></td>
+    </tr>
+    `;
+
+    tabela.innerHTML += linha;
+    document.getElementById("nomeAluno").value = "";
+}
+
+function calcular(input) {
+    let linha = input.parentElement.parentElement;
+    let inputs = linha.querySelectorAll("input");
+
+    let totais = linha.querySelectorAll(".total");
+    let status = linha.querySelector(".nao-fez");
+
+    let soma = 0;
+    let indexTotal = 0;
+    let naoRealizou = false;
+
+    for (let i = 0; i < inputs.length; i += 3) {
+        let av1 = parseFloat(inputs[i].value);
+        let av2 = parseFloat(inputs[i+1].value);
+        let av3 = parseFloat(inputs[i+2].value);
+
+        let total = 0;
+
+        if (isNaN(av1) || isNaN(av2) || isNaN(av3)) {
+            naoRealizou = true;
+        }
+
+        if (!isNaN(av1)) total += av1;
+        if (!isNaN(av2)) total += av2;
+        if (!isNaN(av3)) total += av3;
+
+        totais[indexTotal].innerText = total.toFixed(1);
+
+        indexTotal++;
+    }
+
+    // pintar notas baixas
+    inputs.forEach(inp => {
+        if (inp.value < 6 && inp.value != "") {
+            inp.classList.add("baixa");
+        } else {
+            inp.classList.remove("baixa");
+        }
+    });
+
+    // status
+    if (naoRealizou) {
+        status.innerText = "Não realizou alguma avaliação";
+    } else {
+        status.innerText = "";
+    }
+}
+
+</script>
+
+</body>
+</html>

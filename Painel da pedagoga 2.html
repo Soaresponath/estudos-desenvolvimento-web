@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel da Pedagoga - EEEFM Frederico Boldt</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white;
+      padding: 24px 18px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .topo h1 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+
+    .topo p {
+      opacity: 0.95;
+    }
+
+    .data-box {
+      background: rgba(255,255,255,0.18);
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-weight: bold;
+      min-width: 230px;
+      text-align: center;
+    }
+
+    .resumo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    }
+
+    .card h3, .card h2 {
+      color: #1d4ed8;
+      margin-bottom: 12px;
+    }
+
+    .numero {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0f172a;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 28px 0 18px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tab-btn.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+      color: #1e3a8a;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    input, select, textarea, button {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+      background: white;
+      width: 100%;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button.primary {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button.primary:hover {
+      background: #1d4ed8;
+    }
+
+    button.secondary {
+      background: #e2e8f0;
+      color: #1f2937;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button.secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .turmas-grid,
+    .lista-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 18px;
+    }
+
+    .turma-card {
+      background: white;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      border-left: 6px solid #60a5fa;
+    }
+
+    .priority-alta {
+      border-left-color: #ef4444;
+    }
+
+    .priority-media {
+      border-left-color: #f59e0b;
+    }
+
+    .priority-baixa {
+      border-left-color: #10b981;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      margin: 4px 6px 6px 0;
+    }
+
+    ul.lista {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+
+    ul.lista li {
+      margin-bottom: 6px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .item {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.07);
+      border-left: 5px solid #2563eb;
+    }
+
+    .item h4 {
+      color: #1e3a8a;
+      margin-bottom: 8px;
+    }
+
+    .item p {
+      margin-bottom: 6px;
+    }
+
+    .status {
+      font-size: 0.85rem;
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    .status.pendente {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status.concluida {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .duas-colunas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .info-save {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 28px 18px;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      .duas-colunas {
+        grid-template-columns: 1fr;
+      }
+
+      .topo h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media print {
+      .tabs, .actions, header button, .sem-impressao {
+        display: none !important;
+      }
+
+      body {
+        background: white;
+      }
+
+      .card, .item, .turma-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topo">
+      <div>
+        <h1>Painel da Pedagoga</h1>
+        <p>EEEFM Frederico Boldt • Organização pedagógica do 1º ao 6º ano</p>
+      </div>
+      <div class="data-box" id="dataAtual">Carregando data...</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="resumo-grid">
+      <div class="card">
+        <h2>Turmas</h2>
+        <div class="numero" id="resumoTurmas">6</div>
+        <p>Turmas acompanhadas</p>
+      </div>
+
+      <div class="card">
+        <h2>Tarefas</h2>
+        <div class="numero" id="resumoTarefas">0</div>
+        <p>Total cadastradas</p>
+      </div>
+
+      <div class="card">
+        <h2>Reuniões</h2>
+        <div class="numero" id="resumoReunioes">0</div>
+        <p>Registros inseridos</p>
+      </div>
+
+      <div class="card">
+        <h2>Atendimentos</h2>
+        <div class="numero" id="resumoAtendimentos">0</div>
+        <p>Acompanhamentos registrados</p>
+      </div>
+    </section>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="abrirAba('abaTurmas', this)">Turmas</button>
+      <button class="tab-btn" onclick="abrirAba('abaDiario', this)">Diário Pedagógico</button>
+      <button class="tab-btn" onclick="abrirAba('abaTarefas', this)">Tarefas</button>
+      <button class="tab-btn" onclick="abrirAba('abaReunioes', this)">Reuniões</button>
+      <button class="tab-btn" onclick="abrirAba('abaAtendimentos', this)">Atendimentos</button>
+      <button class="tab-btn" onclick="abrirAba('abaRelatorio', this)">Relatório</button>
+    </div>
+
+    <section id="abaTurmas" class="tab-content active">
+      <div class="card">
+        <h2 class="section-title">Filtro das turmas</h2>
+        <div class="filters">
+          <input type="text" id="buscaTurma" placeholder="Pesquisar turma, foco ou observação">
+          <select id="filtroPrioridade">
+            <option value="todas">Todas as prioridades</option>
+            <option value="alta">Alta</option>
+            <option value="media">Média</option>
+            <option value="baixa">Baixa</option>
+          </select>
+          <button class="primary" onclick="filtrarTurmas()">Filtrar</button>
+          <button class="secondary" onclick="limparFiltroTurmas()">Limpar</button>
+        </div>
+      </div>
+
+      <div class="turmas-grid" id="turmasContainer"></div>
+    </section>
+
+    <section id="abaDiario" class="tab-content">
+      <div class="duas-colunas">
+        <div class="card">
+          <h2 class="section-title">Diário pedagógico</h2>
+          <div class="form-grid">
+            <div>
+              <label>Data</label>
+              <input type="date" id="diarioData">
+            </div>
+            <div>
+              <label>Turma</label>
+              <select id="diarioTurma">
+                <option>1º Ano</option>
+                <option>2º Ano</option>
+                <option>3º Ano</option>
+                <option>4º Ano</option>
+                <option>5º Ano</option>
+                <option>6º Ano</option>
+              </select>
+            </div>
+          </div>
+
+          <label>Observações do dia</label>
+          <textarea id="diarioTexto" placeholder="Registre observações, intervenções, acompanhamento dos alunos, encaminhamentos e pontos importantes."></textarea>
+
+          <div class="info-save">Salvamento automático ativado.</div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Encaminhamentos gerais</h2>
+          <label>Anotações gerais</label>
+          <textarea id="encaminhamentosGerais" placeholder="Escreva aqui orientações, devolutivas, ações com professores, família e equipe escolar."></textarea>
+
+          <div class="actions">
+            <button class="primary" onclick="limparTexto('diarioTexto')">Limpar diário</button>
+            <button class="secondary" onclick="limparTexto('encaminhamentosGerais')">Limpar encaminhamentos</button>
+          </div>
+
+          <div class="info-save">Tudo fica salvo no navegador automaticamente.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="abaTarefas" class="tab-content">
+      <div class="card">
+        <h2 class="section-title">Nova tarefa</h2>
+        <div class="form-grid">
+          <div>
+            <label>Data</label>
+            <input type="date" id="tarefaData">
+          </div>
+          <div>
+            <label>Turma</label>
+            <select id="tarefaTurma">
+              <option>1º Ano</option>
+              <option>2º Ano</option>
+              <option>3º Ano</option>
+              <option>4º Ano</option>
+              <option>5º Ano</option>
+              <option>6º Ano</option>
+              <option>Geral</option>
+            </select>
+          </div>
+          <div>
+            <label>Prioridade</label>
+            <select id="tarefaPrioridade">
+              <option value="alta">Alta</option>
+              <option value="media">Média</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Descrição da tarefa</label>
+        <textarea id="tarefaDescricao" placeholder="Ex.: conversar com professora, observar aluno, organizar reunião, acompanhar atividade, contatar família."></textarea>
+
+        <div class="actions">
+          <button class="primary" onclick="adicionarTarefa()">Adicionar tarefa</button>
+          <button class="secondary" onclick="limparFormularioTarefa()">Limpar</button>
+        </div>
+      </div>
+
+      <div class="lista-grid" id="listaTarefas"></div>
+    </section>
+
+    <section id="abaReunioes" class="tab-content">
+      <div class="card">
+        <h2 class="section-title">Nova reunião</h2>
+        <div class="form-grid">
+          <div>
+            <label>Data</label>
+            <input type="date" id="reuniaoData">
+          </div>
+          <div>
+            <label>Horário</label>
+            <input type="time" id="reuniaoHora">
+          </div>
+          <div>
+            <label>Tipo</label>
+            <select id="reuniaoTipo">
+              <option>Professor</option>
+              <option>Família</option>
+              <option>Equipe escolar</option>
+              <option>Pedagógica</option>
+              <option>Conselho</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Tema / pauta</label>
+        <textarea id="reuniaoTema" placeholder="Ex.: acompanhamento da turma, dificuldades de aprendizagem, combinados pedagógicos, rotina escolar."></textarea>
+
+        <div class="actions">
+          <button class="primary" onclick="adicionarReuniao()">Adicionar reunião</button>
+          <button class="secondary" onclick="limparFormularioReuniao()">Limpar</button>
+        </div>
+      </div>
+
+      <div class="lista-grid" id="listaReunioes"></div>
+    </section>
+
+    <section id="abaAtendimentos" class="tab-content">
+      <div class="card">
+        <h2 class="section-title">Novo atendimento</h2>
+        <div class="form-grid">
+          <div>
+            <label>Data</label>
+            <input type="date" id="atendimentoData">
+          </div>
+          <div>
+            <label>Turma</label>
+            <select id="atendimentoTurma">
+              <option>1º Ano</option>
+              <option>2º Ano</option>
+              <option>3º Ano</option>
+              <option>4º Ano</option>
+              <option>5º Ano</option>
+              <option>6º Ano</option>
+            </select>
+          </div>
+          <div>
+            <label>Tipo</label>
+            <select id="atendimentoTipo">
+              <option>Aluno</option>
+              <option>Professor</option>
+              <option>Família</option>
+              <option>Turma</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Descrição do atendimento</label>
+        <textarea id="atendimentoDescricao" placeholder="Ex.: escuta pedagógica, orientação à família, alinhamento com professor, acompanhamento do aluno."></textarea>
+
+        <div class="actions">
+          <button class="primary" onclick="adicionarAtendimento()">Adicionar atendimento</button>
+          <button class="secondary" onclick="limparFormularioAtendimento()">Limpar</button>
+        </div>
+      </div>
+
+      <div class="lista-grid" id="listaAtendimentos"></div>
+    </section>
+
+    <section id="abaRelatorio" class="tab-content">
+      <div class="card">
+        <h2 class="section-title">Relatório geral</h2>
+        <p>Use este espaço para visualizar um resumo do que foi registrado no painel.</p>
+
+        <div class="actions sem-impressao">
+          <button class="primary" onclick="gerarResumo()">Atualizar resumo</button>
+          <button class="primary" onclick="window.print()">Gerar PDF / Imprimir</button>
+          <button class="secondary" onclick="limparTudo()">Limpar tudo</button>
+        </div>
+
+        <div style="margin-top: 18px;">
+          <textarea id="relatorioGeral" placeholder="Clique em 'Atualizar resumo' para montar o relatório automático." style="min-height: 320px;"></textarea>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer">
+    Painel pedagógico digital • EEEFM Frederico Boldt
+  </div>
+
+  <script>
+    const turmas = [
+      {
+        nome: '1º Ano',
+        prioridade: 'alta',
+        professor: 'Professor(a) da turma',
+        foco: ['Alfabetização', 'Adaptação', 'Rotina escolar'],
+        observacoes: ['Acompanhar leitura e escrita.', 'Observar participação e adaptação.', 'Apoiar a rotina pedagógica.']
+      },
+      {
+        nome: '2º Ano',
+        prioridade: 'media',
+        professor: 'Professor(a) da turma',
+        foco: ['Leitura', 'Escrita', 'Intervenções pedagógicas'],
+        observacoes: ['Monitorar fluência leitora.', 'Acompanhar dificuldades na escrita.', 'Planejar apoio aos alunos.']
+      },
+      {
+        nome: '3º Ano',
+        prioridade: 'baixa',
+        professor: 'Professor(a) da turma',
+        foco: ['Rendimento', 'Matemática básica', 'Leitura'],
+        observacoes: ['Observar avanços individuais.', 'Analisar resultados das atividades.', 'Apoiar organização dos estudos.']
+      },
+      {
+        nome: '4º Ano',
+        prioridade: 'alta',
+        professor: 'Professor(a) da turma',
+        foco: ['Interpretação', 'Produção textual', 'Acompanhamento disciplinar'],
+        observacoes: ['Acompanhar leitura e interpretação.', 'Dialogar com professor sobre intervenções.', 'Planejar ações com a família quando preciso.']
+      },
+      {
+        nome: '5º Ano',
+        prioridade: 'media',
+        professor: 'Professor(a) da turma',
+        foco: ['Autonomia', 'Rotina de estudos', 'Consolidação de conteúdos'],
+        observacoes: ['Reforçar autonomia escolar.', 'Monitorar organização e participação.', 'Acompanhar necessidades pedagógicas.']
+      },
+      {
+        nome: '6º Ano',
+        prioridade: 'alta',
+        professor: 'Professor(a) da turma',
+        foco: ['Transição escolar', 'Rendimento', 'Acompanhamento emocional'],
+        observacoes: ['Observar adaptação ao segmento.', 'Acompanhar rendimento e comportamento.', 'Fortalecer diálogo com docentes.']
+      }
+    ];
+
+    let tarefas = JSON.parse(localStorage.getItem('tarefasPedagoga')) || [];
+    let reunioes = JSON.parse(localStorage.getItem('reunioesPedagoga')) || [];
+    let atendimentos = JSON.parse(localStorage.getItem('atendimentosPedagoga')) || [];
+
+    function salvarLocal(chave, valor) {
+      localStorage.setItem(chave, JSON.stringify(valor));
+    }
+
+    function formatarDataTopo() {
+      const hoje = new Date();
+      const opcoes = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+      document.getElementById('dataAtual').textContent =
+        hoje.toLocaleDateString('pt-BR', opcoes);
+    }
+
+    function definirDataHoje() {
+      const hoje = new Date().toISOString().split('T')[0];
+      const campos = [
+        'diarioData',
+        'tarefaData',
+        'reuniaoData',
+        'atendimentoData'
+      ];
+
+      campos.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.value) el.value = hoje;
+      });
+    }
+
+    function abrirAba(id, botao) {
+      document.querySelectorAll('.tab-content').forEach(aba => {
+        aba.classList.remove('active');
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      document.getElementById(id).classList.add('active');
+      botao.classList.add('active');
+    }
+
+    function renderTurmas(lista) {
+      const container = document.getElementById('turmasContainer');
+      container.innerHTML = '';
+
+      lista.forEach(turma => {
+        const div = document.createElement('div');
+        div.className = `turma-card priority-${turma.prioridade}`;
+
+        div.innerHTML = `
+          <h3>${turma.nome}</h3>
+          <p><strong>Professor(a):</strong> ${turma.professor}</p>
+          <p><strong>Prioridade:</strong> ${capitalizar(turma.prioridade)}</p>
+          <div style="margin-top:10px;">
+            ${turma.foco.map(item => `<span class="tag">${item}</span>`).join('')}
+          </div>
+          <ul class="lista">
+            ${turma.observacoes.map(obs => `<li>${obs}</li>`).join('')}
+          </ul>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function filtrarTurmas() {
+      const busca = document.getElementById('buscaTurma').value.toLowerCase();
+      const prioridade = document.getElementById('filtroPrioridade').value;
+
+      const filtradas = turmas.filter(turma => {
+        const texto = (
+          turma.nome + ' ' +
+          turma.professor + ' ' +
+          turma.foco.join(' ') + ' ' +
+          turma.observacoes.join(' ')
+        ).toLowerCase();
+
+        const matchBusca = texto.includes(busca);
+        const matchPrioridade = prioridade === 'todas' || turma.prioridade === prioridade;
+
+        return matchBusca && matchPrioridade;
+      });
+
+      renderTurmas(filtradas);
+    }
+
+    function limparFiltroTurmas() {
+      document.getElementById('buscaTurma').value = '';
+      document.getElementById('filtroPrioridade').value = 'todas';
+      renderTurmas(turmas);
+    }
+
+    function capitalizar(texto) {
+      return texto.charAt(0).toUpperCase() + texto.slice(1);
+    }
+
+    function adicionarTarefa() {
+      const data = document.getElementById('tarefaData').value;
+      const turma = document.getElementById('tarefaTurma').value;
+      const prioridade = document.getElementById('tarefaPrioridade').value;
+      const descricao = document.getElementById('tarefaDescricao').value.trim();
+
+      if (!descricao) {
+        alert('Escreva a descrição da tarefa.');
+        return;
+      }
+
+      tarefas.unshift({
+        id: Date.now(),
+        data,
+        turma,
+        prioridade,
+        descricao,
+        concluida: false
+      });
+
+      salvarLocal('tarefasPedagoga', tarefas);
+      renderTarefas();
+      atualizarResumo();
+      limparFormularioTarefa();
+    }
+
+    function renderTarefas() {
+      const lista = document.getElementById('listaTarefas');
+      lista.innerHTML = '';
+
+      tarefas.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+
+        div.innerHTML = `
+          <h4>${item.turma} • ${item.data || 'Sem data'}</h4>
+          <p><strong>Prioridade:</strong> ${capitalizar(item.prioridade)}</p>
+          <p>${item.descricao}</p>
+          <span class="status ${item.concluida ? 'concluida' : 'pendente'}">
+            ${item.concluida ? 'Concluída' : 'Pendente'}
+          </span>
+          <div class="actions">
+            <button class="primary" onclick="alternarTarefa(${item.id})">
+              ${item.concluida ? 'Marcar pendente' : 'Marcar concluída'}
+            </button>
+            <button class="secondary" onclick="excluirTarefa(${item.id})">Excluir</button>
+          </div>
+        `;
+
+        lista.appendChild(div);
+      });
+    }
+
+    function alternarTarefa(id) {
+      tarefas = tarefas.map(t => {
+        if (t.id === id) t.concluida = !t.concluida;
+        return t;
+      });
+      salvarLocal('tarefasPedagoga', tarefas);
+      renderTarefas();
+      atualizarResumo();
+    }
+
+    function excluirTarefa(id) {
+      tarefas = tarefas.filter(t => t.id !== id);
+      salvarLocal('tarefasPedagoga', tarefas);
+      renderTarefas();
+      atualizarResumo();
+    }
+
+    function limparFormularioTarefa() {
+      document.getElementById('tarefaDescricao').value = '';
+      document.getElementById('tarefaPrioridade').value = 'alta';
+      document.getElementById('tarefaTurma').value = '1º Ano';
+      definirDataHoje();
+    }
+
+    function adicionarReuniao() {
+      const data = document.getElementById('reuniaoData').value;
+      const hora = document.getElementById('reuniaoHora').value;
+      const tipo = document.getElementById('reuniaoTipo').value;
+      const tema = document.getElementById('reuniaoTema').value.trim();
+
+      if (!tema) {
+        alert('Escreva o tema da reunião.');
+        return;
+      }
+
+      reunioes.unshift({
+        id: Date.now(),
+        data,
+        hora,
+        tipo,
+        tema
+      });
+
+      salvarLocal('reunioesPedagoga', reunioes);
+      renderReunioes();
+      atualizarResumo();
+      limparFormularioReuniao();
+    }
+
+    function renderReunioes() {
+      const lista = document.getElementById('listaReunioes');
+      lista.innerHTML = '';
+
+      reunioes.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+
+        div.innerHTML = `
+          <h4>${item.tipo}</h4>
+          <p><strong>Data:</strong> ${item.data || 'Sem data'}</p>
+          <p><strong>Horário:</strong> ${item.hora || 'Sem horário'}</p>
+          <p><strong>Pauta:</strong> ${item.tema}</p>
+          <div class="actions">
+            <button class="secondary" onclick="excluirReuniao(${item.id})">Excluir</button>
+          </div>
+        `;
+
+        lista.appendChild(div);
+      });
+    }
+
+    function excluirReuniao(id) {
+      reunioes = reunioes.filter(r => r.id !== id);
+      salvarLocal('reunioesPedagoga', reunioes);
+      renderReunioes();
+      atualizarResumo();
+    }
+
+    function limparFormularioReuniao() {
+      document.getElementById('reuniaoHora').value = '';
+      document.getElementById('reuniaoTipo').value = 'Professor';
+      document.getElementById('reuniaoTema').value = '';
+      definirDataHoje();
+    }
+
+    function adicionarAtendimento() {
+      const data = document.getElementById('atendimentoData').value;
+      const turma = document.getElementById('atendimentoTurma').value;
+      const tipo = document.getElementById('atendimentoTipo').value;
+      const descricao = document.getElementById('atendimentoDescricao').value.trim();
+
+      if (!descricao) {
+        alert('Escreva a descrição do atendimento.');
+        return;
+      }
+
+      atendimentos.unshift({
+        id: Date.now(),
+        data,
+        turma,
+        tipo,
+        descricao
+      });
+
+      salvarLocal('atendimentosPedagoga', atendimentos);
+      renderAtendimentos();
+      atualizarResumo();
+      limparFormularioAtendimento();
+    }
+
+    function renderAtendimentos() {
+      const lista = document.getElementById('listaAtendimentos');
+      lista.innerHTML = '';
+
+      atendimentos.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+
+        div.innerHTML = `
+          <h4>${item.tipo} • ${item.turma}</h4>
+          <p><strong>Data:</strong> ${item.data || 'Sem data'}</p>
+          <p>${item.descricao}</p>
+          <div class="actions">
+            <button class="secondary" onclick="excluirAtendimento(${item.id})">Excluir</button>
+          </div>
+        `;
+
+        lista.appendChild(div);
+      });
+    }
+
+    function excluirAtendimento(id) {
+      atendimentos = atendimentos.filter(a => a.id !== id);
+      salvarLocal('atendimentosPedagoga', atendimentos);
+      renderAtendimentos();
+      atualizarResumo();
+    }
+
+    function limparFormularioAtendimento() {
+      document.getElementById('atendimentoTurma').value = '1º Ano';
+      document.getElementById('atendimentoTipo').value = 'Aluno';
+      document.getElementById('atendimentoDescricao').value = '';
+      definirDataHoje();
+    }
+
+    function atualizarResumo() {
+      document.getElementById('resumoTurmas').textContent = turmas.length;
+      document.getElementById('resumoTarefas').textContent = tarefas.length;
+      document.getElementById('resumoReunioes').textContent = reunioes.length;
+      document.getElementById('resumoAtendimentos').textContent = atendimentos.length;
+    }
+
+    function gerarResumo() {
+      const diarioData = document.getElementById('diarioData').value || 'Sem data';
+      const diarioTurma = document.getElementById('diarioTurma').value;
+      const diarioTexto = document.getElementById('diarioTexto').value.trim() || 'Sem registro no diário.';
+      const encaminhamentos = document.getElementById('encaminhamentosGerais').value.trim() || 'Sem encaminhamentos registrados.';
+
+      let texto = '';
+      texto += 'RELATÓRIO GERAL PEDAGÓGICO\n';
+      texto += 'EEEFM FREDERICO BOLDT\n\n';
+
+      texto += `Data do relatório: ${new Date().toLocaleDateString('pt-BR')}\n\n`;
+
+      texto += '1. DIÁRIO PEDAGÓGICO\n';
+      texto += `Data do diário: ${diarioData}\n`;
+      texto += `Turma: ${diarioTurma}\n`;
+      texto += `Registro: ${diarioTexto}\n\n`;
+
+      texto += '2. ENCAMINHAMENTOS GERAIS\n';
+      texto += `${encaminhamentos}\n\n`;
+
+      texto += '3. TAREFAS CADASTRADAS\n';
+      if (tarefas.length === 0) {
+        texto += 'Nenhuma tarefa cadastrada.\n\n';
+      } else {
+        tarefas.forEach((t, i) => {
+          texto += `${i + 1}. [${t.data || 'Sem data'}] ${t.turma} - ${t.descricao} (${capitalizar(t.prioridade)}) - ${t.concluida ? 'Concluída' : 'Pendente'}\n`;
+        });
+        texto += '\n';
+      }
+
+      texto += '4. REUNIÕES\n';
+      if (reunioes.length === 0) {
+        texto += 'Nenhuma reunião registrada.\n\n';
+      } else {
+        reunioes.forEach((r, i) => {
+          texto += `${i + 1}. [${r.data || 'Sem data'} ${r.hora || ''}] ${r.tipo} - ${r.tema}\n`;
+        });
+        texto += '\n';
+      }
+
+      texto += '5. ATENDIMENTOS\n';
+      if (atendimentos.length === 0) {
+        texto += 'Nenhum atendimento registrado.\n\n';
+      } else {
+        atendimentos.forEach((a, i) => {
+          texto += `${i + 1}. [${a.data || 'Sem data'}] ${a.tipo} - ${a.turma} - ${a.descricao}\n`;
+        });
+        texto += '\n';
+      }
+
+      document.getElementById('relatorioGeral').value = texto;
+      localStorage.setItem('relatorioGeralPedagoga', texto);
+    }
+
+    function limparTexto(id) {
+      document.getElementById(id).value = '';
+      localStorage.setItem(id, '');
+    }
+
+    function limparTudo() {
+      const confirmar = confirm('Deseja realmente apagar todos os dados salvos no navegador?');
+      if (!confirmar) return;
+
+      localStorage.removeItem('tarefasPedagoga');
+      localStorage.removeItem('reunioesPedagoga');
+      localStorage.removeItem('atendimentosPedagoga');
+      localStorage.removeItem('diarioTexto');
+      localStorage.removeItem('encaminhamentosGerais');
+      localStorage.removeItem('diarioData');
+      localStorage.removeItem('diarioTurma');
+      localStorage.removeItem('relatorioGeralPedagoga');
+
+      tarefas = [];
+      reunioes = [];
+      atendimentos = [];
+
+      document.getElementById('diarioTexto').value = '';
+      document.getElementById('encaminhamentosGerais').value = '';
+      document.getElementById('relatorioGeral').value = '';
+      document.getElementById('diarioTurma').value = '1º Ano';
+
+      definirDataHoje();
+      renderTarefas();
+      renderReunioes();
+      renderAtendimentos();
+      atualizarResumo();
+      alert('Todos os dados foram apagados.');
+    }
+
+    function ativarSalvamentoAutomatico() {
+      const campos = [
+        'diarioTexto',
+        'encaminhamentosGerais',
+        'diarioData',
+        'diarioTurma'
+      ];
+
+      campos.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener('input', () => {
+          localStorage.setItem(id, el.value);
+        });
+
+        el.addEventListener('change', () => {
+          localStorage.setItem(id, el.value);
+        });
+      });
+    }
+
+    function carregarTextosSalvos() {
+      document.getElementById('diarioTexto').value = localStorage.getItem('diarioTexto') || '';
+      document.getElementById('encaminhamentosGerais').value = localStorage.getItem('encaminhamentosGerais') || '';
+      document.getElementById('diarioData').value = localStorage.getItem('diarioData') || '';
+      document.getElementById('diarioTurma').value = localStorage.getItem('diarioTurma') || '1º Ano';
+      document.getElementById('relatorioGeral').value = localStorage.getItem('relatorioGeralPedagoga') || '';
+    }
+
+    renderTurmas(turmas);
+    renderTarefas();
+    renderReunioes();
+    renderAtendimentos();
+    atualizarResumo();
+    formatarDataTopo();
+    definirDataHoje();
+    carregarTextosSalvos();
+    ativarSalvamentoAutomatico();
+  </script>
+</body>
+</html>
